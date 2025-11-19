@@ -31,7 +31,6 @@ if(!isset($_SESSION['admin_name'])){
       <h1>Bienvenido <span><?php echo $_SESSION['admin_name'] ?></span></h1>
       <p>Gestiona inventario, usuarios y proveedores de Bodega Maribel.</p>
       <a href="login_form.php" class="btn">Iniciar sesión</a>
-      <a href="register_form.php" class="btn">Registrar usuario</a>
       <a href="../../index.php?ruta=admin/dashboard" class="btn">Ir al panel</a>
       <a href="logout.php" class="btn">Cerrar sesión</a>
    </div>

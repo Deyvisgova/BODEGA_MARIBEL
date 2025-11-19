@@ -118,15 +118,6 @@ if(!isset($_SESSION['admin_name'])){
                                     Inicio
                                 </a>
 
-                                <a class="dropdown-item" href="../../login/register_form_adm.php">
-                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Registro de administrador
-                                </a>
-
-                                <a class="dropdown-item" href="../../login/register_form.php">
-                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Registro de Colaborador
-                                </a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="../../../vista/login/logout.php" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
