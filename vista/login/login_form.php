@@ -64,11 +64,6 @@
                 <i class="fa-solid fa-right-to-bracket me-2"></i> Iniciar sesión
               </a>
             </li>
-            <li>
-              <a class="dropdown-item" href="register_form.php">
-                <i class="fa-solid fa-user-plus me-2"></i> Registrarse
-              </a>
-            </li>
           </ul>
         </li>
       </ul>
