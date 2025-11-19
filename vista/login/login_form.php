@@ -1,6 +1,5 @@
 <?php
    include "../../controlador/controlador_login/controlador_login_form.php";
-   include "../../controlador/controlador_adm/controlador_login_form_adm.php";
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -62,11 +61,6 @@
             <li>
               <a class="dropdown-item" href="login_form.php">
                 <i class="fa-solid fa-right-to-bracket me-2"></i> Iniciar sesión
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="register_form.php">
-                <i class="fa-solid fa-user-plus me-2"></i> Registrarse
               </a>
             </li>
           </ul>

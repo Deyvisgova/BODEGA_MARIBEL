@@ -119,10 +119,8 @@ $tarjetas = [
                             </a>
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                                 <a class="dropdown-item" href="<?= htmlspecialchars($buildUrl('index.php?ruta=admin/dashboard'), ENT_QUOTES, 'UTF-8') ?>"><i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i> Inicio</a>
-                                <a class="dropdown-item" href="<?= htmlspecialchars($buildUrl('vista/login/register_form_adm.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i> Registrar administrador</a>
-                                <a class="dropdown-item" href="<?= htmlspecialchars($buildUrl('vista/login/register_form.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i> Registrar colaborador</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="<?= htmlspecialchars($buildUrl('vista/login/logout.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Salir</a>
+                                  <div class="dropdown-divider"></div>
+                                  <a class="dropdown-item" href="<?= htmlspecialchars($buildUrl('vista/login/logout.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Salir</a>
                             </div>
                         </li>
                     </ul>
