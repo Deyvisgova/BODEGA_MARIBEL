@@ -1,6 +1,5 @@
 <?php
    include "../../controlador/controlador_login/controlador_login_form.php";
-   include "../../controlador/controlador_adm/controlador_login_form_adm.php";
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -64,11 +63,6 @@
                 <i class="fa-solid fa-right-to-bracket me-2"></i> Iniciar sesión
               </a>
             </li>
-            <li>
-              <a class="dropdown-item" href="register_form.php">
-                <i class="fa-solid fa-user-plus me-2"></i> Registrarse
-              </a>
-            </li>
           </ul>
         </li>
       </ul>
@@ -84,15 +78,11 @@
    <form action="" method="post">
       <h3>INICIAR SESION</h3>
       <?php
-        if(isset($error)){
-            foreach($error as $error){
-                echo '<span class="error-msg">'.$error.'</span>';
-            };
-        }else if($errorr){
-            foreach($errorr as $errorr){
-                echo '<span class="error-msg">'.$errorr.'</span>';
-            };
-        };
+        if(!empty($loginErrors)){
+            foreach($loginErrors as $error){
+                echo '<span class="error-msg">'.htmlspecialchars($error, ENT_QUOTES, 'UTF-8').'</span>';
+            }
+        }
       ?>
       <input type="email" name="email" required placeholder="Ingresa tu correo">
       <input type="password" name="password" required placeholder="Ingresa tu contraseña">
