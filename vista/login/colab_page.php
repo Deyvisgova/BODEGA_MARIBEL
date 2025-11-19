@@ -31,7 +31,6 @@ if(!isset($_SESSION['colab_name'])){
       <h1>Bienvenido <span><?php echo $_SESSION['colab_name'] ?></span></h1>
       <p>Gestiona pedidos y movimientos de almacén para Bodega Maribel.</p>
       <a href="login_form.php" class="btn">Iniciar sesión</a>
-      <a href="register_form.php" class="btn">Registrar usuario</a>
       <a href="logout.php" class="btn">Cerrar sesión</a>
    </div>
 

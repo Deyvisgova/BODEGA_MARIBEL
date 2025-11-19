@@ -67,6 +67,13 @@
                 <i class="fa-sharp fa-solid fa-user"></i>
                     <span>colaborador</span></a>
             </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="registrar_usuarios.php">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>Registrar usuarios</span>
+                </a>
+            </li>
             
 
 
