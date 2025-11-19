@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Asap:wght@700&family=Lobster&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@200;400;600&display=swap');
+
+body {
+    font-family: 'Kanit', sans-serif;
+    background-color: #fafafa;
+}
+
+.hero {
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.9), rgba(255, 193, 7, 0.9)),
+        url('../imagenes/principal/makro1.jpg') center/cover;
+    color: #fff;
+    border-radius: 1.5rem;
+}
+
+.stat-card {
+    border-radius: 1rem;
+    box-shadow: 0 0.75rem 1.25rem rgba(0, 0, 0, 0.08);
+    background-color: #fff;
+}
+
+.section-title {
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brand-primary);
+}
+
