@@ -10,6 +10,10 @@
     $destino = (isset($_POST['destino']))?$_POST['destino']:"";
     $encargado = (isset($_POST['encargado']))?$_POST['encargado']:"";
     $activo = (isset($_POST['activo']))?$_POST['activo']:"";
+    $detalles = [];
+    if (!empty($_POST['detalles'])) {
+        $detalles = json_decode($_POST['detalles'], true) ?? [];
+    }
 
 
     $accionAgregar="";
@@ -26,20 +30,38 @@
                     header('location: ../../vista/adm/dashboard/tabla_guia_salida.php');
                 }else{
 
+                    if (!empty($detalles)) {
+                        $cantidad_salida = 0;
+                        $resumenProductos = [];
+
+                        foreach ($detalles as $detalle) {
+                            $nombreProducto = mysqli_real_escape_string($conn, $detalle['producto']);
+                            $cantidad = (int)$detalle['cantidad'];
+                            $cantidad_salida += $cantidad;
+                            $resumenProductos[] = $nombreProducto . ' (' . $cantidad . ')';
+                        }
+
+                        $producto = implode(', ', $resumenProductos);
+                    }
+
                     $insert = "INSERT INTO guia_de_salida(fecha_salida,descripcion, cantidad_salida,producto, destino,encargado, activo) VALUES('$fecha_salida','$descripcion', '$cantidad_salida', '$producto', '$destino','$encargado','$activo')";
                     mysqli_query($conn, $insert);
 
                     $guiaId = mysqli_insert_id($conn);
-                    if ($activo === 'Entregado') {
-                        registrarKardex(
-                            $conn,
-                            $fecha_salida,
-                            $producto,
-                            'salida',
-                            (int)$cantidad_salida,
-                            $descripcion,
-                            'GS-' . $guiaId
-                        );
+                    if ($activo === 'Entregado' && !empty($detalles)) {
+                        foreach ($detalles as $detalle) {
+                            $nombreProducto = mysqli_real_escape_string($conn, $detalle['producto']);
+                            $cantidad = (int)$detalle['cantidad'];
+                            registrarKardex(
+                                $conn,
+                                $fecha_salida,
+                                $nombreProducto,
+                                'salida',
+                                $cantidad,
+                                $descripcion,
+                                'GS-' . $guiaId
+                            );
+                        }
                     }
 
                     header('location: ../../vista/adm/dashboard/tabla_guia_salida.php');
@@ -47,6 +69,20 @@
             break;
             case "btnModificar":
                 //falta implementar más...
+
+                if (!empty($detalles)) {
+                    $cantidad_salida = 0;
+                    $resumenProductos = [];
+
+                    foreach ($detalles as $detalle) {
+                        $nombreProducto = mysqli_real_escape_string($conn, $detalle['producto']);
+                        $cantidad = (int)$detalle['cantidad'];
+                        $cantidad_salida += $cantidad;
+                        $resumenProductos[] = $nombreProducto . ' (' . $cantidad . ')';
+                    }
+
+                    $producto = implode(', ', $resumenProductos);
+                }
 
                 $update = "UPDATE guia_de_salida SET fecha_salida='$fecha_salida',descripcion='$descripcion',cantidad_salida='$cantidad_salida', producto='$producto', destino='$destino',encargado='$encargado', activo='$activo' WHERE id_guia_salida='$id_guia_salida'";
                 mysqli_query($conn, $update);

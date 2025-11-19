@@ -19,10 +19,36 @@ body {
     background-color: #fff;
 }
 
+.panel {
+    background: #fff;
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.pill-card {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border-radius: 0.85rem;
+    padding: 0.9rem 1rem;
+    backdrop-filter: blur(6px);
+}
+
 .section-title {
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--brand-primary);
+}
+
+.hero .panel a.btn-outline-secondary {
+    border-color: #e9ecef;
+    color: #343a40;
+}
+
+.hero .panel a.btn-outline-secondary:hover {
+    background: #f8f9fa;
 }
 

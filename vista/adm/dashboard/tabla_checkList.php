@@ -1,17 +1,68 @@
 <?php
 session_start();
 
-if(!isset($_SESSION['admin_name'])){
-   header('location:index.php');
-} 
+if (!isset($_SESSION['admin_name'])) {
+    header('location:index.php');
+}
 
+@include '../../modelo/config.php';
+require_once '../../../controlador/kardex_helper.php';
+
+$mensaje_error = "";
+$mensaje_exito = "";
+$productosEncontrados = [];
+$nombreBuscado = '';
+$productosDisponibles = [];
+
+if ($conn) {
+    $consultaProductos = mysqli_query($conn, "SELECT nombre_producto, cantidad, precio_producto, categoria, activo, provedor FROM producto ORDER BY nombre_producto");
+    if ($consultaProductos) {
+        while ($row = mysqli_fetch_assoc($consultaProductos)) {
+            $productosDisponibles[] = $row;
+        }
+    }
+}
+
+if (isset($_POST['accion']) && $_POST['accion'] === 'ajustar') {
+    $productoStock = mysqli_real_escape_string($conn, $_POST['producto_stock'] ?? '');
+    $cantidadStock = (int)($_POST['cantidad_stock'] ?? 0);
+
+    if ($productoStock === '' || $cantidadStock <= 0) {
+        $mensaje_error = 'Selecciona un producto y una cantidad válida para agregar stock.';
+    } else {
+        registrarKardex(
+            $conn,
+            date('Y-m-d'),
+            $productoStock,
+            'entrada',
+            $cantidadStock,
+            'Ajuste de stock desde checklist',
+            'CHECKLIST'
+        );
+        $mensaje_exito = "Se agregaron {$cantidadStock} unidades a {$productoStock}.";
+    }
+}
+
+if (isset($_POST['accion']) && $_POST['accion'] === 'buscar') {
+    $nombreBuscado = mysqli_real_escape_string($conn, $_POST['id_guia'] ?? '');
+    if ($nombreBuscado === '') {
+        $mensaje_error = 'Ingresa un nombre de producto para buscar.';
+    } else {
+        $query = "SELECT * FROM producto WHERE nombre_producto LIKE '%$nombreBuscado%'";
+        $result = mysqli_query($conn, $query);
+
+        if ($result && mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $productosEncontrados[] = $row;
+            }
+        } else {
+            $mensaje_error = "No se encontraron productos con el nombre proporcionado.";
+        }
+    }
+}
 ?>
 <html lang="es">
-<!-- BARRA DE NAV EMPIEZA EN LA FILA 	pag 169-->
-<!-- Recuperar nombre del admninitrador pag 338-->
-
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -21,42 +72,10 @@ if(!isset($_SESSION['admin_name'])){
     <link rel="icon" href="../../imagenes/principal/makro.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-
     <title>Administrador Bodega Maribel</title>
-
-    <!-- Custom fonts for this template-->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
-    <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css?asd" rel="stylesheet">
     <link href="css/reloj.css" rel="sytlesheet">
-
 </head>
-
-<!--FUNCIÓN DE MENSAJE DE CONFIRMACIÓN PARA LA EMLIMINACIÓN DE REGISTROS-->
-<script>
-    function confirmacion() {
-        var respuesta = confirm("¿Desea ELIMINAR el registro?");
-        if (respuesta == true) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    function confirmacionM() {
-        var res = confirm("¿Desea MODIFICAR el registro?");
-        if (respuesta == true) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-</script>
-
 <body id="page-top">
     <div id="wrapper">
         <?php
@@ -64,112 +83,115 @@ if(!isset($_SESSION['admin_name'])){
         @include 'navbar.php';
         ?>
     </div>
-    <div class="container">
-        <h3 style="font-family: Verdana, Geneva, Tahoma, sans-serif; text-align: center; font-weight: 600;">Agregar Stock</h3>
-        <hr>
+    <div class="container py-4">
+        <h3 class="text-center fw-bold mb-4">Checklist de stock</h3>
+        <p class="text-center text-muted">Usa esta pantalla para agregar unidades a productos existentes y consultar sus datos actuales.</p>
 
-        <section>
-            <?php
-            // Incluir archivo de configuración de la base de datos
-            @include '../../modelo/config.php';
+        <?php if ($mensaje_error !== ''): ?>
+            <div class="alert alert-danger"><?php echo $mensaje_error; ?></div>
+        <?php endif; ?>
+        <?php if ($mensaje_exito !== ''): ?>
+            <div class="alert alert-success"><?php echo $mensaje_exito; ?></div>
+        <?php endif; ?>
 
-            // Inicializar variables
-            $mensaje_error = "";
-            $productos = [];
+        <div class="row g-4">
+            <div class="col-lg-5">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h4 class="h5 mb-3">Agregar stock</h4>
+                        <form method="POST" class="vstack gap-3">
+                            <div>
+                                <label class="form-label">Producto</label>
+                                <input list="productosDisponibles" name="producto_stock" class="form-control" placeholder="Escribe para buscar" required>
+                                <datalist id="productosDisponibles">
+                                    <?php foreach ($productosDisponibles as $producto): ?>
+                                        <option value="<?php echo htmlspecialchars($producto['nombre_producto'], ENT_QUOTES, 'UTF-8'); ?>">
+                                            <?php echo htmlspecialchars($producto['nombre_producto'], ENT_QUOTES, 'UTF-8'); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </datalist>
+                            </div>
+                            <div>
+                                <label class="form-label">Cantidad a ingresar</label>
+                                <input type="number" name="cantidad_stock" min="1" class="form-control" placeholder="Ej: 25" required>
+                            </div>
+                            <input type="hidden" name="accion" value="ajustar">
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="fa-solid fa-plus me-2"></i>Actualizar stock
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
-            // Verificar si se ha enviado el formulario de búsqueda
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                // Obtener el nombre del producto desde el formulario
-                $nombre_producto = mysqli_real_escape_string($conn, $_POST['id_guia']);
+            <div class="col-lg-7">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h4 class="h5 mb-3">Buscar producto</h4>
+                        <form method="POST" class="row g-2 align-items-end mb-3">
+                            <div class="col-sm-9">
+                                <label class="form-label">Nombre del producto</label>
+                                <input list="productosDisponibles" name="id_guia" class="form-control" value="<?php echo htmlspecialchars($nombreBuscado, ENT_QUOTES, 'UTF-8'); ?>" placeholder="Ingresa un nombre" required>
+                            </div>
+                            <div class="col-sm-3 d-grid">
+                                <input type="hidden" name="accion" value="buscar">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa-solid fa-magnifying-glass me-1"></i>Buscar
+                                </button>
+                            </div>
+                        </form>
 
-                // Consultar la base de datos para obtener la información de los productos
-                $query = "SELECT * FROM producto WHERE nombre_producto LIKE '%$nombre_producto%'";
-                $result = mysqli_query($conn, $query);
+                        <?php if (!empty($productosEncontrados)): ?>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">Resultados</h5>
+                                <a href="pdfs/reporte_cheklist.php?nombre_producto=<?php echo urlencode($nombreBuscado); ?>" target="_blank" class="btn btn-outline-danger btn-sm">
+                                    <i class="fa-solid fa-file-pdf me-1"></i>Reporte PDF
+                                </a>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-sm align-middle">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nombre</th>
+                                            <th>Stock</th>
+                                            <th>Precio</th>
+                                            <th>Categoría</th>
+                                            <th>Estado</th>
+                                            <th>Proveedor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($productosEncontrados as $producto) : ?>
+                                            <tr>
+                                                <td><?php echo $producto['id_producto']; ?></td>
+                                                <td><?php echo htmlspecialchars($producto['nombre_producto'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                                <td><?php echo (int)$producto['cantidad']; ?></td>
+                                                <td><?php echo number_format((float)$producto['precio_producto'], 2); ?></td>
+                                                <td><?php echo htmlspecialchars($producto['categoria'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                                <td><?php echo htmlspecialchars($producto['activo'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                                <td><?php echo htmlspecialchars($producto['provedor'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <?php else: ?>
+                            <p class="text-muted">Busca un producto para ver su información y generar un reporte.</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                // Verificar si se encontraron resultados
-                if ($result && mysqli_num_rows($result) > 0) {
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        $productos[] = $row;
-                    }
-                } else {
-                    $mensaje_error = "No se encontraron productos con el nombre proporcionado.";
-                }
-            }
-            ?>
-
-            <section>
-                <h2>Búsqueda de Producto</h2>
-
-                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
-    <label for="id_guia">Nombre del Producto:</label>
-    <input type="text" name="id_guia" required>
-    <button type="submit">Buscar</button>
-</form>
-
-                <?php if ($_SERVER["REQUEST_METHOD"] == "POST") : ?>
-                    <?php if ($mensaje_error != "") : ?>
-                        <p><?php echo $mensaje_error; ?></p>
-                    <?php elseif (!empty($productos)) : ?>
-                        <a href="pdfs/reporte_cheklist.php?nombre_producto=<?php echo urlencode($nombre_producto); ?>" target="_blank">Generar Reporte PDF</a>
-                        <table class="table table_id">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>ID:</th>
-                                    <th>Nombre:</th>
-                                    <th>Cantidad:</th>
-                                    <th>Precio:</th>
-                                    <th>Categoría:</th>
-                                    <th>Activo:</th>
-                                    <th>Proveedor:</th>
-                                    <th>Acciones:</th>
-                                </tr>
-                            </thead>
-
-                            <?php foreach ($productos as $producto) : ?>
-                                <tr>
-                                    <td><?php echo $producto['id_producto']; ?></td>
-                                    <td><?php echo $producto['nombre_producto']; ?></td>
-                                    <td><?php echo $producto['cantidad']; ?></td>
-                                    <td><?php echo $producto['precio_producto']; ?></td>
-                                    <td><?php echo $producto['categoria']; ?></td>
-                                    <td><?php echo $producto['activo']; ?></td>
-                                    <td><?php echo $producto['provedor']; ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </table>
-                    <?php endif; ?>
-                <?php endif; ?>
-            </section>
-        </section>
-
-
-</div>
-  
-
-
-
-
-
-
-    <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
-
-    <!-- Page level plugins -->
     <script src="vendor/chart.js/Chart.min.js"></script>
-
-    <!-- Page level custom scripts -->
     <script src="js/demo/chart-area-demo.js"></script>
     <script src="js/demo/chart-pie-demo.js"></script>
     <script src="../../js/busqueda.js"></script>
-
-
 </body>
-
 </html>

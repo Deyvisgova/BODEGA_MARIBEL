@@ -1,16 +1,52 @@
 <?php
 session_start();
 
-if(!isset($_SESSION['admin_name'])){
-   header('location:index.php');
+if (!isset($_SESSION['admin_name'])) {
+    header('location:index.php');
+}
+
+@include '../../modelo/config.php';
+@include '../../../controlador/controlador_tablas/controlador_tabla_guia_entrada.php';
+
+$select = "SELECT * FROM guia_de_entrada";
+$tabla = mysqli_query($conn, $select);
+
+$productosDisponibles = [];
+$detalleEntradaInicial = [];
+
+if ($conn) {
+    $consultaProductos = mysqli_query($conn, "SELECT nombre_producto FROM producto WHERE activo = 'activo' ORDER BY nombre_producto");
+    if ($consultaProductos) {
+        while ($row = mysqli_fetch_assoc($consultaProductos)) {
+            $productosDisponibles[] = $row['nombre_producto'];
+        }
+    }
+}
+
+if (!empty($producto)) {
+    $partes = array_map('trim', explode(',', $producto));
+    foreach ($partes as $parte) {
+        if (preg_match('/(.+)\((\d+)\)/', $parte, $coincidencia)) {
+            $detalleEntradaInicial[] = [
+                'producto' => trim($coincidencia[1]),
+                'cantidad' => (int)$coincidencia[2],
+            ];
+        }
+    }
+    if (empty($detalleEntradaInicial) && $producto !== '') {
+        $detalleEntradaInicial[] = [
+            'producto' => $producto,
+            'cantidad' => (int)$cantidad_entrada,
+        ];
+    }
+}
+
+if (empty($detalleEntradaInicial)) {
+    $detalleEntradaInicial[] = ['producto' => '', 'cantidad' => 1];
 }
 ?>
 <html lang="es">
-<!-- BARRA DE NAV EMPIEZA EN LA FILA 	pag 169-->
-<!-- Recuperar nombre del admninitrador pag 338-->
-
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -22,40 +58,19 @@ if(!isset($_SESSION['admin_name'])){
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 
     <title>Administrador Bodega Maribel</title>
-
-    <!-- Custom fonts for this template-->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
-    <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css?asd" rel="stylesheet">
     <link href="css/reloj.css" rel="sytlesheet">
 
+    <script>
+        function confirmacion() {
+            return confirm("¿Desea ELIMINAR el registro?");
+        }
+
+        function confirmacionM() {
+            return confirm("¿Desea MODIFICAR el registro?");
+        }
+    </script>
 </head>
-
-<!--FUNCIÓN DE MENSAJE DE CONFIRMACIÓN PARA LA EMLIMINACIÓN DE REGISTROS-->
-<script>
-    function confirmacion() {
-        var respuesta = confirm("¿Desea ELIMINAR el registro?");
-        if (respuesta == true) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    function confirmacionM() {
-        var res = confirm("¿Desea MODIFICAR el registro?");
-        if (respuesta == true) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-</script>
-
 <body id="page-top">
     <div id="wrapper">
         <?php
@@ -64,90 +79,74 @@ if(!isset($_SESSION['admin_name'])){
         ?>
     </div>
     <div class="container">
-        <?php
-        @include '../../../controlador/controlador_tablas/controlador_tabla_guia_entrada.php';
-        $select = "SELECT * FROM guia_de_entrada";
-        $tabla = mysqli_query($conn, $select);
-        ?>
-        <h3 style="font-family: Verdana, Geneva, Tahoma, sans-serif; text-align: center; font-weight: 600;">TABLA Guias de Entrada</h3>
+        <h3 class="text-center fw-bold">TABLA Guias de Entrada</h3>
         <hr>
 
-        <form action="../../../controlador/controlador_tablas/controlador_tabla_guia_entrada.php" method="post">
-
-            <!-- Modal -->
+        <form action="../../../controlador/controlador_tablas/controlador_tabla_guia_entrada.php" method="post" id="formGuiaEntrada">
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Producto</h1>
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Guía de entrada</h1>
                         </div>
                         <div class="modal-body">
-                            <div class="form-row">
-                                <!-- Etiquetas e dentro del formulario-->
-
+                            <div class="row g-3">
                                 <div class="form-group col-md-4">
-                                    <label>Id Guia de Entrada:</label>
-                                    <input type="text" class="form-control" required name="id_guia_entrada" placerholder="" id="id_guia_entrada" value="<?php echo $id_guia_entrada; ?>" readonly><br>
+                                    <label>ID:</label>
+                                    <input type="text" class="form-control" required name="id_guia_entrada" id="id_guia_entrada" value="<?php echo $id_guia_entrada; ?>" readonly>
                                 </div>
 
-                                <div class="form-group col-md-8">
+                                <div class="form-group col-md-4">
                                     <label>Fecha</label>
-                                    <input type="date" class="form-control" required name="fecha_entrada" placeholder="" id="fecha_entrada" value="<?php echo $fecha_entrada; ?>">
-                                    <br>
+                                    <input type="date" class="form-control" required name="fecha_entrada" id="fecha_entrada" value="<?php echo $fecha_entrada; ?>">
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label for="">Estado</label>
+                                    <select name="activo" id="activo" class="form-control">
+                                        <option value="<?php echo $activo; ?>"><?php echo $activo; ?></option>
+                                        <option value="pendiente">Pendiente</option>
+                                        <option value="recibido">Recibido</option>
+                                    </select>
                                 </div>
 
                                 <div class="form-group col-md-12">
-                                    <label for="">Descripcion:</label>
-                                    <input type="text" class="form-control" required name="descripcion" placerholder="" id="descripcion" value="<?php echo $descripcion; ?>"><br>
+                                    <label for="">Descripción</label>
+                                    <input type="text" class="form-control" required name="descripcion" id="descripcion" value="<?php echo $descripcion; ?>">
                                 </div>
 
-                                <div class="form-group col-md-4">
-                                    <label for="">Cantidad:</label>
-                                    <input type="number" class="form-control" required name="cantidad_entrada" placerholder="" id="cantidad_entrada" value="<?php echo $cantidad_entrada; ?>"><br>
-                                </div>
-
-                                <div class="form-group col-md-8">
-                                    <label for="">Producto:</label>
-                                    <input type="text" class="form-control" required name="producto" placerholder="" id="producto" value="<?php echo $producto; ?>"><br>
-                                </div>
-
-
-                                <div class="form-group col-md-8">
-                                    <label for="">Provedor:
+                                <div class="form-group col-md-6">
+                                    <label for="">Proveedor</label>
                                     <select name="provedor" id="provedor" class="form-control">
-                                        <?php 
+                                        <?php
                                         include 'config.php';
-                                        $consulta="SELECT * from provedor";
-                                        $ejecutar=mysqli_query($conn,$consulta);
-                                        ?>
-                                     <?php 
+                                        $consulta = "SELECT * from provedor";
+                                        $ejecutar = mysqli_query($conn, $consulta);
                                         foreach ($ejecutar as $opciones):
                                         ?>
-                                    <option value="<?php echo $opciones['Nombre_de_la_empresa']?>"><?php echo $opciones['Nombre_de_la_empresa']?></option>
-						      	
-                                    <?php 
-                                        endforeach
-                                        ?>
-                                 </select></label>
+                                            <option value="<?php echo $opciones['Nombre_de_la_empresa'] ?>"><?php echo $opciones['Nombre_de_la_empresa'] ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
 
-                                
-
-                                <div class="form-group col-md-8">
-                                    <label for="">Activo:</label>
-                                    <select name="activo" id="activo" class="form-control">
-                                        <option value="<?php echo $activo; ?>"><?php echo $activo; ?></option>
-                                        <option value="pendiente">pendiente</option>
-                                        <option value="recibido">Recibido</option>
-                                    </select><br><br>
+                                <div class="form-group col-12">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <label class="mb-1">Productos</label>
+                                            <p class="text-muted small mb-0">Agrega múltiples productos a la misma guía y define sus cantidades.</p>
+                                        </div>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm" id="agregarFilaEntrada">
+                                            <i class="fa-solid fa-plus"></i> Añadir producto
+                                        </button>
+                                    </div>
+                                    <div id="contenedorDetalleEntrada" class="vstack gap-2 mt-2"></div>
                                 </div>
-
-                            
-                            
-
                             </div>
                         </div>
                         <div class="modal-footer">
+                            <input type="hidden" name="detalles" id="detalleEntrada">
+                            <input type="hidden" name="cantidad_entrada" id="cantidadEntradaTotal" value="<?php echo $cantidad_entrada; ?>">
+                            <input type="hidden" name="producto" id="productosResumen" value="<?php echo htmlspecialchars($producto, ENT_QUOTES, 'UTF-8'); ?>">
 
                             <button value="btnAgregar" <?php echo $accionAgregar; ?> class="btn btn-success" type="submit" name="accion">Agregar</button>
 
@@ -156,196 +155,162 @@ if(!isset($_SESSION['admin_name'])){
                             <button value="btnEliminar" <?php echo $accionEliminar; ?> class="btn btn-danger" type="submit" name="accion" onclick='return confirmacion()'>Eliminar</button>
 
                             <button value="btnCancelar" <?php echo $accionCancelar; ?> class="btn btn-primary" type="submit" name="accion">Cancelar</button>
-
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Button trigger modal -->
-            <div class="row">
-                <div class="col-12 col-sm-3 d-flex justify-content-sm-end mb-4">
+            <div class="row mb-3">
+                <div class="col-12 col-sm-3 d-flex justify-content-sm-end mb-2">
                     <button type="button" class="btn btn-success btn-block" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        <i class="fa-solid fa-plus fa-xl" style="padding: 5px 3px; font-family: Verdana, Geneva, Tahoma, sans-serif;"></i>&nbsp;<b>Agregar registro </b>
+                        <i class="fa-solid fa-plus fa-xl me-2"></i><b>Agregar registro</b>
                     </button>
                 </div>
 
-                <div class="col-12 col-sm-9 d-flex justify-content-sm-end mb-4">
-                    <a href="pdfs/pdf_guia_entrada.php" target="_blank" class="btn btn-danger btn-sm shadow-sm" style="padding: 8px 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
+                <div class="col-12 col-sm-9 d-flex justify-content-sm-end mb-2">
+                    <a href="pdfs/pdf_guia_entrada.php" target="_blank" class="btn btn-danger btn-sm shadow-sm">
                         <i class="fa-solid fa-file-pdf fa-xl"></i> <b>Generar Reporte</b>
                     </a>
                 </div>
             </div>
         </form>
 
-        <div class="" style="font-size: 11px; border-radius: 10px; overflow-x: auto; max-width: 100%;"> <!-- ESTE STYLE HACE RESPONSIVE LA TABLA -->
-            <table class="table table_id">
+        <div class="table-responsive" style="font-size: 11px; border-radius: 10px;">
+            <table class="table table_id align-middle">
                 <thead class="table-dark">
                     <tr>
                         <th>Id Guia de Entrada:</th>
                         <th>Fecha:</th>
                         <th>Descripcion</th>
-                        <th>Cantidad:</th>
-                        <th>Producto:</th>
-                        <th>provedor:</th>
+                        <th>Total Cantidad:</th>
+                        <th>Productos:</th>
+                        <th>proveedor:</th>
                         <th>Activo:</th>
                         <th>Acciones:</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php
-                    while ($row = mysqli_fetch_array($tabla)) {
-                    ?>
+                    <?php while ($row = mysqli_fetch_array($tabla)) { ?>
                         <tr>
                             <td><?php echo $row['id_guia_entrada']; ?></td>
                             <td><?php echo $row['fecha_entrada']; ?></td>
                             <td><?php echo $row['descripcion']; ?></td>
                             <td><?php echo $row['cantidad_entrada']; ?></td>
-                            <td><?php echo $row['producto']; ?></td>
+                            <td><?php echo htmlspecialchars($row['producto'], ENT_QUOTES, 'UTF-8'); ?></td>
                             <td><?php echo $row['provedor']; ?></td>
                             <td><?php echo $row['activo']; ?></td>
-
-
-                           
 
                             <form action="" method="POST">
                                 <input type="hidden" value="<?php echo $row['id_guia_entrada']; ?>" name="id_guia_entrada">
                                 <input type="hidden" value="<?php echo $row['fecha_entrada']; ?>" name="fecha_entrada">
                                 <input type="hidden" value="<?php echo $row['descripcion']; ?>" name="descripcion">
                                 <input type="hidden" value="<?php echo $row['cantidad_entrada']; ?>" name="cantidad_entrada">
-                                <input type="hidden" value="<?php echo $row['producto']; ?>" name="producto">
+                                <input type="hidden" value="<?php echo htmlspecialchars($row['producto'], ENT_QUOTES, 'UTF-8'); ?>" name="producto">
                                 <input type="hidden" value="<?php echo $row['provedor']; ?>" name="provedor">
                                 <input type="hidden" value="<?php echo $row['activo']; ?>" name="activo">
-
-
-                                
                                 <td><input type="submit" value="Seleccionar" name="accion"></td>
-                        
                             </form>
                         </tr>
                     <?php } ?>
                 </tbody>
             </table>
         </div>
-        <!--CÓDIGO PARA MOSTRAR EL MODAL CUANDO SE SELECCIONA EL REGISTRO (Implementar en todas las tablas)-->
+
         <?php if ($mostrarModal) { ?>
             <script>
-                $('#exampleModal').modal('show');
+                document.addEventListener('DOMContentLoaded', () => {
+                    const modal = new bootstrap.Modal(document.getElementById('exampleModal'));
+                    modal.show();
+                });
             </script>
         <?php } ?>
-    
-    <div>
-    <?php
+    </div>
 
+    <datalist id="listaProductosEntrada">
+        <?php foreach ($productosDisponibles as $productoNombre): ?>
+            <option value="<?php echo htmlspecialchars($productoNombre, ENT_QUOTES, 'UTF-8'); ?>"></option>
+        <?php endforeach; ?>
+    </datalist>
 
-// Verificar la sesión o redirigir al formulario de inicio de sesión
+    <script>
+        const detalleEntradaInicial = <?php echo json_encode($detalleEntradaInicial); ?>;
 
-// Incluir archivo de configuración de la base de datos
-@include '../../modelo/config.php';
+        const contenedorEntrada = document.getElementById('contenedorDetalleEntrada');
+        const detalleEntradaInput = document.getElementById('detalleEntrada');
+        const cantidadEntradaTotal = document.getElementById('cantidadEntradaTotal');
+        const productosResumen = document.getElementById('productosResumen');
+        const btnAgregarFilaEntrada = document.getElementById('agregarFilaEntrada');
+        const formEntrada = document.getElementById('formGuiaEntrada');
 
-// Inicializar variables
-$mensaje_error = "";
-$guia = [];
+        function crearFilaEntrada(detalle = {producto: '', cantidad: 1}) {
+            const fila = document.createElement('div');
+            fila.classList.add('row', 'g-2', 'align-items-center', 'detalle-item');
+            fila.innerHTML = `
+                <div class="col-md-7">
+                    <input list="listaProductosEntrada" class="form-control input-producto" placeholder="Producto" value="${detalle.producto}" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="number" class="form-control input-cantidad" min="1" value="${detalle.cantidad}" required>
+                </div>
+                <div class="col-md-2 text-end">
+                    <button type="button" class="btn btn-outline-danger btn-sm btn-remover">&times;</button>
+                </div>`;
 
-// Verificar si se ha enviado el formulario de búsqueda
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Obtener el ID de la guía de entrada desde el formulario
-    $id_guia = mysqli_real_escape_string($conn, $_POST['id_guia']);
+            fila.querySelector('.btn-remover').addEventListener('click', () => {
+                fila.remove();
+                actualizarDetallesEntrada();
+            });
 
-    // Consultar la base de datos para obtener la información de la guía de entrada
-    $query = "SELECT * FROM guia_de_entrada WHERE id_guia_entrada = '$id_guia'";
-    $result = mysqli_query($conn, $query);
+            fila.querySelector('.input-producto').addEventListener('input', actualizarDetallesEntrada);
+            fila.querySelector('.input-cantidad').addEventListener('input', actualizarDetallesEntrada);
 
-    // Verificar si se encontraron resultados
-    if ($result && mysqli_num_rows($result) > 0) {
-        $guia = mysqli_fetch_assoc($result);
-    } else {
-        $mensaje_error = "No se encontró la guía de entrada con el ID proporcionado.";
-    }
-}
-?>
+            contenedorEntrada.appendChild(fila);
+        }
 
-<section class="reporte_uno"><style>.reporte_uno{margin-top:50px}</style>
-<h4>Búsqueda de Guía de Entrada</h4>
+        function actualizarDetallesEntrada() {
+            const filas = contenedorEntrada.querySelectorAll('.detalle-item');
+            const detalles = [];
+            let total = 0;
+            let resumen = [];
 
-<section>
-                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
-                    <label for="id_guia">ID de Guía de Entrada:</label>
-                    <input type="text" name="id_guia" required>
-                    <button type="submit">Buscar</button>
-                    <!-- Agregar campo oculto para almacenar el valor del ID -->
-                    <input type="hidden" name="id_guia_hidden" value="<?php echo isset($guia['id_guia_entrada']) ? $guia['id_guia_entrada'] : ''; ?>">
-                </form>
+            filas.forEach(fila => {
+                const producto = fila.querySelector('.input-producto').value.trim();
+                const cantidad = parseInt(fila.querySelector('.input-cantidad').value, 10) || 0;
+                if (producto && cantidad > 0) {
+                    detalles.push({producto, cantidad});
+                    total += cantidad;
+                    resumen.push(`${producto} (${cantidad})`);
+                }
+            });
 
-                <?php if ($_SERVER["REQUEST_METHOD"] == "POST") : ?>
-                    <?php if ($mensaje_error != "") : ?>
-                        <p><?php echo $mensaje_error; ?></p>
-                    <?php elseif (!empty($guia)) : ?>
-                        <!-- Resto del código... -->
-                    <?php endif; ?>
-                <?php endif; ?>
-            </section>
-            <div class="row">
-            <div class="col-12 col-sm-9 d-flex justify-content-sm-end mb-4">
-                <!-- Agregar el ID almacenado en el campo oculto al enlace del reporte PDF -->
-                <a href="pdfs/pdf_Guia_entrada_Uni_adm.php?id=<?php echo isset($guia['id_guia_entrada']) ? $guia['id_guia_entrada'] : ''; ?>" target="_blank" class="btn btn-danger btn-sm shadow-sm" style="margin-top:-55px;height:40px;padding: 8px 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
-                    <i class="fa-solid fa-file-pdf" ></i> <b>Generar Reporte</b>
-                </a>
-            </div>
-        </div>
+            detalleEntradaInput.value = JSON.stringify(detalles);
+            cantidadEntradaTotal.value = total;
+            productosResumen.value = resumen.join(', ');
+        }
 
-<?php if ($_SERVER["REQUEST_METHOD"] == "POST") : ?>
-    <?php if ($mensaje_error != "") : ?>
-        <p><?php echo $mensaje_error; ?></p>
-    <?php elseif (!empty($guia)) : ?>
-        <table class="table table_id">
-        <thead class="table-dark">
-            <tr>
-                <th>ID Guía de Entrada</th>
-                <th>Fecha</th>
-                <th>Descripción</th>
-                <th>Cantidad</th>
-                <th>Producto</th>
-                <th>Proveedor</th>
-                <th>Activo</th>
-            </tr>
-            </thead>
+        btnAgregarFilaEntrada.addEventListener('click', () => {
+            crearFilaEntrada();
+        });
 
-            <tr>
-                <td><?php echo $guia['id_guia_entrada']; ?></td>
-                <td><?php echo $guia['fecha_entrada']; ?></td>
-                <td><?php echo $guia['descripcion']; ?></td>
-                <td><?php echo $guia['cantidad_entrada']; ?></td>
-                <td><?php echo $guia['producto']; ?></td>
-                <td><?php echo $guia['provedor']; ?></td>
-                <td><?php echo $guia['activo']; ?></td>
-            </tr>
-        </table>
-    <?php endif; ?>
-<?php endif; ?>
-</section>
-    </div></div>
-    
+        formEntrada.addEventListener('submit', (event) => {
+            actualizarDetallesEntrada();
+            if (!detalleEntradaInput.value || detalleEntradaInput.value === '[]') {
+                event.preventDefault();
+                alert('Agrega al menos un producto a la guía.');
+            }
+        });
 
-    <!-- Bootstrap core JavaScript-->
+        detalleEntradaInicial.forEach(item => crearFilaEntrada(item));
+        actualizarDetallesEntrada();
+    </script>
+
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
-
-    <!-- Page level plugins -->
     <script src="vendor/chart.js/Chart.min.js"></script>
-
-    <!-- Page level custom scripts -->
     <script src="js/demo/chart-area-demo.js"></script>
     <script src="js/demo/chart-pie-demo.js"></script>
     <script src="../../js/busqueda.js"></script>
-
-
 </body>
-
 </html>

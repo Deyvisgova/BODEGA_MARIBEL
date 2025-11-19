@@ -73,34 +73,68 @@
 
     <main class="container my-5">
         <section class="hero p-5 mb-5">
-            <div class="row align-items-center">
-                <div class="col-md-7">
-                    <p class="text-uppercase fw-bold mb-2">Sistema de almacén</p>
-                    <h1 class="display-5 fw-bold">Control total de inventarios de Bodega Maribel</h1>
-                    <p class="lead mt-3">Monitorea ingresos, salidas y stock en tiempo real con los módulos web para administradores y colaboradores.</p>
+            <div class="row align-items-center g-4">
+                <div class="col-lg-7">
+                    <p class="text-uppercase fw-bold mb-2 text-warning">Bodega Maribel</p>
+                    <h1 class="display-5 fw-bold mb-3">Un panel moderno para controlar entradas y salidas</h1>
+                    <p class="lead">Gestiona productos, actualiza stock y genera guías en segundos. Todo queda centralizado para que el equipo trabaje con datos confiables.</p>
                     <div class="d-flex flex-wrap gap-3 mt-4">
                         <a href="vista/login/login_form.php" class="btn btn-light btn-lg text-danger fw-semibold">
                             <i class="fa-solid fa-user-shield me-2"></i>Acceso Admin
                         </a>
                         <a href="#productos" class="btn btn-outline-light btn-lg">
-                            <i class="fa-solid fa-boxes-stacked me-2"></i>Ver inventario
+                            <i class="fa-solid fa-boxes-stacked me-2"></i>Explorar inventario
                         </a>
                     </div>
+                    <div class="row row-cols-1 row-cols-md-3 g-3 mt-4">
+                        <div class="col">
+                            <div class="pill-card">
+                                <p class="text-uppercase small mb-1">SKU activos</p>
+                                <p class="h3 fw-bold mb-0"><?php echo (int) $resumenInventario['total_productos']; ?></p>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="pill-card">
+                                <p class="text-uppercase small mb-1">Unidades</p>
+                                <p class="h3 fw-bold mb-0"><?php echo number_format((int) $resumenInventario['total_unidades']); ?></p>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="pill-card">
+                                <p class="text-uppercase small mb-1">Valor</p>
+                                <p class="h3 fw-bold mb-0">S/ <?php echo number_format((float) $resumenInventario['valor_estimado'], 2); ?></p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-5 mt-4 mt-md-0">
-                    <div class="bg-white text-dark rounded-4 p-4 shadow">
-                        <h2 class="h5 text-uppercase text-muted mb-3">Resumen diario</h2>
-                        <p class="h1 mb-1 fw-bold"><?php echo (int) $resumenInventario['total_productos']; ?></p>
-                        <p class="text-muted mb-3">Productos activos</p>
-                        <div class="d-flex justify-content-between">
+                <div class="col-lg-5">
+                    <div class="panel shadow-sm">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
-                                <p class="fw-semibold mb-1">Unidades en stock</p>
-                                <p class="display-6 fw-bold mb-0"><?php echo number_format((int) $resumenInventario['total_unidades']); ?></p>
+                                <p class="text-uppercase text-muted small mb-1">Checklist inteligente</p>
+                                <h2 class="h4 mb-0">Actualiza stock en equipo</h2>
                             </div>
-                            <div class="text-end">
-                                <p class="fw-semibold mb-1">Valor estimado</p>
-                                <p class="display-6 fw-bold mb-0">S/ <?php echo number_format((float) $resumenInventario['valor_estimado'], 2); ?></p>
-                            </div>
+                            <span class="badge bg-success rounded-pill">Nuevo</span>
+                        </div>
+                        <ul class="list-unstyled mb-4">
+                            <li class="d-flex align-items-center mb-2">
+                                <i class="fa-solid fa-circle-check text-success me-2"></i>
+                                <span>Agrega productos sin definir stock inicial</span>
+                            </li>
+                            <li class="d-flex align-items-center mb-2">
+                                <i class="fa-solid fa-circle-check text-success me-2"></i>
+                                <span>Registra varias líneas en una misma guía</span>
+                            </li>
+                            <li class="d-flex align-items-center">
+                                <i class="fa-solid fa-circle-check text-success me-2"></i>
+                                <span>Restas y sumas automáticas en el kardex</span>
+                            </li>
+                        </ul>
+                        <div class="d-grid gap-2">
+                            <a href="vista/login/login_form.php" class="btn btn-danger">
+                                <i class="fa-solid fa-clipboard-list me-2"></i>Ir al panel de guías
+                            </a>
+                            <a href="index.php?ruta=productos" class="btn btn-outline-secondary">Ver catálogo completo</a>
                         </div>
                     </div>
                 </div>
@@ -119,6 +153,49 @@
                         </div>
                     </div>
                 <?php endforeach; ?>
+            </div>
+        </section>
+
+        <section class="mb-5">
+            <p class="section-title">Acciones rápidas</p>
+            <h2 class="h3 mb-4">Lo esencial en un vistazo</h2>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="panel h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h3 class="h6 mb-0">Guías de entrada</h3>
+                            <span class="badge bg-light text-danger">Sumar stock</span>
+                        </div>
+                        <p class="text-muted small">Carga múltiples productos y registra el proveedor en segundos.</p>
+                        <div class="d-grid">
+                            <a class="btn btn-outline-danger" href="vista/login/login_form.php">Crear guía</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h3 class="h6 mb-0">Guías de salida</h3>
+                            <span class="badge bg-light text-success">Despacho</span>
+                        </div>
+                        <p class="text-muted small">Selecciona productos, cantidades y destinatarios en una sola vista.</p>
+                        <div class="d-grid">
+                            <a class="btn btn-outline-danger" href="vista/login/login_form.php">Despachar ahora</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h3 class="h6 mb-0">Checklist</h3>
+                            <span class="badge bg-light text-primary">Stock</span>
+                        </div>
+                        <p class="text-muted small">Agrega unidades a tus productos y genera reportes de control.</p>
+                        <div class="d-grid">
+                            <a class="btn btn-outline-danger" href="vista/login/login_form.php">Abrir checklist</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
