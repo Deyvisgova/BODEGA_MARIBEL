@@ -1,5 +1,6 @@
 <?php
     @include '../../modelo/config.php';
+    require_once __DIR__ . '/../kardex_helper.php';
 
     $id_guia_entrada = (isset($_POST['id_guia_entrada']))?$_POST['id_guia_entrada']:"";
     $fecha_entrada = (isset($_POST['fecha_entrada']))?$_POST['fecha_entrada']:"";
@@ -26,6 +27,19 @@
 
                     $insert = "INSERT INTO guia_de_entrada(fecha_entrada,descripcion, cantidad_entrada,producto, provedor, activo) VALUES('$fecha_entrada','$descripcion', '$cantidad_entrada', '$producto', '$provedor','$activo')";
                     mysqli_query($conn, $insert);
+
+                    $guiaId = mysqli_insert_id($conn);
+                    if ($activo === 'recibido') {
+                        registrarKardex(
+                            $conn,
+                            $fecha_entrada,
+                            $producto,
+                            'entrada',
+                            (int)$cantidad_entrada,
+                            $descripcion,
+                            'GE-' . $guiaId
+                        );
+                    }
 
                     header('location: ../../vista/adm/dashboard/tabla_guia_entrada.php');
                 }

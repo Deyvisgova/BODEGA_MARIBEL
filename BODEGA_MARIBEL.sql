@@ -236,6 +236,23 @@ INSERT INTO `provedor` (`id_provedor`, `Nombre_de_la_empresa`, `ruc`, `Persona_d
 
 -- --------------------------------------------------------
 
+--
+-- Estructura de tabla para la tabla `kardex`
+--
+
+CREATE TABLE `kardex` (
+  `id_kardex` int(11) NOT NULL,
+  `fecha` date NOT NULL,
+  `producto` varchar(200) NOT NULL,
+  `tipo` varchar(20) NOT NULL,
+  `descripcion` varchar(200) NOT NULL,
+  `cantidad` int(11) NOT NULL,
+  `saldo` int(11) NOT NULL,
+  `referencia` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
 
 --
 -- Índices para tablas volcadas
@@ -270,6 +287,12 @@ ALTER TABLE `guia_de_entrada`
 --
 ALTER TABLE `guia_de_salida`
   ADD PRIMARY KEY (`id_guia_salida`);
+
+--
+-- Indices de la tabla `kardex`
+--
+ALTER TABLE `kardex`
+  ADD PRIMARY KEY (`id_kardex`);
 
 --
 -- Indices de la tabla `producto`
@@ -317,6 +340,12 @@ ALTER TABLE `guia_de_entrada`
 --
 ALTER TABLE `guia_de_salida`
   MODIFY `id_guia_salida` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `kardex`
+--
+ALTER TABLE `kardex`
+  MODIFY `id_kardex` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
