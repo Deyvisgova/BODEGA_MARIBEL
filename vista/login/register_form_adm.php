@@ -21,7 +21,7 @@
    <link href="../css/incio.css" type="text/css" rel="stylesheet" />
    <link rel="stylesheet" href="../css/login.css">
    <script src="https://kit.fontawesome.com/73c70fe811.js" crossorigin="anonymous"></script>
-   <title>Crear Usuario - Ambar Veterinaria</title>
+   <title>Crear Usuario - Bodega Maribel</title>
 </head>
 <body>
 <!-- --------------------------------------   BARRA DE NAVEGACION   ------------------------------------ -->

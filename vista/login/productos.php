@@ -18,9 +18,9 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Productos - Ambar Veterinaria</title>
+    <title>Productos - Bodega Maribel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="../imagenes/principal/icon-ambar.png" type="image/x-icon">
+    <link rel="icon" href="../imagenes/principal/makro.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/c174601175.js" crossorigin="anonymous"></script>
     <style>
@@ -198,22 +198,22 @@
                         <h5 class="text-uppercase">Servicios</h5>
                         <ul class="list-unstyled mb-0">
                             <li>
-                                <a  class="text-white text-decoration-none">Baños y estetica</a>
+                                <a  class="text-white text-decoration-none">Venta mayorista</a>
                             </li>
                             <li>
-                                <a  class="text-white text-decoration-none">Vacunación</a>
+                                <a  class="text-white text-decoration-none">Reposición de stock a tiendas</a>
                             </li>
                             <li>
-                                <a  class="text-white text-decoration-none">Cirugía</a>
+                                <a  class="text-white text-decoration-none">Preparación de pedidos</a>
                             </li>
                             <li>
-                                <a  class="text-white text-decoration-none">Analisis de Laboratorio</a>
+                                <a  class="text-white text-decoration-none">Distribución a comercios</a>
                             </li>
                             <li>
-                                <a  class="text-white text-decoration-none">Radiografías y diagnóstico</a>
+                                <a  class="text-white text-decoration-none">Asesoría de surtido</a>
                             </li>
                             <li>
-                                <a  class="text-white text-decoration-none">Cuidados intensivos</a>
+                                <a  class="text-white text-decoration-none">Gestión de inventario</a>
                             </li>
                         </ul>
                     </div>
@@ -222,16 +222,16 @@
                     <!--Grid column-->
                     <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
                         <h5 class="text-uppercase">Contacto</h5>
-            
+
                         <ul class="list-unstyled mb-0">
                             <li>
-                                <a href="#!" class="text-white text-decoration-none"><i class="fa-solid fa-envelope"></i> ambarveterinaria@gmail.com</a>
+                                <a href="mailto:contacto@bodegamaribel.pe" class="text-white text-decoration-none"><i class="fa-solid fa-envelope"></i> contacto@bodegamaribel.pe</a>
                             </li>
                             <li>
-                                <a href="https://api.whatsapp.com/send?phone=%2B51937088722&data=AWBo416Lm1Bos9cr4XlX_dqQC31OSyL9fUTuFtVqf6CLzdlJ1Ml9BeFb8knhoIjWGzbiipxxil75kTwzUYmukwj3ikHiCqDAX_Yz2ZETDYoZlIF-kvAzYbtJ2vteB-SPuATGoCbyZh53MhoFpumazPL5q0GG-PPpmLP4bKIcyF46ht1jce48cUJP74ydg4mZnsAqrNGG1FBYMhnsu3qcejevRdpLME71A9M9I66LnuI8N1GCBY4y-9tdY4Y6zs74b5c4gNaKkMR-XChXj6n6NaA45ZokkZagQ3ktPBwWbULDXOX6bNE&source=FB_Page&app=facebook&entry_point=page_cta&fbclid=IwAR21hzyX6eUw3ojTd1mOwhs9_nL0r-k9ORHwYuHH6lQi2h30Jmt8bFarnFw" class="text-white text-decoration-none"><i class="fa-solid fa-phone"></i> +51 937 088 722</a>
+                                <a href="https://wa.me/51987654321" class="text-white text-decoration-none"><i class="fa-solid fa-phone"></i> +51 987 654 321</a>
                             </li>
                             <li>
-                                <a href="https://maps.google.com/maps/dir//%C3%81mbar+Cl%C3%ADnica+Veterinaria+Sede+Principal+Sector+1,+Grupo+21,+Manzana+C,+Lote+12+Frente+al+mercado+12+de+mayo+Av.micaela+bastidas+s%2Fn+Villa+El+Salvador+Gobierno+Regional+de+Lima+LIMA+42/@-12.191812,-76.956365,16z/data=!4m5!4m4!1m0!1m2!1m1!1s0x9105b90ce3845f85:0xfce792d60db4020f" class="text-white text-decoration-none"><i class="fa-solid fa-location-dot"></i> Av. Micaela Bastidas mz. C. Villa el Salvador. Lima. Perú.</a>
+                                <a href="https://maps.google.com/?q=Av.+Los+Almacenes+123,+Lima,+Per%C3%BA" class="text-white text-decoration-none"><i class="fa-solid fa-location-dot"></i> Av. Los Almacenes 123, Lima - Perú</a>
                             </li>
                         </ul>
                     </div>
@@ -244,17 +244,17 @@
             <br>
             <section class="mb-4">
                 <!-- Facebook -->
-                <a class="btn btn-outline-light btn-floating m-1" href="https://www.facebook.com/ambarclinicasveterinarias/" role="button" target="_blank"
+                <a class="btn btn-outline-light btn-floating m-1" href="https://www.facebook.com" role="button" target="_blank"
                 ><i class="fab fa-facebook-f fa-xl"></i
                 ></a>
-        
+
                 <!-- Instagram -->
-                <a class="btn btn-outline-light btn-floating m-1" href="https://instagram.com/ambarclinicaveterinaria?igshid=MzRlODBiNWFlZA==" role="button" target="_blank"
+                <a class="btn btn-outline-light btn-floating m-1" href="https://www.instagram.com" role="button" target="_blank"
                 ><i class="fab fa-instagram fa-xl"></i
                 ></a>
-        
+
                 <!-- Tiktok -->
-                <a class="btn btn-outline-light btn-floating m-1" href="https://www.tiktok.com/@ambar_veterinaria?_t=8d5kU4xzjIj&_r=1" role="button" target="_blank"
+                <a class="btn btn-outline-light btn-floating m-1" href="https://www.tiktok.com" role="button" target="_blank"
                 ><i class="fab fa-tiktok"></i
                 ></a>
             </section>
@@ -265,7 +265,7 @@
         <!-- Copyright -->
         <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
         © 2023 Copyright:
-        <a class="text-white text-decoration-none">Ambar - Todos los derechos reservados.</a>
+        <a class="text-white text-decoration-none">Bodega Maribel - Todos los derechos reservados.</a>
         </div>
         <!-- Copyright -->
     </footer>
