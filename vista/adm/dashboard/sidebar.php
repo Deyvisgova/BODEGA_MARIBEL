@@ -104,11 +104,16 @@
                 <i class="fa-sharp fa-solid fa-cookie"></i>
                 <span>Guia de Salida</span></a>
             </li>
-            
-            
+            <li class="nav-item">
+                <a class="nav-link" href="tabla_kardex.php"><!--aquí también-->
+                <i class="fa-solid fa-book"></i>
+                <span>Kardex</span></a>
+            </li>
+
+
 
             <!-- Divider -->
-            <hr class="sidebar-divider my-0">   
+            <hr class="sidebar-divider my-0">
             <li class="nav-item active">
             <sub class="nav-link active" style="color: whitesmoke;">Otros</sub>
             <!-- Nav Item - Dashboard -->

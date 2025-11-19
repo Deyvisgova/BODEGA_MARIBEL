@@ -3,6 +3,7 @@
 
 // Incluir archivo de configuración de la base de datos
 include '../../modelo/config.php';
+require_once __DIR__ . '/../kardex_helper.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Obtener el ID de la guía de salida desde el formulario
@@ -30,18 +31,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Verificar si la consulta de actualizar guía fue exitosa
             if ($result_actualizar_guia) {
-                // Consulta para actualizar la tabla de productos
-                $query_actualizar_producto = "UPDATE `producto` SET `cantidad`=`cantidad`-$cantidad_salida WHERE nombre_producto='$producto'";
-                $result_actualizar_producto = mysqli_query($conn, $query_actualizar_producto);
+                registrarKardex(
+                    $conn,
+                    $guia['fecha_salida'],
+                    $producto,
+                    'salida',
+                    (int)$cantidad_salida,
+                    $guia['descripcion'],
+                    'GS-' . $id_guia
+                );
 
-                // Verificar si la consulta de actualizar productos fue exitosa
-                if ($result_actualizar_producto) {
-                    // Redirigir de vuelta a la página de la guía de salida
-                    echo '<script>alert("La guía ha sido procesada y se ha actualizado el inventario."); 
+                // Redirigir de vuelta a la página de la guía de salida
+                echo '<script>alert("La guía ha sido procesada y se ha actualizado el inventario.");
                     window.location.href="../../vista/adm/dashboard/tabla_guia_salida_colab.php";</script>';
-                } else {
-                    echo "Error al actualizar el inventario del producto: " . mysqli_error($conn);
-                }
             } else {
                 echo "Error al actualizar el estado de la guía de salida: " . mysqli_error($conn);
             }

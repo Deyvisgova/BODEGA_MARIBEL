@@ -77,10 +77,15 @@
                 <i class="fa-sharp fa-solid fa-cookie"></i>
                 <span>Salida de Prodcutos Stock</span></a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="tabla_kardex.php"><!--aquí también-->
+                <i class="fa-solid fa-book"></i>
+                <span>Kardex</span></a>
+            </li>
 
-            
-        
-         
+
+
+
             <!-- Divider -->
             <hr class="sidebar-divider my-0">   
             <li class="nav-item active">
