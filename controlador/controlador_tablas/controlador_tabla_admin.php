@@ -10,7 +10,7 @@
     $direccion_adm = (isset($_POST['direccion_adm']))?$_POST['direccion_adm']:"";
     $telefono_adm = (isset($_POST['telefono_adm']))?$_POST['telefono_adm']:"";
     $email = (isset($_POST['email']))?$_POST['email']:"";
-    $pass = md5($_POST['password']);
+    $pass = md5($_POST['pass'] ?? '');
     $user_type = (isset($_POST['user_type']))?$_POST['user_type']:"";
 
     /*$id_clinica = mysqli_real_escape_string($conn, $_POST['id_clinica']);
