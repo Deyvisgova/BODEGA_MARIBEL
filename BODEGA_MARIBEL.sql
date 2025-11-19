@@ -236,27 +236,6 @@ INSERT INTO `provedor` (`id_provedor`, `Nombre_de_la_empresa`, `ruc`, `Persona_d
 
 -- --------------------------------------------------------
 
---
--- Estructura de tabla para la tabla `veterinario`
---
-
-CREATE TABLE `veterinario` (
-  `id_veterinario` int(11) NOT NULL,
-  `dni_veterinario` varchar(20) NOT NULL,
-  `nombre_veterinario` varchar(50) NOT NULL,
-  `apellido_veterinario` varchar(50) NOT NULL,
-  `genero_veterinario` varchar(20) NOT NULL,
-  `telefono_veterinario` varchar(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `veterinario`
---
-
-INSERT INTO `veterinario` (`id_veterinario`, `dni_veterinario`, `nombre_veterinario`, `apellido_veterinario`, `genero_veterinario`, `telefono_veterinario`) VALUES
-(1, '74345249', 'Raul', 'Hinostroza Merino', 'masculino', '912345896'),
-(2, '77894345', 'Fabiola', 'Caceres Castillo', 'femenino', '93486913'),
-(3, '74921694', 'Andres', 'Castañeda Vertiz', 'masculino', '949395972');
 
 --
 -- Índices para tablas volcadas
@@ -304,11 +283,6 @@ ALTER TABLE `producto`
 ALTER TABLE `provedor`
   ADD PRIMARY KEY (`id_provedor`);
 
---
--- Indices de la tabla `veterinario`
---
-ALTER TABLE `veterinario`
-  ADD PRIMARY KEY (`id_veterinario`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -356,11 +330,6 @@ ALTER TABLE `producto`
 ALTER TABLE `provedor`
   MODIFY `id_provedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
---
--- AUTO_INCREMENT de la tabla `veterinario`
---
-ALTER TABLE `veterinario`
-  MODIFY `id_veterinario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

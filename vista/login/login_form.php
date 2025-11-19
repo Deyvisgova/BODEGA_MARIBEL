@@ -22,7 +22,7 @@
   <div class="container-fluid">
 
     <!-- BRAND -->
-    <a href="../../index.html" class="navbar-brand d-flex align-items-center gap-2 ms-2">
+    <a href="../../index.php" class="navbar-brand d-flex align-items-center gap-2 ms-2">
       <img class="img-logo" src="../imagenes/fondo.png" alt="Bodega Maribel">
       <span class="fw-semibold d-none d-sm-inline">Bodega Maribel</span>
     </a>
@@ -39,7 +39,7 @@
       <!-- IZQUIERDA -->
       <ul class="navbar-nav ms-2">
         <li class="nav-item">
-          <a class="nav-link" href="../../index.html">
+          <a class="nav-link" href="../../index.php">
             <i class="fa-solid fa-house"></i> <span class="ms-1">Inicio</span>
           </a>
         </li>

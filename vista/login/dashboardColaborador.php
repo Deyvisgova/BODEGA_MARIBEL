@@ -23,7 +23,7 @@ if(!isset($_SESSION['nombre_cliente'])){
     <meta name="description" content="">
     <meta name="author" content="">
     <script src="https://kit.fontawesome.com/73c70fe811.js" crossorigin="anonymous"></script>
-    <link rel="icon" href="../../imagenes/principal/icon-ambar.png" type="image/x-icon">
+    <link rel="icon" href="../../imagenes/principal/makro.ico" type="image/x-icon">
     <title>Administrador Bodega Maribel</title>   
 
     <!-- Custom fonts for this template-->
@@ -52,9 +52,9 @@ if(!isset($_SESSION['nombre_cliente'])){
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="dashboard.php">
                 <div class="sidebar-brand-icon rotate-n-15">
-                <i class="fa-solid fa-shield-dog"></i>
+                <i class="fa-solid fa-warehouse"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">Maribel Mayorista<sup> Admin</sup></div>
+                <div class="sidebar-brand-text mx-3">Bodega Maribel<sup> Admin</sup></div>
             </a>
 
             <!-- Divider -->
@@ -76,9 +76,9 @@ if(!isset($_SESSION['nombre_cliente'])){
             </li>
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
-                <a class="nav-link" href="tabla_veterinario.php"><!--Corregir por tabla_veterinario.php-->
-                <i class="fa-solid fa-user-doctor"></i>
-                    <span>Colaborador</span></a>
+                <a class="nav-link" href="tabla_colaborador.php">
+                <i class="fa-solid fa-user-group"></i>
+                    <span>Colaboradores</span></a>
            
            
             <!-- Divider -->
@@ -88,8 +88,8 @@ if(!isset($_SESSION['nombre_cliente'])){
             </li>
              <!-- Nav Item - Dashboard -->
             <li class="nav-item">
-                <a class="nav-link" href="tabla_producto.php"><!--aquí también-->
-                <i class="fa-sharp fa-solid fa-cookie"></i>
+                <a class="nav-link" href="tabla_producto.php">
+                <i class="fa-solid fa-boxes-stacked"></i>
                 <span>Productos</span></a>
             </li>
            
@@ -101,8 +101,8 @@ if(!isset($_SESSION['nombre_cliente'])){
             
                         <li class="nav-item">
                 <a class="nav-link" href="tabla_provedor.php">
-                <i class="fa-solid fa-lock"></i>
-                    <span>Provedores</span></a>
+                <i class="fa-solid fa-truck-fast"></i>
+                    <span>Proveedores</span></a>
                  </li>
             
             
@@ -218,7 +218,7 @@ if(!isset($_SESSION['nombre_cliente'])){
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         
-                        <h1 class="h3 mb-0 text-gray-800" style="font-family: Verdana, Geneva, Tahoma, sans-serif;">Bienvenido(a) <?php echo $_SESSION['admin_name'] ?> a Ambar Veterinaria </h1>
+                        <h1 class="h3 mb-0 text-gray-800" style="font-family: Verdana, Geneva, Tahoma, sans-serif;">Bienvenido(a) <?php echo $_SESSION['admin_name'] ?> a Bodega Maribel</h1>
 
 
                     </div>
@@ -294,10 +294,10 @@ if(!isset($_SESSION['nombre_cliente'])){
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                                 Cantidad de Colaboradores</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo "".$veterinario ?></div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo "".$colaborador ?></div>
                                         </div>
                                         <div class="col-auto">
-                                        <i class="fa-solid fa-user-doctor fa-xl"></i>
+                                        <i class="fa-solid fa-user-group fa-xl"></i>
                                         </div>
                                     </div>
                                 </div>

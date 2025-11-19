@@ -39,7 +39,7 @@
         <div class="container-fluid">
           <!-- BRAND -->
           <a
-            href="index.html"
+            href="index.php"
             class="navbar-brand d-flex align-items-center gap-2"
           >
             <img
@@ -68,14 +68,14 @@
             <!-- IZQUIERDA -->
             <ul class="navbar-nav me-auto align-items-lg-center">
               <li class="nav-item">
-                <a class="nav-link active" href="index.html">
+                <a class="nav-link active" href="index.php">
                   <i class="fa-solid fa-house"></i>
                   <span class="ms-1">Inicio</span>
                 </a>
               </li>
 
               <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="index.php?ruta=productos">
                   <i class="fa-solid fa-cubes"></i>
                   <span class="ms-1">Productos</span>
                 </a>
@@ -222,12 +222,12 @@
             <h6 class="fw-bold mb-3">Enlaces útiles</h6>
             <ul class="list-unstyled small">
               <li>
-                <a href="index.html" class="footer-link"
+                <a href="index.php" class="footer-link"
                   ><i class="fa-solid fa-house me-2"></i>Inicio</a
                 >
               </li>
               <li>
-                <a href="#" class="footer-link"
+                <a href="index.php?ruta=productos" class="footer-link"
                   ><i class="fa-solid fa-boxes-stacked me-2"></i>Productos</a
                 >
               </li>
