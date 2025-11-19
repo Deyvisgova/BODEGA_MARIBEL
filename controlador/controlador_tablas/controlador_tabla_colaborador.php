@@ -10,7 +10,7 @@
     $direccion_colab = (isset($_POST['direccion_colab']))?$_POST['direccion_colab']:"";
     $telefono_colab = (isset($_POST['telefono_colab']))?$_POST['telefono_colab']:"";
     $email = (isset($_POST['email']))?$_POST['email']:"";
-    $pass = md5($_POST['password']);
+    $pass = md5($_POST['pass'] ?? '');
     $user_type = (isset($_POST['user_type']))?$_POST['user_type']:"";
 
 

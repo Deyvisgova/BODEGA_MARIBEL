@@ -29,7 +29,7 @@ if(isset($_POST['submit'])){
 
       if(mysqli_num_rows($adminResult) > 0){
          $row = mysqli_fetch_array($adminResult);
-         if($row['password'] === $pass && $row['user_type'] === 'admin'){
+         if($row['password'] === $pass && strtolower($row['user_type']) === 'admin'){
             $_SESSION['admin_name'] = $row['nombre'];
             header('location:../adm/dashboard/dashboard.php');
             exit;
@@ -41,7 +41,7 @@ if(isset($_POST['submit'])){
 
       if(mysqli_num_rows($colabResult) > 0){
          $row = mysqli_fetch_array($colabResult);
-         if($row['password'] === $pass && $row['user_type'] === 'colab'){
+         if($row['password'] === $pass && strtolower($row['user_type']) === 'colab'){
             $_SESSION['colab_name'] = $row['nombre'];
             header('location:../adm/dashboard/dashboardColaborador.php');
             exit;
