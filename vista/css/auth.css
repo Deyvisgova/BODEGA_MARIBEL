@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+body.auth-body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f7f7fb;
+    color: #1c1c1c;
+    min-height: 100vh;
+}
+
+.auth-welcome {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 3rem 1rem 2rem;
+}
+
+.auth-welcome__card {
+    text-align: center;
+    padding: 2.5rem 2rem;
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.1);
+}
+
+.auth-welcome__card h3 {
+    font-size: 2rem;
+    color: #333;
+}
+
+.auth-welcome__card h3 span,
+.auth-welcome__card h1 span {
+    color: var(--brand-primary);
+}
+
+.auth-welcome__card h1 {
+    font-size: 2.6rem;
+    color: #222;
+}
+
+.auth-welcome__card p {
+    font-size: 1.1rem;
+    margin-bottom: 1.25rem;
+    color: #4f4f4f;
+}
+
+.auth-welcome__card .btn {
+    display: inline-block;
+    padding: 0.6rem 1.6rem;
+    margin: 0.25rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    background: var(--brand-dark);
+    color: #fff;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.auth-welcome__card .btn:hover {
+    background: var(--brand-primary);
+}
+
+.auth-body .form-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem 4rem;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.55)),
+        url('../imagenes/makro1.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.auth-body .form-container form {
+    width: min(500px, 100%);
+    background: #fff;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+.auth-body .form-container form h3 {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.auth-body .form-container form input,
+.auth-body .form-container form select {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    font-size: 1rem;
+    margin: 0.4rem 0;
+    background: #f5f5f5;
+    border-radius: 0.5rem;
+}
+
+.auth-body .form-container form select option {
+    background: #fff;
+}
+
+.auth-body .form-container form .form-btn {
+    background: var(--brand-primary);
+    color: #fff;
+    font-size: 1rem;
+    padding: 0.6rem 1.4rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.auth-body .form-container form .form-btn:hover {
+    background: #a00e1b;
+}
+
+.auth-body .form-container form p {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.auth-body .form-container form p a {
+    color: var(--brand-dark);
+}
+
+.auth-body .form-container form .error-msg {
+    margin: 0.5rem 0;
+    display: block;
+    background: #f44336;
+    color: #fff;
+    border-radius: 0.35rem;
+    padding: 0.6rem;
+}

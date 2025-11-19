@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;600&display=swap');
+
+:root {
+    --brand-primary: #c1121f;
+    --brand-secondary: #f4b41a;
+    --brand-dark: #2d132c;
+    --brand-light: #fff8f0;
+}
+
+body {
+    font-family: 'Kanit', sans-serif;
+    color: #1f1f1f;
+}
+
+.img-logo {
+    max-height: 56px;
+    width: auto;
+}
+
+.navbar.border-bottom {
+    border-bottom-width: 4px !important;
+    border-color: var(--brand-secondary) !important;
+}
+
+.navbar .nav-link.active,
+.navbar .nav-link:focus,
+.navbar .nav-link:hover {
+    color: var(--brand-secondary) !important;
+}
+
+.bg-login {
+    background: linear-gradient(135deg, #c26610, #6e2e6e);
+}
+
+.footer-login {
+    background: linear-gradient(135deg, #4a154b, #6e2e6e);
+    border-top: 3px solid #7bed9f;
+}
+
+.footer-logo {
+    height: 48px;
+    width: auto;
+    filter: brightness(1.1);
+}
+
+.footer-login a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.footer-login a:hover {
+    color: #7bed9f;
+    text-decoration: underline;
+}
+
+.social-icon {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s ease;
+}
+
+.social-icon:hover {
+    background: #7bed9f;
+    color: #4a154b;
+}

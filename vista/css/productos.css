@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;500;600&display=swap');
+
+body {
+    font-family: 'Kanit', sans-serif;
+    background-color: #f9fafb;
+}
+
+main > .container {
+    padding: 30px 0;
+}
+
+.img-logo {
+    max-height: 64px;
+}
+
+.card {
+    border: none;
+    border-radius: 1rem;
+    background-color: #fffdf7;
+}
+
+.card .badge {
+    font-size: 0.85rem;
+}
+
+.card img {
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-title {
+    font-weight: 600;
+}
+
+.card-text {
+    font-size: 0.95rem;
+}
+
+footer h5 {
+    font-weight: 600;
+}
