@@ -10,8 +10,8 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <link rel="icon" href="../imagenes/principal/makro.ico" type="image/x-icon">
    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-   <link href="../css/incio.css" type="text/css" rel="stylesheet" />
-   <link rel="stylesheet" href="../css/login.css">
+   <link rel="stylesheet" href="../css/base.css">
+   <link rel="stylesheet" href="../css/auth.css">
    <script src="https://kit.fontawesome.com/73c70fe811.js" crossorigin="anonymous"></script>
    <title>Login Bodega Maribel</title>
 </head>
@@ -22,7 +22,7 @@
   <div class="container-fluid">
 
     <!-- BRAND -->
-    <a href="../../index.html" class="navbar-brand d-flex align-items-center gap-2 ms-2">
+    <a href="../../index.php" class="navbar-brand d-flex align-items-center gap-2 ms-2">
       <img class="img-logo" src="../imagenes/fondo.png" alt="Bodega Maribel">
       <span class="fw-semibold d-none d-sm-inline">Bodega Maribel</span>
     </a>
@@ -39,7 +39,7 @@
       <!-- IZQUIERDA -->
       <ul class="navbar-nav ms-2">
         <li class="nav-item">
-          <a class="nav-link" href="../../index.html">
+          <a class="nav-link" href="../../index.php">
             <i class="fa-solid fa-house"></i> <span class="ms-1">Inicio</span>
           </a>
         </li>
