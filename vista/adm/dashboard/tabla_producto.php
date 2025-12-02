@@ -97,13 +97,9 @@ if(!isset($_SESSION['admin_name'])){
                                 </div>
 
                                 <div class="form-group col-md-12">
-                                    <label for="">cantidad:</label>
-                                    <input type="text" class="form-control" required name="cantidad" placerholder="" id="cantidad" value="<?php echo $cantidad; ?>"><br>
-                                </div>
-
-                                <div class="form-group col-md-4">
-                                    <label for="">Precio:</label>
-                                    <input type="number" class="form-control" required name="precio_producto" placerholder="" id="precio_producto" value="<?php echo $precio_producto; ?>"><br>
+                                    <label>Descripción:</label>
+                                    <textarea class="form-control" name="descripcion" id="descripcion" rows="2" placeholder="Detalle del producto"><?php echo $descripcion; ?></textarea>
+                                    <br>
                                 </div>
 
 
@@ -196,7 +192,8 @@ if(!isset($_SESSION['admin_name'])){
                     <tr>
                         <th>ID:</th>
                         <th>Nombre:</th>
-                        <th>cantidad</th>
+                        <th>Descripción:</th>
+                        <th>Stock actual:</th>
                         <th>Precio:</th>
                         <th>Categoria:</th>
                         <th>Activo:</th>
@@ -211,7 +208,8 @@ if(!isset($_SESSION['admin_name'])){
                         <tr>
                             <td><?php echo $row['id_producto']; ?></td>
                             <td><?php echo $row['nombre_producto']; ?></td>
-                            <td><?php echo $row['cantidad']; ?></td>
+                            <td><?php echo $row['descripcion']; ?></td>
+                            <td><?php echo $row['stock_actual']; ?></td>
                             <td><?php echo $row['precio_producto']; ?></td>
                             <td><?php echo $row['categoria']; ?></td>
                             <td><?php echo $row['activo']; ?></td>
@@ -222,8 +220,7 @@ if(!isset($_SESSION['admin_name'])){
                             <form action="" method="POST">
                                 <input type="hidden" value="<?php echo $row['id_producto']; ?>" name="id_producto">
                                 <input type="hidden" value="<?php echo $row['nombre_producto']; ?>" name="nombre_producto">
-                                <input type="hidden" value="<?php echo $row['cantidad']; ?>" name="cantidad">
-                                <input type="hidden" value="<?php echo $row['precio_producto']; ?>" name="precio_producto">
+                                <input type="hidden" value="<?php echo $row['descripcion']; ?>" name="descripcion">
                                 <input type="hidden" value="<?php echo $row['categoria']; ?>" name="categoria">
                                 <input type="hidden" value="<?php echo $row['activo']; ?>" name="activo">
                                 <input type="hidden" value="<?php echo $row['provedor']; ?>" name="provedor">
