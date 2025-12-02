@@ -21,7 +21,8 @@ $pdf->Ln(10);
 
 $pdf->Cell(25,5,"ID",1,0,"C");
 $pdf->Cell(85,5,"Nombre",1,0,"C");
-$pdf->Cell(70,5,"Cantidad",1,0,"C");
+$pdf->Cell(85,5,"Descripción",1,0,"C");
+$pdf->Cell(40,5,"Stock",1,0,"C");
 $pdf->Cell(65,5,"precio",1,0,"C");
 $pdf->Cell(30,5,"Categoria",1,0,"C");
 $pdf->Cell(25,5,"Activo",1,0,"C");
@@ -33,7 +34,8 @@ $pdf->SetFont("Arial", "B", 9);
 while ($fila = $resultado->fetch_assoc()){
     $pdf->Cell(25,5,$fila['id_producto'],1,0,"C");
     $pdf->Cell(85,5,$fila['nombre_producto'],1,0,"C");
-    $pdf->Cell(70,5,strip_tags($fila[utf8_decode('cantidad')]),1,0,"B");
+    $pdf->Cell(85,5,strip_tags($fila[utf8_decode('descripcion')]),1,0,"B");
+    $pdf->Cell(40,5,strip_tags($fila[utf8_decode('stock_actual')]),1,0,"B");
     $pdf->Cell(65,5,$fila['precio_producto'],1,0,"C");
     $pdf->Cell(30,5,$fila[utf8_decode('categoria')],1,0,"C");
     $pdf->Cell(25,5,$fila[utf8_decode('activo')],1,0,"C");
@@ -42,5 +44,5 @@ while ($fila = $resultado->fetch_assoc()){
 
 
 
-$pdf->Output();
+$pdf->Output('I', 'reporte_productos.pdf');
 ?>

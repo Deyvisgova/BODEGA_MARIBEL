@@ -28,13 +28,15 @@ $resumen = $resumen ?? [];
 $productosInventario = $productosInventario ?? [];
 $datosSalidas = $datosSalidas ?? ['productos' => [], 'fechas' => [], 'valores' => []];
 $datosEntradas = $datosEntradas ?? ['productos' => [], 'fechas' => [], 'valores' => []];
-
+$alertas = $alertas ?? ['bajoStock' => [], 'vencimientos' => []];
 $tarjetas = [
-    ['clave' => 'administradores', 'titulo' => 'Cuentas de Administradores', 'color' => 'primary', 'icono' => 'fa-solid fa-key'],
-    ['clave' => 'proveedores', 'titulo' => 'Proveedores', 'color' => 'info', 'icono' => 'fa-solid fa-handshake'],
-    ['clave' => 'colaboradores', 'titulo' => 'Colaboradores', 'color' => 'danger', 'icono' => 'fa-solid fa-user'],
-    ['clave' => 'productos', 'titulo' => 'Productos', 'color' => 'success', 'icono' => 'fa-solid fa-box'],
-    ['clave' => 'categorias', 'titulo' => 'Categorías', 'color' => 'warning', 'icono' => 'fa-solid fa-layer-group'],
+    ['clave' => 'productos', 'titulo' => 'Productos activos', 'color' => 'success', 'icono' => 'fa-solid fa-box-open'],
+    ['clave' => 'categorias', 'titulo' => 'Categorías', 'color' => 'primary', 'icono' => 'fa-solid fa-layer-group'],
+    ['clave' => 'proveedores', 'titulo' => 'Proveedores', 'color' => 'info', 'icono' => 'fa-solid fa-truck-field'],
+];
+$alertasInventario = [
+    ['titulo' => 'Stock en alerta', 'cantidad' => count($alertas['bajoStock']), 'color' => 'warning', 'icono' => 'fa-solid fa-circle-exclamation'],
+    ['titulo' => 'Vencimientos próximos', 'cantidad' => count($alertas['vencimientos']), 'color' => 'danger', 'icono' => 'fa-solid fa-triangle-exclamation'],
 ];
 ?>
 <!DOCTYPE html>
@@ -60,7 +62,7 @@ $tarjetas = [
         <ul class="navbar-nav bg-gradient-danger sidebar sidebar-dark accordion" id="accordionSidebar">
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= htmlspecialchars($buildUrl('index.php?ruta=admin/dashboard'), ENT_QUOTES, 'UTF-8') ?>">
                 <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fa-solid fa-warehouse"></i>
+                    <i class="fa-solid fa-clipboard-list"></i>
                 </div>
                 <div class="sidebar-brand-text mx-3">Maribel Mayorista<sup> Admin</sup></div>
             </a>
@@ -82,7 +84,7 @@ $tarjetas = [
             <hr class="sidebar-divider">
             <div class="sidebar-heading text-white">Inventario</div>
             <li class="nav-item"><a class="nav-link" href="<?= htmlspecialchars($buildUrl('vista/adm/dashboard/tabla_producto.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fa-solid fa-box"></i> <span>Productos</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="<?= htmlspecialchars($buildUrl('vista/adm/dashboard/tabla_checkList.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fa-solid fa-list-check"></i> <span>Check List</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="<?= htmlspecialchars($buildUrl('vista/adm/dashboard/tabla_lote.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fa-solid fa-boxes-stacked"></i> <span>Lotes</span></a></li>
             <li class="nav-item"><a class="nav-link" href="<?= htmlspecialchars($buildUrl('vista/adm/dashboard/tabla_categoria.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fa-solid fa-layer-group"></i> <span>Categorías</span></a></li>
             <li class="nav-item"><a class="nav-link" href="<?= htmlspecialchars($buildUrl('vista/adm/dashboard/tabla_guia_entrada.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fa-solid fa-file-import"></i> <span>Guía de Entrada</span></a></li>
             <li class="nav-item"><a class="nav-link" href="<?= htmlspecialchars($buildUrl('vista/adm/dashboard/tabla_guia_salida.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fa-solid fa-file-export"></i> <span>Guía de Salida</span></a></li>
@@ -108,14 +110,60 @@ $tarjetas = [
                     </button>
 
                     <div class="d-none d-sm-inline-block form-inline mx-auto text-center">
-                        <p class="mb-0"><?= htmlspecialchars($fechaActual, ENT_QUOTES, 'UTF-8') ?><br><small>son las <?= htmlspecialchars($horaActual, ENT_QUOTES, 'UTF-8') ?></small></p>
+                        <p class="mb-0 font-weight-bold text-gray-700">Panel de inventario</p>
+                        <small class="text-muted">Actualizado <?= htmlspecialchars($fechaActual, ENT_QUOTES, 'UTF-8') ?> - <?= htmlspecialchars($horaActual, ENT_QUOTES, 'UTF-8') ?></small>
                     </div>
 
                     <ul class="navbar-nav ml-auto">
+                        <?php $totalAlertas = count($alertas['bajoStock']) + count($alertas['vencimientos']); ?>
+                        <li class="nav-item dropdown no-arrow mx-2">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa-solid fa-bell"></i>
+                                <?php if ($totalAlertas > 0): ?>
+                                    <span class="badge badge-danger badge-counter"><?= $totalAlertas ?></span>
+                                <?php endif; ?>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown" style="min-width: 320px;">
+                                <h6 class="dropdown-header">Alertas de inventario</h6>
+                                <?php if (!$totalAlertas): ?>
+                                    <span class="dropdown-item text-muted">No hay alertas pendientes.</span>
+                                <?php endif; ?>
+                                <?php foreach ($alertas['bajoStock'] as $producto): ?>
+                                    <div class="dropdown-item d-flex align-items-center">
+                                        <div class="mr-3">
+                                            <div class="icon-circle bg-warning">
+                                                <i class="fa-solid fa-box-open text-white"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="small text-gray-500">Stock bajo</div>
+                                            <span class="font-weight-bold"><?= htmlspecialchars($producto['nombre_producto'], ENT_QUOTES, 'UTF-8') ?></span>
+                                            <div class="text-muted">Disponible: <?= (int) $producto['stock_actual'] ?> uds.</div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                                <?php foreach ($alertas['vencimientos'] as $lote): ?>
+                                    <div class="dropdown-item d-flex align-items-center">
+                                        <div class="mr-3">
+                                            <div class="icon-circle bg-danger">
+                                                <i class="fa-solid fa-triangle-exclamation text-white"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="small text-gray-500">Vence <?= htmlspecialchars($lote['fecha_vencimiento'], ENT_QUOTES, 'UTF-8') ?></div>
+                                            <span class="font-weight-bold">Lote #<?= (int) $lote['id_lote'] ?> - <?= htmlspecialchars($lote['nombre_producto'], ENT_QUOTES, 'UTF-8') ?></span>
+                                            <div class="text-muted">Ingresó: <?= htmlspecialchars($lote['fecha_ingreso'], ENT_QUOTES, 'UTF-8') ?></div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </li>
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">Administrador - <?= htmlspecialchars($adminName, ENT_QUOTES, 'UTF-8') ?></span>
-                                <img class="img-profile rounded-circle" src="<?= htmlspecialchars($assetBase, ENT_QUOTES, 'UTF-8') ?>/img/undraw_profile.svg" alt="Perfil">
+                                <div class="icon-circle bg-gradient-danger text-white">
+                                    <i class="fa-solid fa-boxes-stacked"></i>
+                                </div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                                 <a class="dropdown-item" href="<?= htmlspecialchars($buildUrl('index.php?ruta=admin/dashboard'), ENT_QUOTES, 'UTF-8') ?>"><i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i> Inicio</a>
@@ -128,26 +176,47 @@ $tarjetas = [
 
                 <div class="container-fluid">
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Bienvenido(a) <?= htmlspecialchars($adminName, ENT_QUOTES, 'UTF-8') ?> a Bodega Maribel</h1>
+                        <div>
+                            <h1 class="h3 mb-0 text-gray-800">Hola, <?= htmlspecialchars($adminName, ENT_QUOTES, 'UTF-8') ?></h1>
+                            <p class="text-muted mb-0">Monitorea el inventario en tiempo real con gráficos interactivos.</p>
+                        </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row mb-4">
                         <?php foreach ($tarjetas as $tarjeta): ?>
-                            <div class="col-xl-4 col-md-6 mb-4">
-                                <div class="card border-left-<?= $tarjeta['color'] ?> shadow h-100 py-2">
-                                    <div class="card-body">
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-<?= $tarjeta['color'] ?> text-uppercase mb-1">
-                                                    <?= htmlspecialchars($tarjeta['titulo'], ENT_QUOTES, 'UTF-8') ?>
-                                                </div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                    <?= $resumen[$tarjeta['clave']] ?? 0 ?>
-                                                </div>
+                            <div class="col-xl-4 col-md-6 mb-3">
+                                <div class="card shadow-sm border-0 h-100">
+                                    <div class="card-body d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <div class="text-xs font-weight-bold text-uppercase text-<?= $tarjeta['color'] ?> mb-1">
+                                                <?= htmlspecialchars($tarjeta['titulo'], ENT_QUOTES, 'UTF-8') ?>
                                             </div>
-                                            <div class="col-auto">
-                                                <i class="<?= $tarjeta['icono'] ?> fa-xl"></i>
+                                            <div class="h4 mb-0 font-weight-bold text-gray-800">
+                                                <?= $resumen[$tarjeta['clave']] ?? 0 ?>
                                             </div>
+                                        </div>
+                                        <div class="icon-circle bg-gradient-<?= $tarjeta['color'] ?> text-white">
+                                            <i class="<?= $tarjeta['icono'] ?>"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+
+                        <?php foreach ($alertasInventario as $alerta): ?>
+                            <div class="col-xl-3 col-md-6 mb-3">
+                                <div class="card shadow-sm border-0 h-100 bg-light">
+                                    <div class="card-body d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <div class="text-xs font-weight-bold text-uppercase text-<?= $alerta['color'] ?> mb-1">
+                                                <?= htmlspecialchars($alerta['titulo'], ENT_QUOTES, 'UTF-8') ?>
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <?= $alerta['cantidad'] ?> alerta(s)
+                                            </div>
+                                        </div>
+                                        <div class="icon-circle bg-<?= $alerta['color'] ?> text-white">
+                                            <i class="<?= $alerta['icono'] ?>"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -157,35 +226,80 @@ $tarjetas = [
 
                     <div class="row">
                         <div class="col-lg-6 mb-4">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Productos en almacén</h6>
+                            <div class="card shadow border-0 h-100">
+                                <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                                    <h6 class="m-0 font-weight-bold text-primary">Distribución de inventario</h6>
+                                    <span class="badge badge-light">Pastel</span>
                                 </div>
                                 <div class="card-body">
-                                    <div id="piechartProductos" style="height: 400px;"></div>
+                                    <canvas id="stockChart" height="260"></canvas>
+                                    <p class="text-muted small mt-3 mb-0">Se muestra la participación de cada producto sobre el stock disponible.</p>
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-lg-6 mb-4">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Productos retirados</h6>
+                            <div class="card shadow border-0 h-100">
+                                <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                                    <h6 class="m-0 font-weight-bold text-primary">Entradas vs salidas</h6>
+                                    <span class="badge badge-light">Barras</span>
                                 </div>
                                 <div class="card-body">
-                                    <div id="chartSalidas" style="height: 400px;"></div>
+                                    <canvas id="flujoChart" height="260"></canvas>
+                                    <p class="text-muted small mt-3 mb-0">Comparativo por fecha de los movimientos registrados.</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-lg-12 mb-4">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Productos ingresados</h6>
+                        <div class="col-lg-8 mb-4">
+                            <div class="card shadow border-0 h-100">
+                                <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                                    <h6 class="m-0 font-weight-bold text-primary">Rotación por producto</h6>
+                                    <span class="badge badge-light">Apilado</span>
                                 </div>
                                 <div class="card-body">
-                                    <div id="chartEntradas" style="height: 400px;"></div>
+                                    <canvas id="productoChart" height="260"></canvas>
+                                    <p class="text-muted small mt-3 mb-0">Acumulado de entradas y salidas por cada producto.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mb-4">
+                            <div class="card shadow border-0 h-100">
+                                <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                                    <h6 class="m-0 font-weight-bold text-primary">Alertas recientes</h6>
+                                    <span class="badge badge-danger">Live</span>
+                                </div>
+                                <div class="card-body">
+                                    <?php if (!$totalAlertas): ?>
+                                        <p class="text-muted mb-0">No hay alertas. Todo está bajo control.</p>
+                                    <?php endif; ?>
+
+                                    <?php foreach ($alertas['bajoStock'] as $producto): ?>
+                                        <div class="d-flex align-items-start mb-3">
+                                            <div class="icon-circle bg-warning text-white mr-3">
+                                                <i class="fa-solid fa-box-open"></i>
+                                            </div>
+                                            <div>
+                                                <div class="font-weight-bold text-dark"><?= htmlspecialchars($producto['nombre_producto'], ENT_QUOTES, 'UTF-8') ?></div>
+                                                <div class="text-muted small">Stock disponible: <?= (int) $producto['stock_actual'] ?> uds.</div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+
+                                    <?php foreach ($alertas['vencimientos'] as $lote): ?>
+                                        <div class="d-flex align-items-start mb-3">
+                                            <div class="icon-circle bg-danger text-white mr-3">
+                                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                            </div>
+                                            <div>
+                                                <div class="font-weight-bold text-dark">Lote #<?= (int) $lote['id_lote'] ?> - <?= htmlspecialchars($lote['nombre_producto'], ENT_QUOTES, 'UTF-8') ?></div>
+                                                <div class="text-muted small">Vence el <?= htmlspecialchars($lote['fecha_vencimiento'], ENT_QUOTES, 'UTF-8') ?> | Ingreso: <?= htmlspecialchars($lote['fecha_ingreso'], ENT_QUOTES, 'UTF-8') ?></div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
                                 </div>
                             </div>
                         </div>
@@ -211,68 +325,153 @@ $tarjetas = [
     <script src="<?= htmlspecialchars($assetBase, ENT_QUOTES, 'UTF-8') ?>/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="<?= htmlspecialchars($assetBase, ENT_QUOTES, 'UTF-8') ?>/vendor/jquery-easing/jquery.easing.min.js"></script>
     <script src="<?= htmlspecialchars($assetBase, ENT_QUOTES, 'UTF-8') ?>/js/sb-admin-2.min.js"></script>
-    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const inventario = <?= json_encode($productosInventario, JSON_UNESCAPED_UNICODE) ?>;
-        const salidas = <?= json_encode($datosSalidas, JSON_UNESCAPED_UNICODE) ?>;
-        const entradas = <?= json_encode($datosEntradas, JSON_UNESCAPED_UNICODE) ?>;
+        const inventario = <?= json_encode($productosInventario, JSON_UNESCAPED_UNICODE) ?> || [];
+        const salidas = <?= json_encode($datosSalidas, JSON_UNESCAPED_UNICODE) ?> || { productos: [], fechas: [], valores: {} };
+        const entradas = <?= json_encode($datosEntradas, JSON_UNESCAPED_UNICODE) ?> || { productos: [], fechas: [], valores: {} };
 
-        google.charts.load('current', { packages: ['corechart'] });
-        google.charts.setOnLoadCallback(drawCharts);
+        const coloresBase = ['#6366F1', '#14B8A6', '#F59E0B', '#EF4444', '#0EA5E9', '#8B5CF6', '#10B981', '#F97316'];
 
-        function drawCharts() {
-            drawPieChart();
-            drawMovimientoChart('chartSalidas', salidas, 'Productos Retirados por Fecha y Producto');
-            drawMovimientoChart('chartEntradas', entradas, 'Productos Ingresados por Fecha y Producto');
-        }
+        function crearPastelStock() {
+            const ctx = document.getElementById('stockChart');
+            if (!ctx) return;
 
-        function drawPieChart() {
-            const container = document.getElementById('piechartProductos');
             if (!inventario.length) {
-                container.innerHTML = '<p class="text-center text-muted">No hay datos de inventario para graficar.</p>';
+                ctx.outerHTML = '<p class="text-center text-muted mb-0">No hay datos de inventario para graficar.</p>';
                 return;
             }
 
-            const data = new google.visualization.DataTable();
-            data.addColumn('string', 'Producto');
-            data.addColumn('number', 'Cantidad');
-            inventario.forEach(item => {
-                data.addRow([item.nombre, Number(item.cantidad)]);
-            });
+            const labels = inventario.map(item => item.nombre);
+            const data = inventario.map(item => Number(item.cantidad));
 
-            const chart = new google.visualization.PieChart(container);
-            chart.draw(data, { title: 'Inventario actual' });
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels,
+                    datasets: [{
+                        data,
+                        backgroundColor: labels.map((_, i) => coloresBase[i % coloresBase.length]),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: context => `${context.label}: ${context.formattedValue} uds.`
+                            }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
         }
 
-        function drawMovimientoChart(containerId, datos, title) {
-            const container = document.getElementById(containerId);
-            if (!datos.productos.length || !datos.fechas.length) {
-                container.innerHTML = '<p class="text-center text-muted">No hay movimientos suficientes para graficar.</p>';
+        function combinarFechas() {
+            const fechas = new Set([...(entradas.fechas || []), ...(salidas.fechas || [])]);
+            return Array.from(fechas).sort();
+        }
+
+        function totalesPorFecha(datos, fechas) {
+            return fechas.map(fecha => {
+                const valores = datos.valores?.[fecha] || {};
+                return Object.values(valores).reduce((suma, valor) => suma + Number(valor || 0), 0);
+            });
+        }
+
+        function crearFlujoFechas() {
+            const ctx = document.getElementById('flujoChart');
+            if (!ctx) return;
+
+            const fechas = combinarFechas();
+            if (!fechas.length) {
+                ctx.outerHTML = '<p class="text-center text-muted mb-0">Aún no hay movimientos registrados.</p>';
                 return;
             }
 
-            const data = new google.visualization.DataTable();
-            data.addColumn('date', 'Fecha');
-            datos.productos.forEach(producto => data.addColumn('number', producto));
+            const datosEntradas = totalesPorFecha(entradas, fechas);
+            const datosSalidas = totalesPorFecha(salidas, fechas);
 
-            datos.fechas.forEach(fecha => {
-                const fila = [new Date(fecha)];
-                datos.productos.forEach(producto => {
-                    const valor = datos.valores[fecha] && datos.valores[fecha][producto]
-                        ? Number(datos.valores[fecha][producto])
-                        : 0;
-                    fila.push(valor);
-                });
-                data.addRow(fila);
-            });
-
-            const chart = new google.visualization.ColumnChart(container);
-            chart.draw(data, {
-                title,
-                isStacked: true,
-                legend: { position: 'top' }
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: fechas,
+                    datasets: [
+                        { label: 'Entradas', data: datosEntradas, backgroundColor: '#14B8A6' },
+                        { label: 'Salidas', data: datosSalidas, backgroundColor: '#EF4444' },
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    interaction: { mode: 'index', intersect: false },
+                    scales: {
+                        x: { stacked: false },
+                        y: { stacked: false, beginAtZero: true }
+                    }
+                }
             });
         }
+
+        function totalesPorProducto(datos) {
+            const productos = datos.productos || [];
+            return productos.map(producto => {
+                const total = Object.values(datos.valores || {}).reduce((suma, valoresFecha) => {
+                    return suma + Number(valoresFecha[producto] || 0);
+                }, 0);
+                return { producto, total };
+            });
+        }
+
+        function crearRotacionProducto() {
+            const ctx = document.getElementById('productoChart');
+            if (!ctx) return;
+
+            const entradasProducto = totalesPorProducto(entradas);
+            const salidasProducto = totalesPorProducto(salidas);
+            const productos = Array.from(new Set([
+                ...entradasProducto.map(item => item.producto),
+                ...salidasProducto.map(item => item.producto)
+            ]));
+
+            if (!productos.length) {
+                ctx.outerHTML = '<p class="text-center text-muted mb-0">No hay productos con movimientos para mostrar.</p>';
+                return;
+            }
+
+            const datosEntradas = productos.map(nombre => entradasProducto.find(item => item.producto === nombre)?.total || 0);
+            const datosSalidas = productos.map(nombre => salidasProducto.find(item => item.producto === nombre)?.total || 0);
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: productos,
+                    datasets: [
+                        { label: 'Entradas acumuladas', data: datosEntradas, backgroundColor: '#0EA5E9' },
+                        { label: 'Salidas acumuladas', data: datosSalidas, backgroundColor: '#F59E0B' },
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: { stacked: true },
+                        y: { stacked: true, beginAtZero: true }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: context => `${context.dataset.label}: ${context.parsed.y} uds.`
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        crearPastelStock();
+        crearFlujoFechas();
+        crearRotacionProducto();
     </script>
 </body>
 
