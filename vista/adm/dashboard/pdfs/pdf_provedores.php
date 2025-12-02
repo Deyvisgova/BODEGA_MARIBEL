@@ -39,5 +39,5 @@ while ($fila = $resultado->fetch_assoc()){
 
 
 
-$pdf->Output();
+$pdf->Output('I', 'reporte_proveedores.pdf');
 ?>

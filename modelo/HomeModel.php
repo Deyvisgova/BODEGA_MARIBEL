@@ -3,10 +3,17 @@ require_once __DIR__ . '/Modelo.php';
 
 class HomeModel extends Modelo
 {
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->asegurarColumnasProducto();
+    }
+
     public function obtenerCategoriasPrincipales(): array
     {
         $consulta = $this->conexion->query(
-            "SELECT TRIM(categoria) AS categoria, COUNT(*) AS total_productos, SUM(cantidad) AS total_unidades
+            "SELECT TRIM(categoria) AS categoria, COUNT(*) AS total_productos, SUM(stock_actual) AS total_unidades
              FROM producto
              WHERE activo = 'activo'
              GROUP BY TRIM(categoria)
@@ -19,10 +26,10 @@ class HomeModel extends Modelo
     public function obtenerProductosDestacados(int $limite = 3): array
     {
         $consulta = $this->conexion->prepare(
-            "SELECT id_producto, nombre_producto, precio_producto, cantidad, categoria
+            "SELECT id_producto, nombre_producto, precio_producto, stock_actual AS cantidad, descripcion, categoria
              FROM producto
              WHERE activo = 'activo'
-             ORDER BY cantidad DESC
+             ORDER BY stock_actual DESC
              LIMIT :limite"
         );
         $consulta->bindValue(':limite', $limite, PDO::PARAM_INT);
@@ -35,8 +42,8 @@ class HomeModel extends Modelo
     {
         $consulta = $this->conexion->query(
             "SELECT COUNT(*) AS total_productos,
-                    SUM(cantidad) AS total_unidades,
-                    SUM(precio_producto * cantidad) AS valor_estimado
+                    SUM(stock_actual) AS total_unidades,
+                    SUM(precio_producto * stock_actual) AS valor_estimado
              FROM producto
              WHERE activo = 'activo'"
         );
@@ -76,5 +83,32 @@ class HomeModel extends Modelo
             'correo' => 'logistica@bodegamaribel.com',
             'direccion' => 'Av. San Martín 123, Lima, Perú',
         ];
+    }
+
+    private function asegurarColumnasProducto(): void
+    {
+        $schema = $this->conexion->query('SELECT DATABASE()')->fetchColumn();
+
+        if (!$this->columnaExiste('descripcion', $schema)) {
+            $this->conexion->exec("ALTER TABLE producto ADD COLUMN descripcion VARCHAR(255) NOT NULL DEFAULT '' AFTER nombre_producto");
+        }
+
+        if (!$this->columnaExiste('stock_actual', $schema)) {
+            $this->conexion->exec("ALTER TABLE producto ADD COLUMN stock_actual INT(11) NOT NULL DEFAULT 0 AFTER descripcion");
+            $this->conexion->exec('UPDATE producto SET stock_actual = cantidad');
+        }
+    }
+
+    private function columnaExiste(string $columna, string $schema): bool
+    {
+        $consulta = $this->conexion->prepare(
+            'SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = :schema AND TABLE_NAME = "producto" AND COLUMN_NAME = :columna'
+        );
+        $consulta->execute([
+            ':schema' => $schema,
+            ':columna' => $columna,
+        ]);
+
+        return (bool) $consulta->fetchColumn();
     }
 }

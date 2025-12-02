@@ -5,6 +5,51 @@
 @include '../../../controlador/controlador_adm/controlador_contadorTablas.php';
 @include '../../../controlador/controlador_adm/controlador_fecha_hora_actual.php';
 
+function tablaExiste(mysqli $conn, string $tabla): bool {
+    $sql = "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?";
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        return false;
+    }
+    $stmt->bind_param('s', $tabla);
+    $stmt->execute();
+    $stmt->bind_result($existe);
+    $stmt->fetch();
+    $stmt->close();
+
+    return (bool) $existe;
+}
+
+function obtenerAlertasNavbar(mysqli $conn): array {
+    $alertas = [
+        'bajoStock' => [],
+        'vencimientos' => [],
+    ];
+
+    $stock = $conn->query("SELECT id_producto, nombre_producto, stock_actual FROM producto WHERE stock_actual <= 10 ORDER BY stock_actual ASC, nombre_producto");
+    if ($stock) {
+        $alertas['bajoStock'] = $stock->fetch_all(MYSQLI_ASSOC);
+    }
+
+    if (tablaExiste($conn, 'lote')) {
+        $vencimientos = $conn->query(
+            "SELECT l.id_lote, l.fecha_vencimiento, l.fecha_ingreso, p.nombre_producto
+             FROM lote l
+             INNER JOIN producto p ON p.id_producto = l.id_producto
+             WHERE l.fecha_vencimiento <= DATE_ADD(CURDATE(), INTERVAL 20 DAY)
+             ORDER BY l.fecha_vencimiento ASC"
+        );
+
+        if ($vencimientos) {
+            $alertas['vencimientos'] = $vencimientos->fetch_all(MYSQLI_ASSOC);
+        }
+    }
+
+    return $alertas;
+}
+
+$alertasNavbar = obtenerAlertasNavbar($conn);
+
 session_start();
 
 if(!isset($_SESSION['admin_name'])){
@@ -74,6 +119,50 @@ if(!isset($_SESSION['admin_name'])){
                 </div>
                 <!-- Topbar Navbar -->
                 <ul class="navbar-nav ml-auto">
+
+                    <?php $totalAlertas = count($alertasNavbar['bajoStock']) + count($alertasNavbar['vencimientos']); ?>
+                    <li class="nav-item dropdown no-arrow mx-2">
+                        <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa-solid fa-bell"></i>
+                            <?php if ($totalAlertas > 0): ?>
+                                <span class="badge badge-danger badge-counter"><?php echo $totalAlertas; ?></span>
+                            <?php endif; ?>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown" style="min-width: 320px;">
+                            <h6 class="dropdown-header">Alertas de inventario</h6>
+                            <?php if (!$totalAlertas): ?>
+                                <span class="dropdown-item text-muted">No hay alertas pendientes.</span>
+                            <?php endif; ?>
+                            <?php foreach ($alertasNavbar['bajoStock'] as $producto): ?>
+                                <div class="dropdown-item d-flex align-items-center">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-warning">
+                                            <i class="fa-solid fa-box-open text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">Stock bajo</div>
+                                        <span class="font-weight-bold"><?php echo htmlspecialchars($producto['nombre_producto'], ENT_QUOTES, 'UTF-8'); ?></span>
+                                        <div class="text-muted">Disponible: <?php echo (int) $producto['stock_actual']; ?> uds.</div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                            <?php foreach ($alertasNavbar['vencimientos'] as $lote): ?>
+                                <div class="dropdown-item d-flex align-items-center">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-danger">
+                                            <i class="fa-solid fa-triangle-exclamation text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">Vence <?php echo htmlspecialchars($lote['fecha_vencimiento'], ENT_QUOTES, 'UTF-8'); ?></div>
+                                        <span class="font-weight-bold">Lote #<?php echo (int) $lote['id_lote']; ?> - <?php echo htmlspecialchars($lote['nombre_producto'], ENT_QUOTES, 'UTF-8'); ?></span>
+                                        <div class="text-muted">Ingresó: <?php echo htmlspecialchars($lote['fecha_ingreso'], ENT_QUOTES, 'UTF-8'); ?></div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </li>
                     
                     <!-- Nav Item - Search Dropdown (Visible Only XS) -->
                     <li class="nav-item dropdown no-arrow d-sm-none">

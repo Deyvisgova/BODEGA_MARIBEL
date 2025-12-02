@@ -114,7 +114,7 @@ if(!isset($_SESSION['admin_name'])){
                                     <select name="producto" id="producto" class="form-control">
                                         <?php 
                                         include 'config.php';
-                                        $consulta="SELECT * from producto where cantidad>0";
+                                        $consulta="SELECT * from producto where stock_actual>0";
                                         $ejecutar=mysqli_query($conn,$consulta);
                                         ?>
                                      <?php 

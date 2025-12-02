@@ -31,9 +31,9 @@
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="dashboard.php">
                 <div class="sidebar-brand-icon rotate-n-15">
-                <i class="fa-solid fa-shield-dog"></i>
+                <i class="fa-solid fa-boxes-stacked"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3"> 
+                <div class="sidebar-brand-text mx-3">
                     <p>
                         Gestion Inv. Maribel
                     </p>
