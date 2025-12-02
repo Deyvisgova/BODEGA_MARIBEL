@@ -73,40 +73,6 @@ INSERT INTO `categoria` (`id_categoria`, `nombre_categoria`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `cliente`
---
-
-CREATE TABLE `cliente` (
-  `id_cliente` int(11) NOT NULL,
-  `dni_cliente` varchar(20) NOT NULL,
-  `nombre_cliente` varchar(50) NOT NULL,
-  `apellido_cliente` varchar(50) NOT NULL,
-  `genero_cliente` varchar(50) NOT NULL,
-  `direccion_cliente` varchar(50) NOT NULL,
-  `telefono_cliente` varchar(20) DEFAULT NULL,
-  `email` varchar(50) DEFAULT NULL,
-  `password` varchar(50) DEFAULT NULL,
-  `user_type` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `cliente`
---
-
-INSERT INTO `cliente` (`id_cliente`, `dni_cliente`, `nombre_cliente`, `apellido_cliente`, `genero_cliente`, `direccion_cliente`, `telefono_cliente`, `email`, `password`, `user_type`) VALUES
-(1, '75476991', 'Augusto', 'Barrientos Mejia', 'masculino', 'mz L lote 1B', '974746542', 'u20204717@utp.edu.pe', '202cb962ac59075b964b07152d234b70', 'user'),
-(2, '73621424', 'Nicole', 'Quispe Florez', 'femenino', 'Mz las flores L 123', '954832754', 'nicole@gmail.com', '202cb962ac59075b964b07152d234b70', 'user'),
-(3, '73621424', 'Alvaro', 'Vargas Medina', 'masculino', 'Mz los jazmineL 123', '954832364', 'alvaro@gmail.com', '202cb962ac59075b964b07152d234b70', 'user'),
-(4, '72711588', 'Raul', 'Reynaga', 'masculino', 'que te importa', '973204176', 'reynagagraul@gmail.com', '202cb962ac59075b964b07152d234b70', 'user'),
-(6, '12345678', 'ALX', 'MAN', 'Masculino', 'sdadas', '987456321', 'alx@gmail.com', '202cb962ac59075b964b07152d234b70', 'user'),
-(7, '12345678', 'elx', 'MAN', 'Masculino', 'sdadas', '987456321', 'elx@gmail.com', '202cb962ac59075b964b07152d234b70', 'user'),
-(8, '74125836', 'dsadsa', 'dsadsa', 'Masculino', 'csadasdas', '123456789', 'ulx@gmail.com', '202cb962ac59075b964b07152d234b70', 'user');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `colaborador`
---
 
 CREATE TABLE `colaborador` (
   `id_colab` int(11) NOT NULL,
@@ -140,8 +106,8 @@ CREATE TABLE `guia_de_entrada` (
   `fecha_entrada` date NOT NULL,
   `descripcion` varchar(100) NOT NULL,
   `cantidad_entrada` int(11) NOT NULL,
-  `producto` varchar(50) NOT NULL,
-  `provedor` varchar(50) NOT NULL,
+  `producto` varchar(200) NOT NULL,
+  `provedor` varchar(100) NOT NULL,
   `activo` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -165,7 +131,7 @@ CREATE TABLE `guia_de_salida` (
   `fecha_salida` date NOT NULL,
   `descripcion` varchar(200) NOT NULL,
   `cantidad_salida` int(11) NOT NULL,
-  `producto` varchar(50) NOT NULL,
+  `producto` varchar(200) NOT NULL,
   `destino` varchar(50) NOT NULL,
   `encargado` varchar(50) NOT NULL,
   `activo` varchar(20) NOT NULL
@@ -189,23 +155,50 @@ INSERT INTO `guia_de_salida` (`id_guia_salida`, `fecha_salida`, `descripcion`, `
 CREATE TABLE `producto` (
   `id_producto` int(11) NOT NULL,
   `nombre_producto` varchar(200) NOT NULL,
-  `cantidad` int(11) NOT NULL,
+  `descripcion` varchar(255) NOT NULL DEFAULT '',
+  `stock_actual` int(11) NOT NULL DEFAULT 0,
+  `cantidad` int(11) NOT NULL DEFAULT 0,
   `precio_producto` decimal(10,2) NOT NULL,
-  `categoria` varchar(20) NOT NULL,
+  `categoria` varchar(30) NOT NULL,
   `activo` varchar(20) NOT NULL,
-  `provedor` varchar(50) NOT NULL
+  `provedor` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `producto`
 --
 
-INSERT INTO `producto` (`id_producto`, `nombre_producto`, `cantidad`, `precio_producto`, `categoria`, `activo`, `provedor`) VALUES
-(1, 'arroz', 450, '20.00', '    Lacteos', 'activo', '  Nestle'),
-(2, 'fideos', 25, '10.00', 'Cereales', 'activo', 'Aro'),
-(3, 'leche Nesle', 15, '20.00', '    Lacteos', 'activo', '  Nestle'),
-(6, 'leche Gloria', 50, '30.00', '    Lacteos', 'activo', 'Gloria'),
-(7, 'leche Inka', 50, '30.00', '    Lacteos', 'activo', '  Nestle');
+INSERT INTO `producto` (`id_producto`, `nombre_producto`, `descripcion`, `stock_actual`, `cantidad`, `precio_producto`, `categoria`, `activo`, `provedor`) VALUES
+(1, 'arroz', 'Arroz de grano largo', 450, 450, '20.00', '    Lacteos', 'activo', '  Nestle'),
+(2, 'fideos', 'Fideos de trigo', 25, 25, '10.00', 'Cereales', 'activo', 'Aro'),
+(3, 'leche Nesle', 'Leche evaporada marca Nestlé', 15, 15, '20.00', '    Lacteos', 'activo', '  Nestle'),
+(6, 'leche Gloria', 'Leche evaporada marca Gloria', 50, 50, '30.00', '    Lacteos', 'activo', 'Gloria'),
+(7, 'leche Inka', 'Leche evaporada marca Inka', 50, 50, '30.00', '    Lacteos', 'activo', '  Nestle'),
+(8, 'Aceite', 'Aceite vegetal 1L', 0, 0, '0.00', 'Cereales', 'activo', '  Nestle'),
+(9, 'Jamonadas', 'Embutido de cerdo', 0, 0, '0.00', 'embutidos', 'activo', 'Aro');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `lote`
+--
+
+CREATE TABLE `lote` (
+  `id_lote` int(11) NOT NULL,
+  `id_producto` int(11) NOT NULL,
+  `cantidad_recibida` int(11) NOT NULL,
+  `fecha_vencimiento` date NOT NULL,
+  `fecha_ingreso` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `lote`
+--
+
+INSERT INTO `lote` (`id_lote`, `id_producto`, `cantidad_recibida`, `fecha_vencimiento`, `fecha_ingreso`) VALUES
+(1, 1, 200, '2024-08-31', '2024-07-01'),
+(2, 3, 80, '2024-09-15', '2024-07-10'),
+(3, 6, 120, '2024-10-05', '2024-07-12');
 
 -- --------------------------------------------------------
 
@@ -268,7 +261,8 @@ ALTER TABLE `administrador`
 -- Indices de la tabla `categoria`
 --
 ALTER TABLE `categoria`
-  ADD PRIMARY KEY (`id_categoria`);
+  ADD PRIMARY KEY (`id_categoria`),
+  ADD UNIQUE KEY `nombre_categoria_unico` (`nombre_categoria`);
 
 --
 -- Indices de la tabla `colaborador`
@@ -280,32 +274,67 @@ ALTER TABLE `colaborador`
 -- Indices de la tabla `guia_de_entrada`
 --
 ALTER TABLE `guia_de_entrada`
-  ADD PRIMARY KEY (`id_guia_entrada`);
+  ADD PRIMARY KEY (`id_guia_entrada`),
+  ADD KEY `idx_guia_entrada_producto` (`producto`),
+  ADD KEY `idx_guia_entrada_provedor` (`provedor`);
 
 --
 -- Indices de la tabla `guia_de_salida`
 --
 ALTER TABLE `guia_de_salida`
-  ADD PRIMARY KEY (`id_guia_salida`);
+  ADD PRIMARY KEY (`id_guia_salida`),
+  ADD KEY `idx_guia_salida_producto` (`producto`);
 
 --
 -- Indices de la tabla `kardex`
 --
 ALTER TABLE `kardex`
-  ADD PRIMARY KEY (`id_kardex`);
+  ADD PRIMARY KEY (`id_kardex`),
+  ADD KEY `idx_kardex_producto` (`producto`);
 
 --
 -- Indices de la tabla `producto`
 --
 ALTER TABLE `producto`
-  ADD PRIMARY KEY (`id_producto`);
+  ADD PRIMARY KEY (`id_producto`),
+  ADD UNIQUE KEY `nombre_producto_unico` (`nombre_producto`),
+  ADD KEY `idx_producto_categoria` (`categoria`),
+  ADD KEY `idx_producto_provedor` (`provedor`);
+
+--
+-- Indices de la tabla `lote`
+--
+ALTER TABLE `lote`
+  ADD PRIMARY KEY (`id_lote`),
+  ADD KEY `idx_lote_producto` (`id_producto`);
 
 --
 -- Indices de la tabla `provedor`
 --
 ALTER TABLE `provedor`
-  ADD PRIMARY KEY (`id_provedor`);
+  ADD PRIMARY KEY (`id_provedor`),
+  ADD UNIQUE KEY `nombre_empresa_unico` (`Nombre_de_la_empresa`);
 
+
+--
+-- Restricciones para tablas volcadas
+--
+ALTER TABLE `producto`
+  ADD CONSTRAINT `fk_producto_categoria` FOREIGN KEY (`categoria`) REFERENCES `categoria` (`nombre_categoria`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_producto_provedor` FOREIGN KEY (`provedor`) REFERENCES `provedor` (`Nombre_de_la_empresa`) ON UPDATE CASCADE;
+
+ALTER TABLE `guia_de_entrada`
+  ADD CONSTRAINT `fk_entrada_producto` FOREIGN KEY (`producto`) REFERENCES `producto` (`nombre_producto`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_entrada_provedor` FOREIGN KEY (`provedor`) REFERENCES `provedor` (`Nombre_de_la_empresa`) ON UPDATE CASCADE;
+
+ALTER TABLE `guia_de_salida`
+  ADD CONSTRAINT `fk_salida_producto` FOREIGN KEY (`producto`) REFERENCES `producto` (`nombre_producto`) ON UPDATE CASCADE;
+
+ALTER TABLE `kardex`
+  ADD CONSTRAINT `fk_kardex_producto` FOREIGN KEY (`producto`) REFERENCES `producto` (`nombre_producto`) ON UPDATE CASCADE;
+
+ALTER TABLE `lote`
+  ADD CONSTRAINT `fk_lote_producto` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id_producto`) ON UPDATE CASCADE;
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -351,7 +380,13 @@ ALTER TABLE `kardex`
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT de la tabla `lote`
+--
+ALTER TABLE `lote`
+  MODIFY `id_lote` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `provedor`

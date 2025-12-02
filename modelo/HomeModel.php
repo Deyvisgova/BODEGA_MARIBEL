@@ -6,7 +6,7 @@ class HomeModel extends Modelo
     public function obtenerCategoriasPrincipales(): array
     {
         $consulta = $this->conexion->query(
-            "SELECT TRIM(categoria) AS categoria, COUNT(*) AS total_productos, SUM(cantidad) AS total_unidades
+            "SELECT TRIM(categoria) AS categoria, COUNT(*) AS total_productos, SUM(stock_actual) AS total_unidades
              FROM producto
              WHERE activo = 'activo'
              GROUP BY TRIM(categoria)
@@ -19,10 +19,10 @@ class HomeModel extends Modelo
     public function obtenerProductosDestacados(int $limite = 3): array
     {
         $consulta = $this->conexion->prepare(
-            "SELECT id_producto, nombre_producto, precio_producto, cantidad, categoria
+            "SELECT id_producto, nombre_producto, precio_producto, stock_actual AS cantidad, descripcion, categoria
              FROM producto
              WHERE activo = 'activo'
-             ORDER BY cantidad DESC
+             ORDER BY stock_actual DESC
              LIMIT :limite"
         );
         $consulta->bindValue(':limite', $limite, PDO::PARAM_INT);
@@ -35,8 +35,8 @@ class HomeModel extends Modelo
     {
         $consulta = $this->conexion->query(
             "SELECT COUNT(*) AS total_productos,
-                    SUM(cantidad) AS total_unidades,
-                    SUM(precio_producto * cantidad) AS valor_estimado
+                    SUM(stock_actual) AS total_unidades,
+                    SUM(precio_producto * stock_actual) AS valor_estimado
              FROM producto
              WHERE activo = 'activo'"
         );

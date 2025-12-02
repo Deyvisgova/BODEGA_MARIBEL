@@ -27,10 +27,33 @@ class AdminModel extends Modelo
     public function obtenerProductosInventario(): array
     {
         $stmt = $this->conexion->query(
-            'SELECT nombre_producto AS nombre, cantidad FROM producto ORDER BY nombre_producto'
+            'SELECT nombre_producto AS nombre, stock_actual AS cantidad FROM producto ORDER BY nombre_producto'
         );
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function obtenerAlertas(): array
+    {
+        $bajoStock = $this->conexion->query(
+            'SELECT id_producto, nombre_producto, stock_actual
+             FROM producto
+             WHERE stock_actual < 10
+             ORDER BY stock_actual ASC, nombre_producto'
+        )->fetchAll(PDO::FETCH_ASSOC);
+
+        $proximosVencimientos = $this->conexion->query(
+            "SELECT l.id_lote, l.fecha_vencimiento, l.fecha_ingreso, p.nombre_producto
+             FROM lote l
+             INNER JOIN producto p ON p.id_producto = l.id_producto
+             WHERE l.fecha_vencimiento <= DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+             ORDER BY l.fecha_vencimiento ASC"
+        )->fetchAll(PDO::FETCH_ASSOC);
+
+        return [
+            'bajoStock' => $bajoStock,
+            'vencimientos' => $proximosVencimientos,
+        ];
     }
 
     public function obtenerSalidasPorFecha(): array
