@@ -3,7 +3,6 @@
 
     $id_producto = (isset($_POST['id_producto']))?$_POST['id_producto']:"";
     $nombre_producto = (isset($_POST['nombre_producto']))?$_POST['nombre_producto']:"";
-    $cantidad = (isset($_POST['cantidad']))?$_POST['cantidad']:"";
     $precio_producto = (isset($_POST['precio_producto']))?$_POST['precio_producto']:"";
     $categoria = (isset($_POST['categoria']))?$_POST['categoria']:"";
     $activo = (isset($_POST['activo']))?$_POST['activo']:"";
@@ -24,7 +23,7 @@
                     header('location: ../../vista/adm/dashboard/tabla_producto.php');
                 }else{
 
-                    $insert = "INSERT INTO producto(nombre_producto,cantidad, precio_producto,categoria, activo, provedor) VALUES('$nombre_producto','$cantidad', '$precio_producto', '$categoria', '$activo','$provedor')";
+                    $insert = "INSERT INTO producto(nombre_producto, precio_producto,categoria, activo, provedor) VALUES('$nombre_producto', '$precio_producto', '$categoria', '$activo','$provedor')";
                     mysqli_query($conn, $insert);
 
                     header('location: ../../vista/adm/dashboard/tabla_producto.php');
@@ -33,7 +32,7 @@
             case "btnModificar":
                 //falta implementar más...
 
-                $update = "UPDATE producto SET nombre_producto='$nombre_producto',cantidad='$cantidad',precio_producto='$precio_producto', categoria='$categoria', activo='$activo',provedor='$provedor' WHERE id_producto='$id_producto'";
+                $update = "UPDATE producto SET nombre_producto='$nombre_producto',precio_producto='$precio_producto', categoria='$categoria', activo='$activo',provedor='$provedor' WHERE id_producto='$id_producto'";
                 mysqli_query($conn, $update);
 
                 header('location: ../../vista/adm/dashboard/tabla_producto.php');

@@ -82,7 +82,6 @@ $tarjetas = [
             <hr class="sidebar-divider">
             <div class="sidebar-heading text-white">Inventario</div>
             <li class="nav-item"><a class="nav-link" href="<?= htmlspecialchars($buildUrl('vista/adm/dashboard/tabla_producto.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fa-solid fa-box"></i> <span>Productos</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="<?= htmlspecialchars($buildUrl('vista/adm/dashboard/tabla_checkList.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fa-solid fa-list-check"></i> <span>Check List</span></a></li>
             <li class="nav-item"><a class="nav-link" href="<?= htmlspecialchars($buildUrl('vista/adm/dashboard/tabla_categoria.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fa-solid fa-layer-group"></i> <span>Categorías</span></a></li>
             <li class="nav-item"><a class="nav-link" href="<?= htmlspecialchars($buildUrl('vista/adm/dashboard/tabla_guia_entrada.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fa-solid fa-file-import"></i> <span>Guía de Entrada</span></a></li>
             <li class="nav-item"><a class="nav-link" href="<?= htmlspecialchars($buildUrl('vista/adm/dashboard/tabla_guia_salida.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fa-solid fa-file-export"></i> <span>Guía de Salida</span></a></li>
