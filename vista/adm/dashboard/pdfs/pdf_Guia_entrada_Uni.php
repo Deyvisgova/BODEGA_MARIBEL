@@ -45,7 +45,7 @@ if ($id_guia !== null && $id_guia !== '') {
             $pdf->Cell(20,5,$fila['activo'],1,1,"C");
         }
 
-        $pdf->Output();
+        $pdf->Output('I', 'guia_entrada_individual.pdf');
     } else {
         echo "No se encontró la guía de entrada con el ID proporcionado.";
     }

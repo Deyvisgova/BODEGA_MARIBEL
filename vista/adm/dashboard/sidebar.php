@@ -34,9 +34,9 @@
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="dashboard.php">
                 <div class="sidebar-brand-icon rotate-n-15">
-                <i class="fa-solid fa-shield-dog"></i>
+                <i class="fa-solid fa-boxes-stacked"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3"> 
+                <div class="sidebar-brand-text mx-3">
                     <p>
                         Gestion Inv. Maribel
                     </p>
@@ -82,12 +82,12 @@
                 <span>Productos</span></a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="tabla_checkList.php"><!--aquí también-->
-                <i class="fa-sharp fa-solid fa-cookie"></i>
-                <span>Chek List</span></a>
+           <li class="nav-item">
+                <a class="nav-link" href="tabla_lote.php"><!--aquí también-->
+                <i class="fa-solid fa-boxes-stacked"></i>
+                <span>Lotes</span></a>
             </li>
-        
+
            <li class="nav-item">
                 <a class="nav-link" href="tabla_categoria.php"><!--aquí también-->
                 <i class="fa-sharp fa-solid fa-cookie"></i>

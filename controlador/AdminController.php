@@ -28,6 +28,7 @@ class AdminController extends Controller
             'productosInventario' => $this->model->obtenerProductosInventario(),
             'datosSalidas' => $this->model->obtenerSalidasPorFecha(),
             'datosEntradas' => $this->model->obtenerEntradasPorFecha(),
+            'alertas' => $this->model->obtenerAlertas(),
         ]);
     }
 
