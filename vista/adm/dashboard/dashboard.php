@@ -28,6 +28,7 @@ $resumen = $resumen ?? [];
 $productosInventario = $productosInventario ?? [];
 $datosSalidas = $datosSalidas ?? ['productos' => [], 'fechas' => [], 'valores' => []];
 $datosEntradas = $datosEntradas ?? ['productos' => [], 'fechas' => [], 'valores' => []];
+$alertas = $alertas ?? ['bajoStock' => [], 'vencimientos' => []];
 
 $tarjetas = [
     ['clave' => 'administradores', 'titulo' => 'Cuentas de Administradores', 'color' => 'primary', 'icono' => 'fa-solid fa-key'],
@@ -82,7 +83,7 @@ $tarjetas = [
             <hr class="sidebar-divider">
             <div class="sidebar-heading text-white">Inventario</div>
             <li class="nav-item"><a class="nav-link" href="<?= htmlspecialchars($buildUrl('vista/adm/dashboard/tabla_producto.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fa-solid fa-box"></i> <span>Productos</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="<?= htmlspecialchars($buildUrl('vista/adm/dashboard/tabla_checkList.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fa-solid fa-list-check"></i> <span>Check List</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="<?= htmlspecialchars($buildUrl('vista/adm/dashboard/tabla_lote.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fa-solid fa-boxes-stacked"></i> <span>Lotes</span></a></li>
             <li class="nav-item"><a class="nav-link" href="<?= htmlspecialchars($buildUrl('vista/adm/dashboard/tabla_categoria.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fa-solid fa-layer-group"></i> <span>Categorías</span></a></li>
             <li class="nav-item"><a class="nav-link" href="<?= htmlspecialchars($buildUrl('vista/adm/dashboard/tabla_guia_entrada.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fa-solid fa-file-import"></i> <span>Guía de Entrada</span></a></li>
             <li class="nav-item"><a class="nav-link" href="<?= htmlspecialchars($buildUrl('vista/adm/dashboard/tabla_guia_salida.php'), ENT_QUOTES, 'UTF-8') ?>"><i class="fa-solid fa-file-export"></i> <span>Guía de Salida</span></a></li>
@@ -112,6 +113,49 @@ $tarjetas = [
                     </div>
 
                     <ul class="navbar-nav ml-auto">
+                        <?php $totalAlertas = count($alertas['bajoStock']) + count($alertas['vencimientos']); ?>
+                        <li class="nav-item dropdown no-arrow mx-2">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa-solid fa-bell"></i>
+                                <?php if ($totalAlertas > 0): ?>
+                                    <span class="badge badge-danger badge-counter"><?= $totalAlertas ?></span>
+                                <?php endif; ?>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown" style="min-width: 320px;">
+                                <h6 class="dropdown-header">Alertas de inventario</h6>
+                                <?php if (!$totalAlertas): ?>
+                                    <span class="dropdown-item text-muted">No hay alertas pendientes.</span>
+                                <?php endif; ?>
+                                <?php foreach ($alertas['bajoStock'] as $producto): ?>
+                                    <div class="dropdown-item d-flex align-items-center">
+                                        <div class="mr-3">
+                                            <div class="icon-circle bg-warning">
+                                                <i class="fa-solid fa-box-open text-white"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="small text-gray-500">Stock bajo</div>
+                                            <span class="font-weight-bold"><?= htmlspecialchars($producto['nombre_producto'], ENT_QUOTES, 'UTF-8') ?></span>
+                                            <div class="text-muted">Disponible: <?= (int) $producto['stock_actual'] ?> uds.</div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                                <?php foreach ($alertas['vencimientos'] as $lote): ?>
+                                    <div class="dropdown-item d-flex align-items-center">
+                                        <div class="mr-3">
+                                            <div class="icon-circle bg-danger">
+                                                <i class="fa-solid fa-triangle-exclamation text-white"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="small text-gray-500">Vence <?= htmlspecialchars($lote['fecha_vencimiento'], ENT_QUOTES, 'UTF-8') ?></div>
+                                            <span class="font-weight-bold">Lote #<?= (int) $lote['id_lote'] ?> - <?= htmlspecialchars($lote['nombre_producto'], ENT_QUOTES, 'UTF-8') ?></span>
+                                            <div class="text-muted">Ingresó: <?= htmlspecialchars($lote['fecha_ingreso'], ENT_QUOTES, 'UTF-8') ?></div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </li>
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">Administrador - <?= htmlspecialchars($adminName, ENT_QUOTES, 'UTF-8') ?></span>

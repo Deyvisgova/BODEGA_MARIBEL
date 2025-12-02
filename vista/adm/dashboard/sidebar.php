@@ -82,12 +82,12 @@
                 <span>Productos</span></a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="tabla_checkList.php"><!--aquí también-->
-                <i class="fa-sharp fa-solid fa-cookie"></i>
-                <span>Chek List</span></a>
+           <li class="nav-item">
+                <a class="nav-link" href="tabla_lote.php"><!--aquí también-->
+                <i class="fa-solid fa-boxes-stacked"></i>
+                <span>Lotes</span></a>
             </li>
-        
+
            <li class="nav-item">
                 <a class="nav-link" href="tabla_categoria.php"><!--aquí también-->
                 <i class="fa-sharp fa-solid fa-cookie"></i>
