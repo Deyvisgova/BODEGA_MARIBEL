@@ -104,11 +104,9 @@ INSERT INTO `colaborador` (`id_colab`, `dni_colab`, `nombre_colab`, `apellido_co
 CREATE TABLE `guia_de_entrada` (
   `id_guia_entrada` int(11) NOT NULL,
   `fecha_entrada` date NOT NULL,
-  `descripcion` varchar(100) NOT NULL,
-  `cantidad_entrada` int(11) NOT NULL,
-  `producto` varchar(200) NOT NULL,
-  `provedor` varchar(100) NOT NULL,
-  `activo` varchar(30) NOT NULL
+  `descripcion` varchar(255) DEFAULT NULL,
+  `id_proveedor` int(11) NOT NULL,
+  `activo` varchar(30) NOT NULL DEFAULT 'pendiente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -121,7 +119,6 @@ CREATE TABLE `guia_de_entrada_detalle` (
   `id_detalle` int(11) NOT NULL,
   `id_guia_entrada` int(11) NOT NULL,
   `id_producto` int(11) NOT NULL,
-  `id_provedor` int(11) NOT NULL,
   `cantidad_entrada` int(11) NOT NULL,
   `id_lote` int(11) NOT NULL,
   `fecha_vencimiento` date NOT NULL,
@@ -132,10 +129,10 @@ CREATE TABLE `guia_de_entrada_detalle` (
 -- Volcado de datos para la tabla `guia_de_entrada`
 --
 
-INSERT INTO `guia_de_entrada` (`id_guia_entrada`, `fecha_entrada`, `descripcion`, `cantidad_entrada`, `producto`, `provedor`, `activo`) VALUES
-(1, '2023-12-04', 'Recibir 450 cajas de Leche Gloria', 450, 'arroz', '  Nestle', 'pendiente'),
-(2, '2023-12-05', 'Recibir 200 cajas de Aceite 1L', 250, 'Aceite', '  Nestle', 'pendiente'),
-(3, '2023-12-06', 'Recibir 100 cajas de Leche Gloria', 20, 'Leche Gloria', '  Nestle', 'pendiente');
+INSERT INTO `guia_de_entrada` (`id_guia_entrada`, `fecha_entrada`, `descripcion`, `id_proveedor`, `activo`) VALUES
+(1, '2023-12-04', 'Recibir 450 cajas de Leche Gloria', 1, 'pendiente'),
+(2, '2023-12-05', 'Recibir 200 cajas de Aceite 1L', 1, 'pendiente'),
+(3, '2023-12-06', 'Recibir 100 cajas de Leche Gloria', 1, 'pendiente');
 
 -- --------------------------------------------------------
 
@@ -292,8 +289,7 @@ ALTER TABLE `colaborador`
 --
 ALTER TABLE `guia_de_entrada`
   ADD PRIMARY KEY (`id_guia_entrada`),
-  ADD KEY `idx_guia_entrada_producto` (`producto`),
-  ADD KEY `idx_guia_entrada_provedor` (`provedor`);
+  ADD KEY `idx_guia_entrada_proveedor` (`id_proveedor`);
 
 --
 -- Indices de la tabla `guia_de_entrada_detalle`
@@ -302,7 +298,6 @@ ALTER TABLE `guia_de_entrada_detalle`
   ADD PRIMARY KEY (`id_detalle`),
   ADD KEY `idx_detalle_guia` (`id_guia_entrada`),
   ADD KEY `idx_detalle_producto` (`id_producto`),
-  ADD KEY `idx_detalle_proveedor` (`id_provedor`),
   ADD KEY `idx_detalle_lote` (`id_lote`);
 
 --
@@ -351,13 +346,11 @@ ALTER TABLE `producto`
   ADD CONSTRAINT `fk_producto_provedor` FOREIGN KEY (`provedor`) REFERENCES `provedor` (`Nombre_de_la_empresa`) ON UPDATE CASCADE;
 
 ALTER TABLE `guia_de_entrada`
-  ADD CONSTRAINT `fk_entrada_producto` FOREIGN KEY (`producto`) REFERENCES `producto` (`nombre_producto`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_entrada_provedor` FOREIGN KEY (`provedor`) REFERENCES `provedor` (`Nombre_de_la_empresa`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_entrada_proveedor` FOREIGN KEY (`id_proveedor`) REFERENCES `provedor` (`id_provedor`) ON UPDATE CASCADE;
 
 ALTER TABLE `guia_de_entrada_detalle`
   ADD CONSTRAINT `fk_detalle_guia` FOREIGN KEY (`id_guia_entrada`) REFERENCES `guia_de_entrada` (`id_guia_entrada`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_detalle_producto` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id_producto`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_detalle_proveedor` FOREIGN KEY (`id_provedor`) REFERENCES `provedor` (`id_provedor`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_detalle_lote` FOREIGN KEY (`id_lote`) REFERENCES `lote` (`id_lote`) ON UPDATE CASCADE;
 
 ALTER TABLE `guia_de_salida`
