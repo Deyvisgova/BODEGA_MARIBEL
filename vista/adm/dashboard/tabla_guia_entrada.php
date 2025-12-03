@@ -105,7 +105,7 @@ if (!isset($_SESSION['admin_name'])) {
     }
 
     function confirmacionM() {
-        var res = confirm("¿Desea MODIFICAR el registro?");
+        var respuesta = confirm("¿Desea MODIFICAR el registro?");
         if (respuesta == true) {
             return true;
         } else {
@@ -179,9 +179,9 @@ if (!isset($_SESSION['admin_name'])) {
 
                                 <div class="form-group col-md-4">
                                     <label>Id Guia de Entrada:</label>
-                                    <input type="text" class="form-control" required name="id_guia_entrada"
-                                        placerholder="" id="id_guia_entrada" value="<?php echo $id_guia_entrada; ?>"
-                                        readonly><br>
+                                    <input type="number" class="form-control" name="id_guia_entrada"
+                                        placeholder="Autogenerado" id="id_guia_entrada"
+                                        value="<?php echo $id_guia_entrada; ?>" readonly><br>
                                 </div>
 
                                 <div class="form-group col-md-8">
@@ -244,16 +244,8 @@ if (!isset($_SESSION['admin_name'])) {
                 </div>
             </div>
 
-            <!-- Button trigger modal -->
             <div class="row">
-                <div class="col-12 col-sm-9 d-flex justify-content-sm-start mb-4">
-                    <button type="button" class="btn btn-outline-danger shadow-sm" data-bs-toggle="modal"
-                        data-bs-target="#detalleGuiaModal">
-                        <i class="fa-solid fa-file-circle-plus me-2"></i>Agregar detalle de guía
-                    </button>
-                </div>
-
-                <div class="col-12 col-sm-9 d-flex justify-content-sm-end mb-4">
+                <div class="col-12 col-sm-9 d-flex justify-content-sm-end mb-4 ms-auto">
                     <a href="pdfs/pdf_guia_entrada.php" target="_blank" class="btn btn-danger btn-sm shadow-sm"
                         style="padding: 8px 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
                         <i class="fa-solid fa-file-pdf fa-xl"></i> <b>Generar Reporte</b>
@@ -306,31 +298,20 @@ if (!isset($_SESSION['admin_name'])) {
                 </tbody>
             </table>
         </div>
-        <!--CÓDIGO PARA MOSTRAR EL MODAL CUANDO SE SELECCIONA EL REGISTRO (Implementar en todas las tablas)-->
-        <?php if ($mostrarModal) { ?>
-            <script>
-                $('#exampleModal').modal('show');
-            </script>
-        <?php } ?>
 
-        <!-- Modal moderno para registrar detalle de guía de entrada -->
-        <div class="modal fade" id="detalleGuiaModal" tabindex="-1" aria-labelledby="detalleGuiaModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content modal-modern">
-                    <div class="modal-header">
-                        <div>
-                            <p class="mb-1 text-uppercase small">Guía de entrada</p>
-                            <h1 class="modal-title fs-4" id="detalleGuiaModalLabel">Agregar detalle de ingreso</h1>
-                        </div>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                            aria-label="Cerrar"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="pill-badge mb-3">
-                            <i class="fa-solid fa-circle-check"></i>
-                            Completa la información para asociarla a la guía.
-                        </div>
+        <div class="accordion mt-4" id="detalleGuiaAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="detalleGuiaHeading">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#detalleGuiaCollapse" aria-expanded="true" aria-controls="detalleGuiaCollapse">
+                        Detalle de guía de entrada
+                    </button>
+                </h2>
+                <div id="detalleGuiaCollapse" class="accordion-collapse collapse show" aria-labelledby="detalleGuiaHeading"
+                    data-bs-parent="#detalleGuiaAccordion">
+                    <div class="accordion-body">
+                        <p class="text-muted mb-3">El detalle se vincula automáticamente con la guía seleccionada; el ID es
+                            solo de lectura.</p>
 
                         <div class="alert alert-dismissible fade show" role="alert" id="detalleGuiaAlert"
                             style="display: none;"></div>
@@ -340,7 +321,7 @@ if (!isset($_SESSION['admin_name'])) {
                                 <label class="form-label" for="detalle_id_guia">ID Guía</label>
                                 <input type="number" class="form-control" id="detalle_id_guia" name="id_guia_entrada"
                                     value="<?php echo htmlspecialchars($id_guia_entrada ?? '', ENT_QUOTES, 'UTF-8'); ?>"
-                                    placeholder="Ej. 4" required>
+                                    placeholder="Autogenerado" readonly>
                             </div>
                             <div class="col-md-8">
                                 <label class="form-label">Proveedor</label>
@@ -364,9 +345,9 @@ if (!isset($_SESSION['admin_name'])) {
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label" for="detalle_cantidad">Cantidad de entrada</label>
-                                <input type="number" min="1" class="form-control" id="detalle_cantidad"
-                                    name="cantidad_entrada" placeholder="Ej. 50" required>
+                                <label class="form-label" for="detalle_cantidad">Cantidad recibida</label>
+                                <input type="number" class="form-control" id="detalle_cantidad" name="cantidad_entrada"
+                                    min="1" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="detalle_lote">Lote</label>
@@ -375,10 +356,8 @@ if (!isset($_SESSION['admin_name'])) {
                                         <option value="" selected disabled>Selecciona un lote</option>
                                         <?php foreach ($lotesDisponibles as $lote) { ?>
                                             <option value="<?php echo (int) $lote['id_lote']; ?>">
-                                                Lote #<?php echo (int) $lote['id_lote']; ?> ·
-                                                <?php echo htmlspecialchars($lote['nombre_producto'], ENT_QUOTES, 'UTF-8'); ?>
-                                                (Vence:
-                                                <?php echo htmlspecialchars($lote['fecha_vencimiento'], ENT_QUOTES, 'UTF-8'); ?>)
+                                                <?php echo htmlspecialchars($lote['nombre_producto'], ENT_QUOTES, 'UTF-8'); ?> -
+                                                <?php echo htmlspecialchars($lote['fecha_vencimiento'], ENT_QUOTES, 'UTF-8'); ?>
                                             </option>
                                         <?php } ?>
                                     </select>
@@ -402,20 +381,24 @@ if (!isset($_SESSION['admin_name'])) {
                                         id="detalle_precio_unitario" name="precio_unitario" placeholder="0.00" required>
                                 </div>
                             </div>
+                            <div class="col-12 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-danger" id="detalleGuardarBtn">
+                                    <i class="fa-solid fa-floppy-disk me-2"></i>Guardar detalle
+                                </button>
+                            </div>
                         </form>
-                    </div>
-                    <div class="modal-footer d-flex justify-content-between">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">
-                            <i class="fa-solid fa-xmark me-2"></i>Cancelar
-                        </button>
-                        <button type="submit" form="detalleEntradaForm" class="btn btn-danger" id="detalleGuardarBtn">
-                            <i class="fa-solid fa-floppy-disk me-2"></i>Guardar detalle
-                        </button>
                     </div>
                 </div>
             </div>
         </div>
+        <!--CÓDIGO PARA MOSTRAR EL MODAL CUANDO SE SELECCIONA EL REGISTRO (Implementar en todas las tablas)-->
+        <?php if ($mostrarModal) { ?>
+            <script>
+                $('#exampleModal').modal('show');
+            </script>
+        <?php } ?>
 
+        
         <!-- Sub-modal: crear producto rápido -->
         <div class="modal fade" id="nuevoProductoModal" tabindex="-1" aria-labelledby="nuevoProductoModalLabel"
             aria-hidden="true">
@@ -659,8 +642,8 @@ if (!isset($_SESSION['admin_name'])) {
             const detalleForm = document.getElementById('detalleEntradaForm');
             const alertBox = document.getElementById('detalleGuiaAlert');
             const guardarBtn = document.getElementById('detalleGuardarBtn');
-            const detalleModalEl = document.getElementById('detalleGuiaModal');
-            const detalleModal = detalleModalEl ? new bootstrap.Modal(detalleModalEl) : null;
+            const guiaCabeceraId = document.getElementById('id_guia_entrada');
+            const guiaDetalleId = document.getElementById('detalle_id_guia');
             const productoModal = new bootstrap.Modal(document.getElementById('nuevoProductoModal'));
             const loteModal = new bootstrap.Modal(document.getElementById('nuevoLoteModal'));
             const productoAlert = document.getElementById('productoAlert');
@@ -670,9 +653,18 @@ if (!isset($_SESSION['admin_name'])) {
             const productoSelects = [document.getElementById('detalle_producto'), document.getElementById('lote_producto')].filter(Boolean);
             const loteSelect = document.getElementById('detalle_lote');
 
-            if (!detalleForm || !detalleModal) {
+            if (!detalleForm) {
                 return;
             }
+
+            const sincronizarIdDetalle = () => {
+                if (guiaDetalleId && guiaCabeceraId) {
+                    guiaDetalleId.value = guiaCabeceraId.value;
+                    guiaDetalleId.readOnly = true;
+                }
+            };
+
+            sincronizarIdDetalle();
 
             const mostrarMensaje = (mensaje, tipo) => {
                 alertBox.textContent = mensaje;
@@ -714,7 +706,7 @@ if (!isset($_SESSION['admin_name'])) {
                     if (resultado.success) {
                         mostrarMensaje(resultado.message || 'Detalle guardado.', 'success');
                         detalleForm.reset();
-                        setTimeout(() => detalleModal.hide(), 400);
+                        sincronizarIdDetalle();
                     } else {
                         const detalleError = resultado.error ? ` Detalle técnico: ${resultado.error}` : '';
                         mostrarMensaje((resultado.message || 'No se pudo guardar el detalle.') + detalleError, 'warning');
