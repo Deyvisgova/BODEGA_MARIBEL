@@ -10,12 +10,12 @@ if (!$payload) {
     exit;
 }
 
-$idGuiaEntrada = isset($payload['id_guia_entrada']) ? (int)$payload['id_guia_entrada'] : 0;
-$idProducto = isset($payload['id_producto']) ? (int)$payload['id_producto'] : 0;
-$cantidad = isset($payload['cantidad_entrada']) ? (int)$payload['cantidad_entrada'] : 0;
-$idLote = isset($payload['id_lote']) ? (int)$payload['id_lote'] : 0;
+$idGuiaEntrada = isset($payload['id_guia_entrada']) ? (int) $payload['id_guia_entrada'] : 0;
+$idProducto = isset($payload['id_producto']) ? (int) $payload['id_producto'] : 0;
+$cantidad = isset($payload['cantidad_entrada']) ? (int) $payload['cantidad_entrada'] : 0;
+$idLote = isset($payload['id_lote']) ? (int) $payload['id_lote'] : 0;
 $fechaVencimiento = isset($payload['fecha_vencimiento']) ? trim($payload['fecha_vencimiento']) : '';
-$precioUnitario = isset($payload['precio_unitario']) ? (float)$payload['precio_unitario'] : 0;
+$precioUnitario = isset($payload['precio_unitario']) ? (float) $payload['precio_unitario'] : 0;
 
 if (
     $idGuiaEntrada <= 0 ||
@@ -58,7 +58,15 @@ mysqli_stmt_bind_param(
 $exito = mysqli_stmt_execute($stmt);
 
 if ($exito) {
-    echo json_encode(['success' => true, 'message' => 'Detalle guardado correctamente.']);
+    // 1. Actualizar la cantidad recibida en el lote
+    $updateLote = "UPDATE lote SET cantidad_recibida = cantidad_recibida + $cantidad WHERE id_lote = $idLote";
+    mysqli_query($conn, $updateLote);
+
+    // 2. Actualizar el stock del producto
+    $updateProducto = "UPDATE producto SET stock_actual = stock_actual + $cantidad, cantidad = cantidad + $cantidad WHERE id_producto = $idProducto";
+    mysqli_query($conn, $updateProducto);
+
+    echo json_encode(['success' => true, 'message' => 'Detalle guardado y stock actualizado correctamente.']);
 } else {
     http_response_code(500);
     echo json_encode([
@@ -70,4 +78,3 @@ if ($exito) {
 
 mysqli_stmt_close($stmt);
 ?>
-

@@ -77,11 +77,40 @@ class AdminModel extends Modelo
 
     public function obtenerEntradasPorFecha(): array
     {
-        return $this->obtenerMovimientosAgrupados(
-            'guia_de_entrada',
-            'fecha_entrada',
-            'cantidad_entrada'
+        // Obtener lista de productos únicos en las entradas
+        $productos = $this->conexion->query(
+            "SELECT DISTINCT p.nombre_producto 
+             FROM guia_de_entrada_detalle d
+             INNER JOIN producto p ON d.id_producto = p.id_producto
+             ORDER BY p.nombre_producto"
+        )->fetchAll(PDO::FETCH_COLUMN);
+
+        // Obtener datos agrupados por fecha y producto
+        $stmt = $this->conexion->query(
+            "SELECT e.fecha_entrada AS fecha, p.nombre_producto AS producto, SUM(d.cantidad_entrada) AS cantidad
+             FROM guia_de_entrada e
+             INNER JOIN guia_de_entrada_detalle d ON e.id_guia_entrada = d.id_guia_entrada
+             INNER JOIN producto p ON d.id_producto = p.id_producto
+             GROUP BY e.fecha_entrada, p.nombre_producto
+             ORDER BY e.fecha_entrada"
         );
+
+        $valores = [];
+        $fechas = [];
+        while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $fechaNormalizada = (new DateTime($fila['fecha']))->format('Y-m-d');
+            $valores[$fechaNormalizada][$fila['producto']] = (int) $fila['cantidad'];
+            $fechas[$fechaNormalizada] = true;
+        }
+
+        $fechasOrdenadas = array_keys($fechas);
+        sort($fechasOrdenadas);
+
+        return [
+            'productos' => $productos,
+            'fechas' => $fechasOrdenadas,
+            'valores' => $valores,
+        ];
     }
 
     private function obtenerMovimientosAgrupados(string $tabla, string $columnaFecha, string $columnaCantidad): array

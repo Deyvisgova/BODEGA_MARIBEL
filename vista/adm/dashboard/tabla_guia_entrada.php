@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-if(!isset($_SESSION['admin_name'])){
-   header('location:index.php');
+if (!isset($_SESSION['admin_name'])) {
+    header('location:index.php');
 }
 ?>
 <html lang="es">
@@ -27,7 +27,9 @@ if(!isset($_SESSION['admin_name'])){
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css?asd" rel="stylesheet">
@@ -152,18 +154,20 @@ if(!isset($_SESSION['admin_name'])){
         $categoriasDisponibles = mysqli_fetch_all(
             mysqli_query(
                 $conn,
-                "SELECT id_categoria, descripcion FROM categoria ORDER BY descripcion ASC"
+                "SELECT id_categoria, nombre_categoria FROM categoria ORDER BY nombre_categoria ASC"
             ),
             MYSQLI_ASSOC
         );
         ?>
-        <h3 style="font-family: Verdana, Geneva, Tahoma, sans-serif; text-align: center; font-weight: 600;">TABLA Guias de Entrada</h3>
+        <h3 style="font-family: Verdana, Geneva, Tahoma, sans-serif; text-align: center; font-weight: 600;">TABLA Guias
+            de Entrada</h3>
         <hr>
 
         <form action="../../../controlador/controlador_tablas/controlador_tabla_guia_entrada.php" method="post">
 
             <!-- Modal -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -175,18 +179,22 @@ if(!isset($_SESSION['admin_name'])){
 
                                 <div class="form-group col-md-4">
                                     <label>Id Guia de Entrada:</label>
-                                    <input type="text" class="form-control" required name="id_guia_entrada" placerholder="" id="id_guia_entrada" value="<?php echo $id_guia_entrada; ?>" readonly><br>
+                                    <input type="text" class="form-control" required name="id_guia_entrada"
+                                        placerholder="" id="id_guia_entrada" value="<?php echo $id_guia_entrada; ?>"
+                                        readonly><br>
                                 </div>
 
                                 <div class="form-group col-md-8">
                                     <label>Fecha</label>
-                                    <input type="date" class="form-control" required name="fecha_entrada" placeholder="" id="fecha_entrada" value="<?php echo $fecha_entrada; ?>">
+                                    <input type="date" class="form-control" required name="fecha_entrada" placeholder=""
+                                        id="fecha_entrada" value="<?php echo $fecha_entrada; ?>">
                                     <br>
                                 </div>
 
                                 <div class="form-group col-md-12">
                                     <label for="">Descripcion:</label>
-                                    <input type="text" class="form-control" name="descripcion" placerholder="" id="descripcion" value="<?php echo $descripcion; ?>"><br>
+                                    <input type="text" class="form-control" name="descripcion" placerholder=""
+                                        id="descripcion" value="<?php echo $descripcion; ?>"><br>
                                 </div>
 
                                 <div class="form-group col-md-8">
@@ -194,14 +202,14 @@ if(!isset($_SESSION['admin_name'])){
                                     <select name="id_proveedor" id="id_proveedor" class="form-control" required>
                                         <option value="">Seleccione proveedor</option>
                                         <?php foreach ($proveedoresDisponibles as $proveedor) { ?>
-                                            <option value="<?php echo (int)$proveedor['id_provedor']; ?>" <?php echo ($id_proveedor == $proveedor['id_provedor']) ? 'selected' : ''; ?>>
+                                            <option value="<?php echo (int) $proveedor['id_provedor']; ?>" <?php echo ($id_proveedor == $proveedor['id_provedor']) ? 'selected' : ''; ?>>
                                                 <?php echo htmlspecialchars($proveedor['Nombre_de_la_empresa'], ENT_QUOTES, 'UTF-8'); ?>
                                             </option>
                                         <?php } ?>
                                     </select>
                                 </div>
 
-                                
+
 
                                 <div class="form-group col-md-8">
                                     <label for="">Activo:</label>
@@ -212,20 +220,24 @@ if(!isset($_SESSION['admin_name'])){
                                     </select><br><br>
                                 </div>
 
-                            
-                            
+
+
 
                             </div>
                         </div>
                         <div class="modal-footer">
 
-                            <button value="btnAgregar" <?php echo $accionAgregar; ?> class="btn btn-success" type="submit" name="accion">Agregar</button>
+                            <button value="btnAgregar" <?php echo $accionAgregar; ?> class="btn btn-success"
+                                type="submit" name="accion">Agregar</button>
 
-                            <button value="btnModificar" <?php echo $accionModificar; ?> class="btn btn-warning" type="submit" name="accion" onclick='return confirmacionM()'>Modificar</button>
+                            <button value="btnModificar" <?php echo $accionModificar; ?> class="btn btn-warning"
+                                type="submit" name="accion" onclick='return confirmacionM()'>Modificar</button>
 
-                            <button value="btnEliminar" <?php echo $accionEliminar; ?> class="btn btn-danger" type="submit" name="accion" onclick='return confirmacion()'>Eliminar</button>
+                            <button value="btnEliminar" <?php echo $accionEliminar; ?> class="btn btn-danger"
+                                type="submit" name="accion" onclick='return confirmacion()'>Eliminar</button>
 
-                            <button value="btnCancelar" <?php echo $accionCancelar; ?> class="btn btn-primary" type="submit" name="accion">Cancelar</button>
+                            <button value="btnCancelar" <?php echo $accionCancelar; ?> class="btn btn-primary"
+                                type="submit" name="accion">Cancelar</button>
 
                         </div>
                     </div>
@@ -235,20 +247,23 @@ if(!isset($_SESSION['admin_name'])){
             <!-- Button trigger modal -->
             <div class="row">
                 <div class="col-12 col-sm-9 d-flex justify-content-sm-start mb-4">
-                    <button type="button" class="btn btn-outline-danger shadow-sm" data-bs-toggle="modal" data-bs-target="#detalleGuiaModal">
+                    <button type="button" class="btn btn-outline-danger shadow-sm" data-bs-toggle="modal"
+                        data-bs-target="#detalleGuiaModal">
                         <i class="fa-solid fa-file-circle-plus me-2"></i>Agregar detalle de guía
                     </button>
                 </div>
 
                 <div class="col-12 col-sm-9 d-flex justify-content-sm-end mb-4">
-                    <a href="pdfs/pdf_guia_entrada.php" target="_blank" class="btn btn-danger btn-sm shadow-sm" style="padding: 8px 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
+                    <a href="pdfs/pdf_guia_entrada.php" target="_blank" class="btn btn-danger btn-sm shadow-sm"
+                        style="padding: 8px 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
                         <i class="fa-solid fa-file-pdf fa-xl"></i> <b>Generar Reporte</b>
                     </a>
                 </div>
             </div>
         </form>
 
-        <div class="" style="font-size: 11px; border-radius: 10px; overflow-x: auto; max-width: 100%;"> <!-- ESTE STYLE HACE RESPONSIVE LA TABLA -->
+        <div class="" style="font-size: 11px; border-radius: 10px; overflow-x: auto; max-width: 100%;">
+            <!-- ESTE STYLE HACE RESPONSIVE LA TABLA -->
             <table class="table table_id">
                 <thead class="table-dark">
                     <tr>
@@ -263,7 +278,7 @@ if(!isset($_SESSION['admin_name'])){
                 <tbody>
                     <?php
                     while ($row = mysqli_fetch_array($tabla)) {
-                    ?>
+                        ?>
                         <tr>
                             <td><?php echo $row['id_guia_entrada']; ?></td>
                             <td><?php echo $row['fecha_entrada']; ?></td>
@@ -272,7 +287,7 @@ if(!isset($_SESSION['admin_name'])){
                             <td><?php echo $row['activo']; ?></td>
 
 
-                           
+
 
                             <form action="" method="POST">
                                 <input type="hidden" value="<?php echo $row['id_guia_entrada']; ?>" name="id_guia_entrada">
@@ -282,9 +297,9 @@ if(!isset($_SESSION['admin_name'])){
                                 <input type="hidden" value="<?php echo $row['activo']; ?>" name="activo">
 
 
-                                
+
                                 <td><input type="submit" value="Seleccionar" name="accion"></td>
-                        
+
                             </form>
                         </tr>
                     <?php } ?>
@@ -299,7 +314,8 @@ if(!isset($_SESSION['admin_name'])){
         <?php } ?>
 
         <!-- Modal moderno para registrar detalle de guía de entrada -->
-        <div class="modal fade" id="detalleGuiaModal" tabindex="-1" aria-labelledby="detalleGuiaModalLabel" aria-hidden="true">
+        <div class="modal fade" id="detalleGuiaModal" tabindex="-1" aria-labelledby="detalleGuiaModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content modal-modern">
                     <div class="modal-header">
@@ -307,7 +323,8 @@ if(!isset($_SESSION['admin_name'])){
                             <p class="mb-1 text-uppercase small">Guía de entrada</p>
                             <h1 class="modal-title fs-4" id="detalleGuiaModalLabel">Agregar detalle de ingreso</h1>
                         </div>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Cerrar"></button>
                     </div>
                     <div class="modal-body">
                         <div class="pill-badge mb-3">
@@ -315,12 +332,15 @@ if(!isset($_SESSION['admin_name'])){
                             Completa la información para asociarla a la guía.
                         </div>
 
-                        <div class="alert alert-dismissible fade show" role="alert" id="detalleGuiaAlert" style="display: none;"></div>
+                        <div class="alert alert-dismissible fade show" role="alert" id="detalleGuiaAlert"
+                            style="display: none;"></div>
 
                         <form id="detalleEntradaForm" class="row g-3">
                             <div class="col-md-4">
                                 <label class="form-label" for="detalle_id_guia">ID Guía</label>
-                                <input type="number" class="form-control" id="detalle_id_guia" name="id_guia_entrada" value="<?php echo htmlspecialchars($id_guia_entrada ?? '', ENT_QUOTES, 'UTF-8'); ?>" placeholder="Ej. 4" required>
+                                <input type="number" class="form-control" id="detalle_id_guia" name="id_guia_entrada"
+                                    value="<?php echo htmlspecialchars($id_guia_entrada ?? '', ENT_QUOTES, 'UTF-8'); ?>"
+                                    placeholder="Ej. 4" required>
                             </div>
                             <div class="col-md-8">
                                 <label class="form-label">Proveedor</label>
@@ -332,17 +352,21 @@ if(!isset($_SESSION['admin_name'])){
                                     <select class="form-select" id="detalle_producto" name="id_producto" required>
                                         <option value="" selected disabled>Selecciona un producto</option>
                                         <?php foreach ($productosDisponibles as $producto) { ?>
-                                            <option value="<?php echo (int)$producto['id_producto']; ?>"><?php echo htmlspecialchars($producto['nombre_producto'], ENT_QUOTES, 'UTF-8'); ?></option>
+                                            <option value="<?php echo (int) $producto['id_producto']; ?>">
+                                                <?php echo htmlspecialchars($producto['nombre_producto'], ENT_QUOTES, 'UTF-8'); ?>
+                                            </option>
                                         <?php } ?>
                                     </select>
-                                    <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#nuevoProductoModal" aria-label="Crear producto">
+                                    <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal"
+                                        data-bs-target="#nuevoProductoModal" aria-label="Crear producto">
                                         <i class="fa-solid fa-plus"></i>
                                     </button>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label" for="detalle_cantidad">Cantidad de entrada</label>
-                                <input type="number" min="1" class="form-control" id="detalle_cantidad" name="cantidad_entrada" placeholder="Ej. 50" required>
+                                <input type="number" min="1" class="form-control" id="detalle_cantidad"
+                                    name="cantidad_entrada" placeholder="Ej. 50" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="detalle_lote">Lote</label>
@@ -350,25 +374,32 @@ if(!isset($_SESSION['admin_name'])){
                                     <select class="form-select" id="detalle_lote" name="id_lote" required>
                                         <option value="" selected disabled>Selecciona un lote</option>
                                         <?php foreach ($lotesDisponibles as $lote) { ?>
-                                            <option value="<?php echo (int)$lote['id_lote']; ?>">
-                                                Lote #<?php echo (int)$lote['id_lote']; ?> · <?php echo htmlspecialchars($lote['nombre_producto'], ENT_QUOTES, 'UTF-8'); ?> (Vence: <?php echo htmlspecialchars($lote['fecha_vencimiento'], ENT_QUOTES, 'UTF-8'); ?>)
+                                            <option value="<?php echo (int) $lote['id_lote']; ?>">
+                                                Lote #<?php echo (int) $lote['id_lote']; ?> ·
+                                                <?php echo htmlspecialchars($lote['nombre_producto'], ENT_QUOTES, 'UTF-8'); ?>
+                                                (Vence:
+                                                <?php echo htmlspecialchars($lote['fecha_vencimiento'], ENT_QUOTES, 'UTF-8'); ?>)
                                             </option>
                                         <?php } ?>
                                     </select>
-                                    <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#nuevoLoteModal" aria-label="Crear lote">
+                                    <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal"
+                                        data-bs-target="#nuevoLoteModal" aria-label="Crear lote">
                                         <i class="fa-solid fa-plus"></i>
                                     </button>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="detalle_fecha_vencimiento">Fecha de vencimiento</label>
-                                <input type="date" class="form-control" id="detalle_fecha_vencimiento" name="fecha_vencimiento" required>
+                                <input type="date" class="form-control" id="detalle_fecha_vencimiento"
+                                    name="fecha_vencimiento" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label" for="detalle_precio_unitario">Precio unitario por lote (costo)</label>
+                                <label class="form-label" for="detalle_precio_unitario">Precio unitario por lote
+                                    (costo)</label>
                                 <div class="input-group">
                                     <span class="input-group-text">S/</span>
-                                    <input type="number" step="0.01" min="0" class="form-control" id="detalle_precio_unitario" name="precio_unitario" placeholder="0.00" required>
+                                    <input type="number" step="0.01" min="0" class="form-control"
+                                        id="detalle_precio_unitario" name="precio_unitario" placeholder="0.00" required>
                                 </div>
                             </div>
                         </form>
@@ -386,7 +417,8 @@ if(!isset($_SESSION['admin_name'])){
         </div>
 
         <!-- Sub-modal: crear producto rápido -->
-        <div class="modal fade" id="nuevoProductoModal" tabindex="-1" aria-labelledby="nuevoProductoModalLabel" aria-hidden="true">
+        <div class="modal fade" id="nuevoProductoModal" tabindex="-1" aria-labelledby="nuevoProductoModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content modal-modern">
                     <div class="modal-header">
@@ -394,34 +426,42 @@ if(!isset($_SESSION['admin_name'])){
                             <p class="mb-1 text-uppercase small">Producto</p>
                             <h1 class="modal-title fs-5" id="nuevoProductoModalLabel">Crear nuevo producto</h1>
                         </div>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Cerrar"></button>
                     </div>
                     <div class="modal-body">
                         <div class="alert alert-dismissible fade show" id="productoAlert" style="display: none;"></div>
                         <form id="nuevoProductoForm" class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label" for="producto_nombre">Nombre</label>
-                                <input type="text" class="form-control" id="producto_nombre" name="nombre_producto" required>
+                                <input type="text" class="form-control" id="producto_nombre" name="nombre_producto"
+                                    required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="producto_categoria">Categoría</label>
                                 <select class="form-select" id="producto_categoria" name="categoria" required>
                                     <option value="" selected disabled>Selecciona una categoría</option>
                                     <?php foreach ($categoriasDisponibles as $categoria) { ?>
-                                        <option value="<?php echo (int)$categoria['id_categoria']; ?>"><?php echo htmlspecialchars($categoria['descripcion'], ENT_QUOTES, 'UTF-8'); ?></option>
+                                        <option value="<?php echo (int) $categoria['id_categoria']; ?>">
+                                            <?php echo htmlspecialchars($categoria['descripcion'], ENT_QUOTES, 'UTF-8'); ?>
+                                        </option>
                                     <?php } ?>
                                 </select>
                             </div>
                             <div class="col-12">
                                 <label class="form-label" for="producto_descripcion">Descripción</label>
-                                <textarea class="form-control" id="producto_descripcion" name="descripcion" rows="2" placeholder="Notas internas"></textarea>
+                                <textarea class="form-control" id="producto_descripcion" name="descripcion" rows="2"
+                                    placeholder="Notas internas"></textarea>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="producto_proveedor">Proveedor</label>
                                 <select class="form-select" id="producto_proveedor" name="provedor" required>
                                     <option value="" selected disabled>Selecciona un proveedor</option>
                                     <?php foreach ($proveedoresDisponibles as $proveedor) { ?>
-                                        <option value="<?php echo htmlspecialchars($proveedor['Nombre_de_la_empresa'], ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars($proveedor['Nombre_de_la_empresa'], ENT_QUOTES, 'UTF-8'); ?></option>
+                                        <option
+                                            value="<?php echo htmlspecialchars($proveedor['Nombre_de_la_empresa'], ENT_QUOTES, 'UTF-8'); ?>">
+                                            <?php echo htmlspecialchars($proveedor['Nombre_de_la_empresa'], ENT_QUOTES, 'UTF-8'); ?>
+                                        </option>
                                     <?php } ?>
                                 </select>
                             </div>
@@ -445,7 +485,8 @@ if(!isset($_SESSION['admin_name'])){
         </div>
 
         <!-- Sub-modal: crear lote rápido -->
-        <div class="modal fade" id="nuevoLoteModal" tabindex="-1" aria-labelledby="nuevoLoteModalLabel" aria-hidden="true">
+        <div class="modal fade" id="nuevoLoteModal" tabindex="-1" aria-labelledby="nuevoLoteModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content modal-modern">
                     <div class="modal-header">
@@ -453,7 +494,8 @@ if(!isset($_SESSION['admin_name'])){
                             <p class="mb-1 text-uppercase small">Lote</p>
                             <h1 class="modal-title fs-5" id="nuevoLoteModalLabel">Crear nuevo lote</h1>
                         </div>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Cerrar"></button>
                     </div>
                     <div class="modal-body">
                         <div class="alert alert-dismissible fade show" id="loteAlert" style="display: none;"></div>
@@ -463,21 +505,26 @@ if(!isset($_SESSION['admin_name'])){
                                 <select class="form-select" id="lote_producto" name="id_producto" required>
                                     <option value="" selected disabled>Selecciona un producto</option>
                                     <?php foreach ($productosDisponibles as $producto) { ?>
-                                        <option value="<?php echo (int)$producto['id_producto']; ?>"><?php echo htmlspecialchars($producto['nombre_producto'], ENT_QUOTES, 'UTF-8'); ?></option>
+                                        <option value="<?php echo (int) $producto['id_producto']; ?>">
+                                            <?php echo htmlspecialchars($producto['nombre_producto'], ENT_QUOTES, 'UTF-8'); ?>
+                                        </option>
                                     <?php } ?>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="lote_cantidad">Cantidad recibida</label>
-                                <input type="number" class="form-control" id="lote_cantidad" name="cantidad_recibida" min="1" required>
+                                <input type="number" class="form-control" id="lote_cantidad" name="cantidad_recibida"
+                                    min="1" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="lote_fecha_vencimiento">Fecha de vencimiento</label>
-                                <input type="date" class="form-control" id="lote_fecha_vencimiento" name="fecha_vencimiento" required>
+                                <input type="date" class="form-control" id="lote_fecha_vencimiento"
+                                    name="fecha_vencimiento" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="lote_fecha_ingreso">Fecha de ingreso</label>
-                                <input type="date" class="form-control" id="lote_fecha_ingreso" name="fecha_ingreso" required>
+                                <input type="date" class="form-control" id="lote_fecha_ingreso" name="fecha_ingreso"
+                                    required>
                             </div>
                         </form>
                     </div>
@@ -491,94 +538,103 @@ if(!isset($_SESSION['admin_name'])){
             </div>
         </div>
 
-    <div>
-    <?php
+        <div>
+            <?php
 
 
-// Verificar la sesión o redirigir al formulario de inicio de sesión
+            // Verificar la sesión o redirigir al formulario de inicio de sesión
+            
+            // Incluir archivo de configuración de la base de datos
+            @include '../../modelo/config.php';
 
-// Incluir archivo de configuración de la base de datos
-@include '../../modelo/config.php';
+            // Inicializar variables
+            $mensaje_error = "";
+            $guia = [];
 
-// Inicializar variables
-$mensaje_error = "";
-$guia = [];
+            // Verificar si se ha enviado el formulario de búsqueda
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                // Obtener el ID de la guía de entrada desde el formulario
+                $id_guia = mysqli_real_escape_string($conn, $_POST['id_guia']);
 
-// Verificar si se ha enviado el formulario de búsqueda
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Obtener el ID de la guía de entrada desde el formulario
-    $id_guia = mysqli_real_escape_string($conn, $_POST['id_guia']);
+                // Consultar la base de datos para obtener la información de la guía de entrada
+                $query = "SELECT g.*, p.Nombre_de_la_empresa AS proveedor FROM guia_de_entrada g LEFT JOIN provedor p ON p.id_provedor = g.id_proveedor WHERE g.id_guia_entrada = '$id_guia'";
+                $result = mysqli_query($conn, $query);
 
-    // Consultar la base de datos para obtener la información de la guía de entrada
-    $query = "SELECT g.*, p.Nombre_de_la_empresa AS proveedor FROM guia_de_entrada g LEFT JOIN provedor p ON p.id_provedor = g.id_proveedor WHERE g.id_guia_entrada = '$id_guia'";
-    $result = mysqli_query($conn, $query);
+                // Verificar si se encontraron resultados
+                if ($result && mysqli_num_rows($result) > 0) {
+                    $guia = mysqli_fetch_assoc($result);
+                } else {
+                    $mensaje_error = "No se encontró la guía de entrada con el ID proporcionado.";
+                }
+            }
+            ?>
 
-    // Verificar si se encontraron resultados
-    if ($result && mysqli_num_rows($result) > 0) {
-        $guia = mysqli_fetch_assoc($result);
-    } else {
-        $mensaje_error = "No se encontró la guía de entrada con el ID proporcionado.";
-    }
-}
-?>
+            <section class="reporte_uno">
+                <style>
+                    .reporte_uno {
+                        margin-top: 50px
+                    }
+                </style>
+                <h4>Búsqueda de Guía de Entrada</h4>
 
-<section class="reporte_uno"><style>.reporte_uno{margin-top:50px}</style>
-<h4>Búsqueda de Guía de Entrada</h4>
+                <section>
+                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+                        <label for="id_guia">ID de Guía de Entrada:</label>
+                        <input type="text" name="id_guia" required>
+                        <button type="submit">Buscar</button>
+                        <!-- Agregar campo oculto para almacenar el valor del ID -->
+                        <input type="hidden" name="id_guia_hidden"
+                            value="<?php echo isset($guia['id_guia_entrada']) ? $guia['id_guia_entrada'] : ''; ?>">
+                    </form>
 
-<section>
-                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
-                    <label for="id_guia">ID de Guía de Entrada:</label>
-                    <input type="text" name="id_guia" required>
-                    <button type="submit">Buscar</button>
-                    <!-- Agregar campo oculto para almacenar el valor del ID -->
-                    <input type="hidden" name="id_guia_hidden" value="<?php echo isset($guia['id_guia_entrada']) ? $guia['id_guia_entrada'] : ''; ?>">
-                </form>
+                    <?php if ($_SERVER["REQUEST_METHOD"] == "POST"): ?>
+                        <?php if ($mensaje_error != ""): ?>
+                            <p><?php echo $mensaje_error; ?></p>
+                        <?php elseif (!empty($guia)): ?>
+                            <!-- Resto del código... -->
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </section>
+                <div class="row">
+                    <div class="col-12 col-sm-9 d-flex justify-content-sm-end mb-4">
+                        <!-- Agregar el ID almacenado en el campo oculto al enlace del reporte PDF -->
+                        <a href="pdfs/pdf_Guia_entrada_Uni_adm.php?id=<?php echo isset($guia['id_guia_entrada']) ? $guia['id_guia_entrada'] : ''; ?>"
+                            target="_blank" class="btn btn-danger btn-sm shadow-sm"
+                            style="margin-top:-55px;height:40px;padding: 8px 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
+                            <i class="fa-solid fa-file-pdf"></i> <b>Generar Reporte</b>
+                        </a>
+                    </div>
+                </div>
 
-                <?php if ($_SERVER["REQUEST_METHOD"] == "POST") : ?>
-                    <?php if ($mensaje_error != "") : ?>
+                <?php if ($_SERVER["REQUEST_METHOD"] == "POST"): ?>
+                    <?php if ($mensaje_error != ""): ?>
                         <p><?php echo $mensaje_error; ?></p>
-                    <?php elseif (!empty($guia)) : ?>
-                        <!-- Resto del código... -->
+                    <?php elseif (!empty($guia)): ?>
+                        <table class="table table_id">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID Guía de Entrada</th>
+                                    <th>Fecha</th>
+                                    <th>Descripción</th>
+                                    <th>Proveedor</th>
+                                    <th>Activo</th>
+                                </tr>
+                            </thead>
+
+                            <tr>
+                                <td><?php echo $guia['id_guia_entrada']; ?></td>
+                                <td><?php echo $guia['fecha_entrada']; ?></td>
+                                <td><?php echo $guia['descripcion']; ?></td>
+                                <td><?php echo $guia['proveedor']; ?></td>
+                                <td><?php echo $guia['activo']; ?></td>
+                            </tr>
+                        </table>
                     <?php endif; ?>
                 <?php endif; ?>
             </section>
-            <div class="row">
-            <div class="col-12 col-sm-9 d-flex justify-content-sm-end mb-4">
-                <!-- Agregar el ID almacenado en el campo oculto al enlace del reporte PDF -->
-                <a href="pdfs/pdf_Guia_entrada_Uni_adm.php?id=<?php echo isset($guia['id_guia_entrada']) ? $guia['id_guia_entrada'] : ''; ?>" target="_blank" class="btn btn-danger btn-sm shadow-sm" style="margin-top:-55px;height:40px;padding: 8px 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
-                    <i class="fa-solid fa-file-pdf" ></i> <b>Generar Reporte</b>
-                </a>
-            </div>
         </div>
+    </div>
 
-<?php if ($_SERVER["REQUEST_METHOD"] == "POST") : ?>
-    <?php if ($mensaje_error != "") : ?>
-        <p><?php echo $mensaje_error; ?></p>
-    <?php elseif (!empty($guia)) : ?>
-        <table class="table table_id">
-        <thead class="table-dark">
-            <tr>
-                <th>ID Guía de Entrada</th>
-                <th>Fecha</th>
-                <th>Descripción</th>
-                <th>Proveedor</th>
-                <th>Activo</th>
-            </tr>
-            </thead>
-
-            <tr>
-                <td><?php echo $guia['id_guia_entrada']; ?></td>
-                <td><?php echo $guia['fecha_entrada']; ?></td>
-                <td><?php echo $guia['descripcion']; ?></td>
-                <td><?php echo $guia['proveedor']; ?></td>
-                <td><?php echo $guia['activo']; ?></td>
-            </tr>
-        </table>
-    <?php endif; ?>
-<?php endif; ?>
-</section>
-    </div></div>
-    
 
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
