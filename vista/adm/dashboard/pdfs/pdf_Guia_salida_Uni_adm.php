@@ -2,56 +2,99 @@
 require ('../../../../controlador/fpdf/plantilla.php');
 require ('../../../../modelo/config.php');
 
-// Obtener el ID de la guía de salida desde el parámetro GET
 $id_guia = isset($_GET['id']) ? $_GET['id'] : null;
 
-// Verificar si el ID está presente y no está vacío
+$cabecera = null;
+$detalleQuery = null;
+
 if ($id_guia !== null && $id_guia !== '') {
-    // Consultar la base de datos para obtener la información de la guía de salida específica
     $query = "SELECT * FROM guia_de_salida WHERE id_guia_salida = '$id_guia'";
     $result = $conn->query($query);
 
-    // Verificar si se encontraron resultados
     if ($result && $result->num_rows > 0) {
-        $pdf = new PDF("L","mm", array(300,320));   
-        $pdf->AliasNbPages();
-        $pdf->AddPage();
-        $pdf->SetFont('Arial','B',9);
+        $cabecera = $result->fetch_assoc();
+        $detalleQuery = $conn->query(
+            "SELECT d.*, p.nombre_producto, l.fecha_vencimiento FROM guia_de_salida_detalle d " .
+            "LEFT JOIN producto p ON p.id_producto = d.id_producto " .
+            "LEFT JOIN lote l ON l.id_lote = d.id_lote WHERE d.id_guia_salida = '$id_guia'"
+        );
+    }
+}
 
-        $pdf->Ln(10);
+if (!$cabecera) {
+    echo "No se encontró la guía de salida con el ID proporcionado.";
+    exit;
+}
 
-        $pdf->Cell(45, 5,  mb_convert_encoding('Reporte Guias de Salida', 'ISO-8859-1', 'UTF-8'), 0, 0, "C");
-        $pdf->Image('../img/Makro_logo.png', 250, 5, 40);
+$ruc = $cabecera['numero_documento'] ?: '20600837550';
+$domicilio = $cabecera['domicilio_fiscal'] ?: 'Av. Los Próceres 145, Lima – San Juan de Lurigancho';
+$puntoPartida = $cabecera['punto_partida'] ?: 'Almacén Maribel– Jr. Huancavelica 234, Lima.';
+$serieNumero = '001-' . str_pad((string) $cabecera['id_guia_salida'], 6, '0', STR_PAD_LEFT);
 
-        $pdf->Ln(10);
+$pdf = new PDF("P", "mm", "A4");
+$pdf->AliasNbPages();
+$pdf->AddPage();
 
-        $pdf->Cell(25,5,"Id Guia de Salida",1,0,"C");
-        $pdf->Cell(40,5,"Fecha",1,0,"C");
-        $pdf->Cell(70,5,"Descripcion ",1,0,"C");
-        $pdf->Cell(30,5,"Cantidad ",1,0,"C");
-        $pdf->Cell(30,5,"Producto ",1,0,"C");
-        $pdf->Cell(40,5,"Destino ",1,0,"C");
-        $pdf->Cell(40,5,"Encargado ",1,0,"C");
-        $pdf->Cell(20,5,"Estado ",1,1,"C");
+$pdf->SetFont('Arial', 'B', 12);
+$pdf->Cell(130, 10, utf8_decode('GUÍA DE REMISIÓN - REMITENTE'), 1, 0, 'L');
+$pdf->Cell(60, 10, 'RUC: ' . $ruc, 1, 1, 'R');
 
-        $pdf->SetFont("Arial", "B", 9);
+$pdf->SetFont('Arial', '', 10);
+$pdf->Cell(190, 8, 'Domicilio Fiscal: ' . utf8_decode($domicilio), 1, 1);
+$pdf->Cell(95, 8, 'Fecha de emisión: ' . ($cabecera['fecha_salida'] ?? ''), 1, 0);
+$pdf->Cell(95, 8, 'Fecha de inicio de traslado: ' . ($cabecera['fecha_inicio_traslado'] ?? ''), 1, 1);
+$pdf->Cell(95, 8, 'Destinatario: ' . utf8_decode($cabecera['destinatario'] ?? ''), 1, 0);
+$pdf->Cell(95, 8, 'RUC/DNI: ' . ($cabecera['ruc_dni_destinatario'] ?? ''), 1, 1);
+$pdf->Cell(190, 8, 'Punto de partida: ' . utf8_decode($puntoPartida), 1, 1);
+$pdf->Cell(190, 8, 'Punto de llegada: ' . utf8_decode($cabecera['punto_llegada'] ?? ''), 1, 1);
 
-        while ($fila = $result->fetch_assoc()){
-            $pdf->Cell(25,5,$fila['id_guia_salida'],1,0,"C");
-            $pdf->Cell(40,5,$fila['fecha_salida'],1,0,"C");
-            $pdf->Cell(70,5,strip_tags($fila[utf8_decode('descripcion')]),1,0,"B");
-            $pdf->Cell(30,5,$fila['cantidad_salida'],1,0,"C");
-            $pdf->Cell(30,5,$fila[utf8_decode('producto')],1,0,"C");
-            $pdf->Cell(40,5,$fila[utf8_decode('destino')],1,0,"C");
-            $pdf->Cell(40,5,$fila['encargado'],1,0,"C");
-            $pdf->Cell(20,5,$fila['activo'],1,1,"C");
-        }
+$pdf->Ln(2);
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->Cell(190, 8, 'Motivo del traslado: ' . utf8_decode($cabecera['motivo_traslado'] ?? ''), 1, 1);
 
-        $pdf->Output('I', 'guia_salida_individual_admin.pdf');
-    } else {
-        echo "No se encontró la guía de entrada con el ID proporcionado.";
+$pdf->SetFont('Arial', '', 10);
+$pdf->Cell(95, 8, 'Modalidad de transporte: ' . utf8_decode($cabecera['modalidad_transporte'] ?? ''), 1, 0);
+$pdf->Cell(95, 8, 'Destino interno: ' . utf8_decode($cabecera['destino'] ?? ''), 1, 1);
+$pdf->Cell(95, 8, 'Encargado: ' . utf8_decode($cabecera['encargado'] ?? ''), 1, 0);
+$pdf->Cell(95, 8, 'Estado: ' . ($cabecera['activo'] ?? ''), 1, 1);
+
+$pdf->Ln(2);
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->Cell(190, 8, 'Detalle de productos', 1, 1, 'C');
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->Cell(70, 7, 'Descripción', 1, 0, 'C');
+$pdf->Cell(20, 7, 'Cantidad', 1, 0, 'C');
+$pdf->Cell(30, 7, 'Unidad', 1, 0, 'C');
+$pdf->Cell(25, 7, 'Peso total', 1, 0, 'C');
+$pdf->Cell(25, 7, 'Lote', 1, 0, 'C');
+$pdf->Cell(20, 7, 'Vence', 1, 1, 'C');
+
+if ($detalleQuery && $detalleQuery->num_rows > 0) {
+    $pdf->SetFont('Arial', '', 9);
+    while ($detalle = $detalleQuery->fetch_assoc()) {
+        $pdf->Cell(70, 7, utf8_decode($detalle['descripcion'] ?? ''), 1, 0);
+        $pdf->Cell(20, 7, $detalle['cantidad'] ?? '', 1, 0, 'C');
+        $pdf->Cell(30, 7, utf8_decode($detalle['unidad_medida'] ?? ''), 1, 0, 'C');
+        $pdf->Cell(25, 7, $detalle['peso_total'] ?? '', 1, 0, 'C');
+        $pdf->Cell(25, 7, $detalle['id_lote'] ?? '', 1, 0, 'C');
+        $pdf->Cell(20, 7, $detalle['fecha_vencimiento'] ?? '', 1, 1, 'C');
     }
 } else {
-    echo "ID de guía de entrada no proporcionado.";
+    $pdf->Cell(190, 7, 'No hay detalles registrados para esta guía.', 1, 1, 'C');
 }
+
+$pdf->Ln(4);
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->Cell(190, 8, 'Datos de traslado', 1, 1, 'C');
+$pdf->SetFont('Arial', '', 9);
+$pdf->Cell(95, 8, 'Marca y placa: ' . utf8_decode($cabecera['marca_placa'] ?? ''), 1, 0);
+$pdf->Cell(95, 8, 'Licencia de conducir: ' . utf8_decode($cabecera['licencia_conducir'] ?? ''), 1, 1);
+$pdf->Cell(95, 8, 'RUC transportista: ' . utf8_decode($cabecera['ruc_transporte'] ?? ''), 1, 0);
+$pdf->Cell(95, 8, 'Denominación transportista: ' . utf8_decode($cabecera['denominacion_conductor'] ?? ''), 1, 1);
+
+$pdf->Ln(6);
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->Cell(190, 8, 'Documento: ' . $serieNumero, 0, 1, 'R');
+
+$pdf->Output('I', 'guia_salida_individual_admin.pdf');
 ?>
