@@ -5,12 +5,10 @@ if(!isset($_SESSION['admin_name'])){
    header('location:index.php');
 }
 ?>
+<!DOCTYPE html>
 <html lang="es">
-<!-- BARRA DE NAV EMPIEZA EN LA FILA 	pag 169-->
-<!-- Recuperar nombre del admninitrador pag 338-->
 
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -20,346 +18,336 @@ if(!isset($_SESSION['admin_name'])){
     <link rel="icon" href="../../imagenes/principal/makro.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-    
 
     <title>Administrador Bodega Maribel</title>
 
-    <!-- Custom fonts for this template-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
-    <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css?asd" rel="stylesheet">
     <link href="css/reloj.css" rel="sytlesheet">
-
+    <style>
+        .guia-card {
+            border: 1px solid #d9d9d9;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            background: #fff;
+        }
+        .section-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .detalle-table th, .detalle-table td {
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+        .detalle-table .lote-info {
+            font-size: 0.8rem;
+        }
+        .guia-layout {
+            border: 2px solid #000;
+            padding: 1rem;
+            background: #fafafa;
+        }
+    </style>
 </head>
-
-<!--FUNCIÓN DE MENSAJE DE CONFIRMACIÓN PARA LA EMLIMINACIÓN DE REGISTROS-->
-<script>
-    function confirmacion() {
-        var respuesta = confirm("¿Desea ELIMINAR el registro?");
-        if (respuesta == true) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    function confirmacionM() {
-        var res = confirm("¿Desea MODIFICAR el registro?");
-        if (respuesta == true) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-</script>
 
 <body id="page-top">
     <div id="wrapper">
         <?php
         @include 'sidebar.php';
         @include 'navbar.php';
+        @include '../../../controlador/controlador_tablas/controlador_tabla_guia_salida.php';
+        @include '../../modelo/config.php';
+
+        $productos = [];
+        $productoQuery = mysqli_query($conn, "SELECT id_producto, nombre_producto FROM producto WHERE stock_actual > 0");
+        if ($productoQuery) {
+            while ($prod = mysqli_fetch_assoc($productoQuery)) {
+                $productos[] = $prod;
+            }
+        }
+
+        $guias = [];
+        $guiasQuery = mysqli_query(
+            $conn,
+            "SELECT g.*, COUNT(d.id_detalle_salida) AS items, COALESCE(SUM(d.cantidad),0) AS total_cantidad " .
+            "FROM guia_de_salida g LEFT JOIN guia_de_salida_detalle d ON g.id_guia_salida = d.id_guia_salida " .
+            "GROUP BY g.id_guia_salida ORDER BY g.fecha_salida DESC"
+        );
+        if ($guiasQuery) {
+            while ($guia = mysqli_fetch_assoc($guiasQuery)) {
+                $guias[] = $guia;
+            }
+        }
         ?>
     </div>
-    <div class="container">
-        <?php
-        @include '../../../controlador/controlador_tablas/controlador_tabla_guia_salida.php';
-        $select = "SELECT * FROM guia_de_salida";
-        $tabla = mysqli_query($conn, $select);
-        ?>
-        <h3 style="font-family: Verdana, Geneva, Tahoma, sans-serif; text-align: center; font-weight: 600;">TABLA Guias de Salida</h3>
-        <hr>
+    <div class="container-fluid">
+        <h3 class="text-center fw-bold my-4">Guía de Salida</h3>
 
-        <form action="../../../controlador/controlador_tablas/controlador_tabla_guia_salida.php" method="post">
-
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Producto</h1>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-row">
-                                <!-- Etiquetas e dentro del formulario-->
-
-                                <div class="form-group col-md-4">
-                                    <label>Id Guia de Salida:</label>
-                                    <input type="text" class="form-control" required name="id_guia_salida" placerholder="" id="id_guia_salida" value="<?php echo $id_guia_salida; ?>" readonly><br>
-                                </div>
-
-                                <div class="form-group col-md-12">
-                                    <label>Fecha</label>
-                                    <input type="date" class="form-control" required name="fecha_salida" placeholder="" id="fecha_salida" value="<?php echo $fecha_salida; ?>">
-                                    <br>
-                                </div>
-
-                                <div class="form-group col-md-12">
-                                    <label for="">Descripcion:</label>
-                                    <input type="text" class="form-control" required name="descripcion" placerholder="" id="descripcion" value="<?php echo $descripcion; ?>"><br>
-                                </div>
-
-                                <div class="form-group col-md-4">
-                                    <label for="">Cantidad:</label>
-                                    <input type="number" class="form-control" required name="cantidad_salida" placerholder="" id="cantidad_salida" value="<?php echo $cantidad_salida; ?>"><br>
-                                </div>
-
-                                
-
-                                <div class="form-group col-md-8">
-                                    <label for="">Producto:
-                                    <select name="producto" id="producto" class="form-control">
-                                        <?php 
-                                        include 'config.php';
-                                        $consulta="SELECT * from producto where stock_actual>0";
-                                        $ejecutar=mysqli_query($conn,$consulta);
-                                        ?>
-                                     <?php 
-                                        foreach ($ejecutar as $opciones):
-                                        ?>
-                                    <option value="<?php echo $opciones['nombre_producto']?>"><?php echo $opciones['nombre_producto']?></option>
-						      	
-                                    <?php 
-                                        endforeach
-                                        ?>
-                                 </select></label>
-                                </div>
-
-                                <div class="form-group col-md-8">
-                                    <label for="">Destino:</label>
-                                    <input type="text" class="form-control" required name="destino" placerholder="" id="destino" value="<?php echo $destino; ?>"><br>
-                                </div>
-
-                                <div class="form-group col-md-8">
-                                    <label for="">Encargado:</label>
-                                    <input type="text" class="form-control" required name="encargado" placerholder="" id="encargado" value="<?php echo $encargado; ?>"><br>
-                                </div>
-                                
-                                <div class="form-group col-md-8">
-                                    <label for="">Activo:</label>
-                                    <select name="activo" id="activo" class="form-control">
-                                        <option value="<?php echo $activo; ?>"><?php echo $activo; ?></option>
-                                        <option value="pendiente">pendiente</option>
-                                        <option value="Entregado">Entregado</option>
-                                    </select><br><br>
-                                </div>
-
-                            
-                            
-
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-
-                            <button value="btnAgregar" <?php echo $accionAgregar; ?> class="btn btn-success" type="submit" name="accion">Agregar</button>
-
-                            <button value="btnModificar" <?php echo $accionModificar; ?> class="btn btn-warning" type="submit" name="accion" onclick='return confirmacionM()'>Modificar</button>
-
-                            <button value="btnEliminar" <?php echo $accionEliminar; ?> class="btn btn-danger" type="submit" name="accion" onclick='return confirmacion()'>Eliminar</button>
-
-                            <button value="btnCancelar" <?php echo $accionCancelar; ?> class="btn btn-primary" type="submit" name="accion">Cancelar</button>
-                            
-
-                        </div>
+        <div class="guia-card mb-4 guia-layout">
+            <form action="../../../controlador/controlador_tablas/controlador_tabla_guia_salida.php" method="post" id="guiaForm">
+                <input type="hidden" name="accion" value="btnAgregar">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">RUC / Remitente</label>
+                        <input type="text" class="form-control" name="numero_documento" placeholder="001-1238614" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Fecha de emisión</label>
+                        <input type="date" class="form-control" name="fecha_salida" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Domicilio Fiscal</label>
+                        <input type="text" class="form-control" name="domicilio_fiscal" placeholder="Dirección del remitente">
                     </div>
                 </div>
-            </div>
 
-            <!-- Button trigger modal -->
-            <div class="row">
-                <div class="col-12 col-sm-3 d-flex justify-content-sm-end mb-4">
-                    <button type="button" class="btn btn-success btn-block" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        <i class="fa-solid fa-plus fa-xl" style="padding: 5px 3px; font-family: Verdana, Geneva, Tahoma, sans-serif;"></i>&nbsp;<b>Agregar registro </b>
-                    </button>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Fecha inicio de traslado</label>
+                        <input type="date" class="form-control" name="fecha_inicio_traslado">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Destinatario</label>
+                        <input type="text" class="form-control" name="destinatario" placeholder="Nombre / Razón social">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">RUC / DNI destinatario</label>
+                        <input type="text" class="form-control" name="ruc_dni_destinatario">
+                    </div>
                 </div>
 
-                <div class="col-12 col-sm-9 d-flex justify-content-sm-end mb-4">
-                    <a href="pdfs/pdf_guia_salida.php" target="_blank" class="btn btn-danger btn-sm shadow-sm" style="padding: 8px 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
-                        <i class="fa-solid fa-file-pdf fa-xl"></i> <b>Generar Reporte</b>
-                    </a>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Punto de partida</label>
+                        <input type="text" class="form-control" name="punto_partida" placeholder="Dirección de partida">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Punto de llegada</label>
+                        <input type="text" class="form-control" name="punto_llegada" placeholder="Dirección de llegada">
+                    </div>
                 </div>
-            </div>
-        </form>
 
-        <div class="" style="font-size: 11px; border-radius: 10px; overflow-x: auto; max-width: 100%;"> <!-- ESTE STYLE HACE RESPONSIVE LA TABLA -->
-            <table class="table table_id">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Id Guia de Salida:</th>
-                        <th>Fecha:</th>
-                        <th>Descripcion</th>
-                        <th>Cantidad:</th>
-                        <th>Producto:</th>
-                        <th>Destino:</th>
-                        <th>Encargado:</th>
-                        <th>Activo:</th>
-                        <th>Acciones:</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    while ($row = mysqli_fetch_array($tabla)) {
-                    ?>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Motivo del traslado</label>
+                        <select class="form-select" name="motivo_traslado">
+                            <option value="Venta">Venta</option>
+                            <option value="Compra">Compra</option>
+                            <option value="Consignación">Consignación</option>
+                            <option value="Traslado interno">Traslado entre almacenes</option>
+                            <option value="Devolución">Devolución</option>
+                            <option value="Exportación">Exportación</option>
+                            <option value="Importación">Importación</option>
+                            <option value="Recepción de bien">Recepción de bien</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Modalidad de transporte</label>
+                        <select class="form-select" name="modalidad_transporte">
+                            <option value="Particular">Particular</option>
+                            <option value="Transportista">Transportista</option>
+                            <option value="Despacho propio">Despacho del remitente</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Destino</label>
+                        <input type="text" class="form-control" name="destino" placeholder="Área / Cliente" required>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Encargado</label>
+                        <input type="text" class="form-control" name="encargado" placeholder="Responsable" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Marca y placa</label>
+                        <input type="text" class="form-control" name="marca_placa">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Licencia de conducir</label>
+                        <input type="text" class="form-control" name="licencia_conducir">
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label class="form-label">RUC transportista</label>
+                        <input type="text" class="form-control" name="ruc_transporte">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Denominación transportista</label>
+                        <input type="text" class="form-control" name="denominacion_conductor">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Estado</label>
+                        <select class="form-select" name="activo">
+                            <option value="pendiente">Pendiente</option>
+                            <option value="Entregado">Entregado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Descripción general</label>
+                    <textarea class="form-control" name="descripcion" rows="2" placeholder="Detalle general del traslado"></textarea>
+                </div>
+
+                <div class="mb-2 d-flex align-items-center justify-content-between">
+                    <span class="section-title">Detalle de productos</span>
+                    <button class="btn btn-outline-primary btn-sm" type="button" id="addRow"><i class="fa-solid fa-plus"></i> Añadir línea</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered detalle-table">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Descripción</th>
+                                <th style="width:120px">Cantidad</th>
+                                <th style="width:150px">Unidad de medida</th>
+                                <th style="width:130px">Peso total</th>
+                                <th style="width:260px">Producto y lote sugerido</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detalleBody">
+                            <tr class="detalle-row">
+                                <td><input type="text" name="detalle_descripcion[]" class="form-control" placeholder="Descripción del ítem"></td>
+                                <td><input type="number" name="detalle_cantidad[]" class="form-control detalle-cantidad" min="1" required></td>
+                                <td><input type="text" name="detalle_unidad[]" class="form-control" value="UND"></td>
+                                <td><input type="number" step="0.01" name="detalle_peso[]" class="form-control" placeholder="0.00"></td>
+                                <td>
+                                    <select name="detalle_producto[]" class="form-select producto-select" required>
+                                        <option value="">Seleccione un producto</option>
+                                        <?php foreach ($productos as $producto): ?>
+                                            <option value="<?= $producto['id_producto']; ?>"><?= htmlspecialchars($producto['nombre_producto']); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <div class="text-muted lote-info">Lote: -- | Vence: -- | Disp: --</div>
+                                    <input type="hidden" name="detalle_lote[]" class="detalle-lote-id">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success"><i class="fa-solid fa-floppy-disk"></i> Guardar guía de salida</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="guia-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Guías de salida registradas</h5>
+                <a href="pdfs/pdf_guia_salida.php" target="_blank" class="btn btn-danger btn-sm"><i class="fa-solid fa-file-pdf"></i> Reporte general</a>
+            </div>
+            <div class="table-responsive" style="font-size: 0.9rem;">
+                <table class="table table-striped">
+                    <thead class="table-dark">
                         <tr>
-                            <td><?php echo $row['id_guia_salida']; ?></td>
-                            <td><?php echo $row['fecha_salida']; ?></td>
-                            <td><?php echo $row['descripcion']; ?></td>
-                            <td><?php echo $row['cantidad_salida']; ?></td>
-                            <td><?php echo $row['producto']; ?></td>
-                            <td><?php echo $row['destino']; ?></td>
-                            <td><?php echo $row['encargado']; ?></td>
-                            <td><?php echo $row['activo']; ?></td>
-
-
-                           
-
-                            <form action="" method="POST">
-                                <input type="hidden" value="<?php echo $row['id_guia_salida']; ?>" name="id_guia_salida">
-                                <input type="hidden" value="<?php echo $row['fecha_salida']; ?>" name="fecha_salida">
-                                <input type="hidden" value="<?php echo $row['descripcion']; ?>" name="descripcion">
-                                <input type="hidden" value="<?php echo $row['cantidad_salida']; ?>" name="cantidad_salida">
-                                <input type="hidden" value="<?php echo $row['producto']; ?>" name="producto">
-                                <input type="hidden" value="<?php echo $row['destino']; ?>" name="destino">
-                                <input type="hidden" value="<?php echo $row['encargado']; ?>" name="encargado">
-                                <input type="hidden" value="<?php echo $row['activo']; ?>" name="activo">
-
-
-
-                                
-                                <td><input type="submit" value="Seleccionar" name="accion"></td>
-                        
-                            </form>
+                            <th>#</th>
+                            <th>Fecha</th>
+                            <th>Documento</th>
+                            <th>Destino</th>
+                            <th>Motivo</th>
+                            <th>Items</th>
+                            <th>Cantidad total</th>
+                            <th>Estado</th>
+                            <th>PDF</th>
                         </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
-        </div>
-        <!--CÓDIGO PARA MOSTRAR EL MODAL CUANDO SE SELECCIONA EL REGISTRO (Implementar en todas las tablas)-->
-        <?php if ($mostrarModal) { ?>
-            <script>
-                $('#exampleModal').modal('show');
-            </script>
-        <?php } ?>
-
-        <div>
-        <?php
-
-
-// Verificar la sesión o redirigir al formulario de inicio de sesión
-
-// Incluir archivo de configuración de la base de datos
-@include '../../modelo/config.php';
-
-// Inicializar variables
-$mensaje_error = "";
-$guia = [];
-
-// Verificar si se ha enviado el formulario de búsqueda
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Obtener el ID de la guía de salida desde el formulario
-    $id_guia = mysqli_real_escape_string($conn, $_POST['id_guia']);
-
-    // Consultar la base de datos para obtener la información de la guía de salida
-    $query = "SELECT * FROM guia_de_salida WHERE id_guia_salida = '$id_guia'";
-    $result = mysqli_query($conn, $query);
-
-    // Verificar si se encontraron resultados
-    if ($result && mysqli_num_rows($result) > 0) {
-        $guia = mysqli_fetch_assoc($result);
-    } else {
-        $mensaje_error = "No se encontró la guía de salida con el ID proporcionado.";
-    }
-}
-?>
-
-<section class="reporte_uno"><style>.reporte_uno{margin-top:50px}</style>
-<h4>Búsqueda de Guía de Salida</h4>
-
-<section>
-                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
-                    <label for="id_guia">ID de Guía de Salida:</label>
-                    <input type="text" name="id_guia" required>
-                    <button type="submit">Buscar</button>
-                    <!-- Agregar campo oculto para almacenar el valor del ID -->
-                    <input type="hidden" name="id_guia_hidden" value="<?php echo isset($guia['id_guia_salida']) ? $guia['id_guia_salida'] : ''; ?>">
-                </form>
-
-                <?php if ($_SERVER["REQUEST_METHOD"] == "POST") : ?>
-                    <?php if ($mensaje_error != "") : ?>
-                        <p><?php echo $mensaje_error; ?></p>
-                    <?php elseif (!empty($guia)) : ?>
-                        <!-- Resto del código... -->
-                    <?php endif; ?>
-                <?php endif; ?>
-            </section>
-            <div class="row">
-            <div class="col-12 col-sm-9 d-flex justify-content-sm-end mb-4">
-                <!-- Agregar el ID almacenado en el campo oculto al enlace del reporte PDF -->
-                <a href="pdfs/pdf_Guia_salida_Uni_adm.php?id=<?php echo isset($guia['id_guia_salida']) ? $guia['id_guia_salida'] : ''; ?>" target="_blank" class="btn btn-danger btn-sm shadow-sm" style="margin-top:-55px;height:40px;padding: 8px 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
-                    <i class="fa-solid fa-file-pdf" ></i> <b>Imprimir Guia buscada </b>
-                </a>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($guias as $guia): ?>
+                            <tr>
+                                <td><?= $guia['id_guia_salida']; ?></td>
+                                <td><?= $guia['fecha_salida']; ?></td>
+                                <td><?= htmlspecialchars($guia['numero_documento']); ?></td>
+                                <td><?= htmlspecialchars($guia['destino']); ?></td>
+                                <td><?= htmlspecialchars($guia['motivo_traslado']); ?></td>
+                                <td><?= $guia['items']; ?></td>
+                                <td><?= $guia['total_cantidad']; ?></td>
+                                <td><?= $guia['activo']; ?></td>
+                                <td>
+                                    <a href="pdfs/pdf_Guia_salida_Uni_adm.php?id=<?= $guia['id_guia_salida']; ?>" class="btn btn-outline-danger btn-sm" target="_blank">
+                                        <i class="fa-solid fa-file-pdf"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
-        </div>
-
-<?php if ($_SERVER["REQUEST_METHOD"] == "POST") : ?>
-    <?php if ($mensaje_error != "") : ?>
-        <p><?php echo $mensaje_error; ?></p>
-    <?php elseif (!empty($guia)) : ?>
-        <table class="table table_id">
-        <thead class="table-dark">
-        <tr>
-                         <th>Id Guia de Salida:</th>
-                        <th>Fecha:</th>
-                        <th>Descripcion</th>
-                        <th>Cantidad:</th>
-                        <th>Producto:</th>
-                        <th>Destino:</th>
-                        <th>Encargado:</th>
-                        <th>Activo:</th>
-            </tr>
-            </thead>
-
-            <tr>
-                            <td><?php echo $guia['id_guia_salida']; ?></td>
-                            <td><?php echo $guia['fecha_salida']; ?></td>
-                            <td><?php echo $guia['descripcion']; ?></td>
-                            <td><?php echo $guia['cantidad_salida']; ?></td>
-                            <td><?php echo $guia['producto']; ?></td>
-                            <td><?php echo $guia['destino']; ?></td>
-                            <td><?php echo $guia['encargado']; ?></td>
-                            <td><?php echo $guia['activo']; ?></td>
-                
-            </tr>
-        </table>
-    <?php endif; ?>
-<?php endif; ?>
-</section>
         </div>
     </div>
-   
-            
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script>
+        const controllerUrl = '../../../controlador/controlador_tablas/controlador_lote_reciente.php';
 
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
+        function crearFilaDetalle() {
+            const fila = document.querySelector('.detalle-row').cloneNode(true);
+            fila.querySelectorAll('input').forEach((input) => {
+                input.value = '';
+            });
+            fila.querySelector('.lote-info').textContent = 'Lote: -- | Vence: -- | Disp: --';
+            fila.querySelector('.detalle-lote-id').value = '';
+            fila.querySelector('.producto-select').selectedIndex = 0;
+            return fila;
+        }
 
-    <!-- Page level plugins -->
-    <script src="vendor/chart.js/Chart.min.js"></script>
+        async function actualizarLote(row) {
+            const select = row.querySelector('.producto-select');
+            const loteInfo = row.querySelector('.lote-info');
+            const loteInput = row.querySelector('.detalle-lote-id');
+            const productoId = select.value;
 
-    <!-- Page level custom scripts -->
-    <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>
-    <script src="../../js/busqueda.js"></script>
+            if (!productoId) {
+                loteInfo.textContent = 'Lote: -- | Vence: -- | Disp: --';
+                loteInput.value = '';
+                return;
+            }
 
+            try {
+                const response = await fetch(`${controllerUrl}?id_producto=${productoId}`);
+                const data = await response.json();
+                if (data && data.id_lote) {
+                    loteInfo.textContent = `Lote: ${data.id_lote} | Vence: ${data.fecha_vencimiento} | Disp: ${data.cantidad_disponible}`;
+                    loteInput.value = data.id_lote;
+                } else {
+                    loteInfo.textContent = 'No hay lotes disponibles para este producto';
+                    loteInput.value = '';
+                }
+            } catch (error) {
+                loteInfo.textContent = 'Error al buscar el lote';
+                loteInput.value = '';
+            }
+        }
 
+        document.addEventListener('change', (event) => {
+            if (event.target.classList.contains('producto-select')) {
+                actualizarLote(event.target.closest('.detalle-row'));
+            }
+        });
+
+        document.getElementById('addRow').addEventListener('click', () => {
+            const body = document.getElementById('detalleBody');
+            const nuevaFila = crearFilaDetalle();
+            body.appendChild(nuevaFila);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.producto-select').forEach((select) => {
+                if (select.value) {
+                    actualizarLote(select.closest('.detalle-row'));
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
