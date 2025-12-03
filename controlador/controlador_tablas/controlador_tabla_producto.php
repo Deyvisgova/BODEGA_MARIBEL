@@ -14,11 +14,24 @@
     $mostrarModal = false;
 
     $accion= (isset($_POST['accion']))?$_POST['accion']:"";
+
+    $esAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
+    $responderJson = function(array $payload, int $codigo = 200) {
+        http_response_code($codigo);
+        header('Content-Type: application/json');
+        echo json_encode($payload);
+        exit;
+    };
+
     switch($accion){
         case "btnAgregar":
                 $select = "SELECT * FROM producto WHERE nombre_producto = '$nombre_producto'";
                 $result = mysqli_query($conn, $select);
                 if(mysqli_num_rows($result) > 0){
+                    if ($esAjax) {
+                        $responderJson(['success' => false, 'message' => 'El producto ya existe.'], 409);
+                    }
                     echo "<script> alert('¡Cuenta existente!')</script>";
                     header('location: ../../vista/adm/dashboard/tabla_producto.php');
                 }else{
@@ -27,6 +40,15 @@
 
                     $insert = "INSERT INTO producto(nombre_producto, descripcion, stock_actual, cantidad, precio_producto,categoria, activo, provedor) VALUES('$nombre_producto', '$descripcionSegura', 0, 0, 0, '$categoria', '$activo','$provedor')";
                     mysqli_query($conn, $insert);
+
+                    if ($esAjax) {
+                        $responderJson([
+                            'success' => true,
+                            'message' => 'Producto creado correctamente.',
+                            'id_producto' => mysqli_insert_id($conn),
+                            'nombre' => $nombre_producto
+                        ]);
+                    }
 
                     header('location: ../../vista/adm/dashboard/tabla_producto.php');
                 }
