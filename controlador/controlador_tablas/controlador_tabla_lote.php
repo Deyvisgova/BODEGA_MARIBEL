@@ -35,7 +35,7 @@ function ajustarStock(mysqli $conn, int $productoId, int $diferencia): void {
 
     switch ($accion) {
         case "btnAgregar":
-            $insert = "INSERT INTO lote (id_producto, cantidad_recibida, fecha_vencimiento, fecha_ingreso) VALUES ($id_producto, $cantidad_recibida, '$fecha_vencimiento', '$fecha_ingreso')";
+            $insert = "INSERT INTO lote (id_producto, cantidad_recibida, cantidad_disponible, fecha_vencimiento, fecha_ingreso) VALUES ($id_producto, $cantidad_recibida, $cantidad_recibida, '$fecha_vencimiento', '$fecha_ingreso')";
             $exito = mysqli_query($conn, $insert);
 
             if ($exito) {
@@ -73,7 +73,8 @@ function ajustarStock(mysqli $conn, int $productoId, int $diferencia): void {
         $productoAnterior = $loteAnterior ? (int) $loteAnterior['id_producto'] : 0;
         $cantidadAnterior = $loteAnterior ? (int) $loteAnterior['cantidad_recibida'] : 0;
 
-        $update = "UPDATE lote SET id_producto=$id_producto, cantidad_recibida=$cantidad_recibida, fecha_vencimiento='$fecha_vencimiento', fecha_ingreso='$fecha_ingreso' WHERE id_lote='$id_lote'";
+        $ajusteDisponible = $cantidad_recibida - $cantidadAnterior;
+        $update = "UPDATE lote SET id_producto=$id_producto, cantidad_recibida=$cantidad_recibida, cantidad_disponible = GREATEST(0, cantidad_disponible + $ajusteDisponible), fecha_vencimiento='$fecha_vencimiento', fecha_ingreso='$fecha_ingreso' WHERE id_lote='$id_lote'";
         mysqli_query($conn, $update);
 
         if ($productoAnterior !== (int)$id_producto) {
