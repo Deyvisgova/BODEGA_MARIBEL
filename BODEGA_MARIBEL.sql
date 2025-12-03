@@ -111,6 +111,21 @@ CREATE TABLE `guia_de_entrada` (
   `activo` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `guia_de_entrada_detalle`
+--
+
+CREATE TABLE `guia_de_entrada_detalle` (
+  `id_detalle` int(11) NOT NULL,
+  `id_guia_entrada` int(11) NOT NULL,
+  `id_producto` int(11) NOT NULL,
+  `cantidad_entrada` int(11) NOT NULL,
+  `id_lote` int(11) NOT NULL,
+  `fecha_vencimiento` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 --
 -- Volcado de datos para la tabla `guia_de_entrada`
 --
@@ -279,6 +294,15 @@ ALTER TABLE `guia_de_entrada`
   ADD KEY `idx_guia_entrada_provedor` (`provedor`);
 
 --
+-- Indices de la tabla `guia_de_entrada_detalle`
+--
+ALTER TABLE `guia_de_entrada_detalle`
+  ADD PRIMARY KEY (`id_detalle`),
+  ADD KEY `idx_detalle_guia` (`id_guia_entrada`),
+  ADD KEY `idx_detalle_producto` (`id_producto`),
+  ADD KEY `idx_detalle_lote` (`id_lote`);
+
+--
 -- Indices de la tabla `guia_de_salida`
 --
 ALTER TABLE `guia_de_salida`
@@ -327,6 +351,11 @@ ALTER TABLE `guia_de_entrada`
   ADD CONSTRAINT `fk_entrada_producto` FOREIGN KEY (`producto`) REFERENCES `producto` (`nombre_producto`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_entrada_provedor` FOREIGN KEY (`provedor`) REFERENCES `provedor` (`Nombre_de_la_empresa`) ON UPDATE CASCADE;
 
+ALTER TABLE `guia_de_entrada_detalle`
+  ADD CONSTRAINT `fk_detalle_guia` FOREIGN KEY (`id_guia_entrada`) REFERENCES `guia_de_entrada` (`id_guia_entrada`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_detalle_producto` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id_producto`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_detalle_lote` FOREIGN KEY (`id_lote`) REFERENCES `lote` (`id_lote`) ON UPDATE CASCADE;
+
 ALTER TABLE `guia_de_salida`
   ADD CONSTRAINT `fk_salida_producto` FOREIGN KEY (`producto`) REFERENCES `producto` (`nombre_producto`) ON UPDATE CASCADE;
 
@@ -363,6 +392,12 @@ ALTER TABLE `colaborador`
 --
 ALTER TABLE `guia_de_entrada`
   MODIFY `id_guia_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `guia_de_entrada_detalle`
+--
+ALTER TABLE `guia_de_entrada_detalle`
+  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `guia_de_salida`
