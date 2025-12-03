@@ -13,6 +13,15 @@ $mostrarModal = false;
 
 $accion = isset($_POST['accion']) ? $_POST['accion'] : "";
 
+$esAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
+$responderJson = function (array $payload, int $codigo = 200) {
+    http_response_code($codigo);
+    header('Content-Type: application/json');
+    echo json_encode($payload);
+    exit;
+};
+
 function ajustarStock(mysqli $conn, int $productoId, int $diferencia): void {
     if ($productoId <= 0 || $diferencia === 0) {
         return;
@@ -24,13 +33,39 @@ function ajustarStock(mysqli $conn, int $productoId, int $diferencia): void {
     );
 }
 
-switch ($accion) {
-    case "btnAgregar":
-        $insert = "INSERT INTO lote (id_producto, cantidad_recibida, fecha_vencimiento, fecha_ingreso) VALUES ($id_producto, $cantidad_recibida, '$fecha_vencimiento', '$fecha_ingreso')";
-        mysqli_query($conn, $insert);
-        ajustarStock($conn, (int) $id_producto, $cantidad_recibida);
-        header('location: ../../vista/adm/dashboard/tabla_lote.php');
-        break;
+    switch ($accion) {
+        case "btnAgregar":
+            $insert = "INSERT INTO lote (id_producto, cantidad_recibida, fecha_vencimiento, fecha_ingreso) VALUES ($id_producto, $cantidad_recibida, '$fecha_vencimiento', '$fecha_ingreso')";
+            $exito = mysqli_query($conn, $insert);
+
+            if ($exito) {
+                ajustarStock($conn, (int) $id_producto, $cantidad_recibida);
+
+                if ($esAjax) {
+                    $productoNombre = '';
+                    $busqueda = mysqli_query($conn, "SELECT nombre_producto FROM producto WHERE id_producto = $id_producto LIMIT 1");
+                    if ($busqueda && mysqli_num_rows($busqueda) === 1) {
+                        $productoEncontrado = mysqli_fetch_assoc($busqueda);
+                        $productoNombre = $productoEncontrado['nombre_producto'];
+                    }
+
+                    $responderJson([
+                        'success' => true,
+                        'message' => 'Lote creado correctamente.',
+                        'id_lote' => mysqli_insert_id($conn),
+                        'producto' => $productoNombre,
+                        'fecha_vencimiento' => $fecha_vencimiento
+                    ]);
+                }
+
+                header('location: ../../vista/adm/dashboard/tabla_lote.php');
+            } else {
+                if ($esAjax) {
+                    $responderJson(['success' => false, 'message' => 'No se pudo crear el lote.'], 500);
+                }
+                header('location: ../../vista/adm/dashboard/tabla_lote.php');
+            }
+            break;
 
     case "btnModificar":
         $consultaLote = mysqli_query($conn, "SELECT id_producto, cantidad_recibida FROM lote WHERE id_lote = $id_lote LIMIT 1");
