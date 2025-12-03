@@ -179,8 +179,9 @@ if (!isset($_SESSION['admin_name'])) {
 
                                 <div class="form-group col-md-4">
                                     <label>Id Guia de Entrada:</label>
-                                    <input type="text" class="form-control" required name="id_guia_entrada"
-                                        placerholder="" id="id_guia_entrada" value="<?php echo $id_guia_entrada; ?>"
+                                    <input type="text" class="form-control" name="id_guia_entrada"
+                                        placerholder="" id="id_guia_entrada"
+                                        value="<?php echo $id_guia_entrada !== '' ? $id_guia_entrada : 'Autogenerado'; ?>"
                                         readonly><br>
                                 </div>
 
