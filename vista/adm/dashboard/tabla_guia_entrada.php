@@ -178,60 +178,37 @@ if(!isset($_SESSION['admin_name'])){
                                     <input type="text" class="form-control" required name="id_guia_entrada" placerholder="" id="id_guia_entrada" value="<?php echo $id_guia_entrada; ?>" readonly><br>
                                 </div>
 
-                                <div class="form-group col-md-8">
+                                <div class="form-group col-md-4">
                                     <label>Fecha</label>
                                     <input type="date" class="form-control" required name="fecha_entrada" placeholder="" id="fecha_entrada" value="<?php echo $fecha_entrada; ?>">
                                     <br>
                                 </div>
 
+                                <div class="form-group col-md-4">
+                                    <label for="">Proveedor:</label>
+                                    <select name="id_proveedor" id="id_proveedor" class="form-control" required>
+                                        <option value="" disabled selected>Selecciona un proveedor</option>
+                                        <?php foreach ($proveedoresDisponibles as $proveedor) { ?>
+                                            <option value="<?php echo (int)$proveedor['id_provedor']; ?>">
+                                                <?php echo htmlspecialchars($proveedor['Nombre_de_la_empresa'], ENT_QUOTES, 'UTF-8'); ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select><br>
+                                </div>
+
                                 <div class="form-group col-md-12">
                                     <label for="">Descripcion:</label>
-                                    <input type="text" class="form-control" required name="descripcion" placerholder="" id="descripcion" value="<?php echo $descripcion; ?>"><br>
+                                    <input type="text" class="form-control" name="descripcion" placerholder="" id="descripcion" value="<?php echo $descripcion; ?>"><br>
                                 </div>
 
-                                <div class="form-group col-md-4">
-                                    <label for="">Cantidad:</label>
-                                    <input type="number" class="form-control" required name="cantidad_entrada" placerholder="" id="cantidad_entrada" value="<?php echo $cantidad_entrada; ?>"><br>
-                                </div>
-
-                                <div class="form-group col-md-8">
-                                    <label for="">Producto:</label>
-                                    <input type="text" class="form-control" required name="producto" placerholder="" id="producto" value="<?php echo $producto; ?>"><br>
-                                </div>
-
-
-                                <div class="form-group col-md-8">
-                                    <label for="">Provedor:
-                                    <select name="provedor" id="provedor" class="form-control">
-                                        <?php 
-                                        include 'config.php';
-                                        $consulta="SELECT * from provedor";
-                                        $ejecutar=mysqli_query($conn,$consulta);
-                                        ?>
-                                     <?php 
-                                        foreach ($ejecutar as $opciones):
-                                        ?>
-                                    <option value="<?php echo $opciones['Nombre_de_la_empresa']?>"><?php echo $opciones['Nombre_de_la_empresa']?></option>
-						      	
-                                    <?php 
-                                        endforeach
-                                        ?>
-                                 </select></label>
-                                </div>
-
-                                
-
-                                <div class="form-group col-md-8">
+                                <div class="form-group col-md-6">
                                     <label for="">Activo:</label>
-                                    <select name="activo" id="activo" class="form-control">
-                                        <option value="<?php echo $activo; ?>"><?php echo $activo; ?></option>
-                                        <option value="pendiente">pendiente</option>
+                                    <select name="activo" id="activo" class="form-control" required>
+                                        <option value="" disabled selected>Selecciona el estado</option>
+                                        <option value="pendiente">Pendiente</option>
                                         <option value="recibido">Recibido</option>
                                     </select><br><br>
                                 </div>
-
-                            
-                            
 
                             </div>
                         </div>
@@ -273,9 +250,7 @@ if(!isset($_SESSION['admin_name'])){
                         <th>Id Guia de Entrada:</th>
                         <th>Fecha:</th>
                         <th>Descripcion</th>
-                        <th>Cantidad:</th>
-                        <th>Producto:</th>
-                        <th>provedor:</th>
+                        <th>Proveedor:</th>
                         <th>Activo:</th>
                         <th>Acciones:</th>
                     </tr>
@@ -288,10 +263,8 @@ if(!isset($_SESSION['admin_name'])){
                             <td><?php echo $row['id_guia_entrada']; ?></td>
                             <td><?php echo $row['fecha_entrada']; ?></td>
                             <td><?php echo $row['descripcion']; ?></td>
-                            <td><?php echo $row['cantidad_entrada']; ?></td>
-                            <td><?php echo $row['producto']; ?></td>
-                            <td><?php echo $row['provedor']; ?></td>
-                            <td><?php echo $row['activo']; ?></td>
+                        <td><?php echo $row['provedor']; ?></td>
+                        <td><?php echo $row['activo']; ?></td>
 
 
                            
@@ -299,11 +272,9 @@ if(!isset($_SESSION['admin_name'])){
                             <form action="" method="POST">
                                 <input type="hidden" value="<?php echo $row['id_guia_entrada']; ?>" name="id_guia_entrada">
                                 <input type="hidden" value="<?php echo $row['fecha_entrada']; ?>" name="fecha_entrada">
-                                <input type="hidden" value="<?php echo $row['descripcion']; ?>" name="descripcion">
-                                <input type="hidden" value="<?php echo $row['cantidad_entrada']; ?>" name="cantidad_entrada">
-                                <input type="hidden" value="<?php echo $row['producto']; ?>" name="producto">
-                                <input type="hidden" value="<?php echo $row['provedor']; ?>" name="provedor">
-                                <input type="hidden" value="<?php echo $row['activo']; ?>" name="activo">
+                        <input type="hidden" value="<?php echo $row['descripcion']; ?>" name="descripcion">
+                        <input type="hidden" value="<?php echo $row['provedor']; ?>" name="provedor">
+                        <input type="hidden" value="<?php echo $row['activo']; ?>" name="activo">
 
 
                                 
@@ -347,15 +318,6 @@ if(!isset($_SESSION['admin_name'])){
                                 <input type="number" class="form-control" id="detalle_id_guia" name="id_guia_entrada" value="<?php echo htmlspecialchars($id_guia_entrada ?? '', ENT_QUOTES, 'UTF-8'); ?>" placeholder="Ej. 4" required>
                             </div>
                             <div class="col-md-8">
-                                <label class="form-label" for="detalle_proveedor">Proveedor</label>
-                                <select class="form-select" id="detalle_proveedor" name="id_provedor" required>
-                                    <option value="" selected disabled>Selecciona un proveedor</option>
-                                    <?php foreach ($proveedoresDisponibles as $proveedor) { ?>
-                                        <option value="<?php echo (int)$proveedor['id_provedor']; ?>"><?php echo htmlspecialchars($proveedor['Nombre_de_la_empresa'], ENT_QUOTES, 'UTF-8'); ?></option>
-                                    <?php } ?>
-                                </select>
-                            </div>
-                            <div class="col-md-8">
                                 <label class="form-label" for="detalle_producto">Producto</label>
                                 <div class="d-flex gap-2">
                                     <select class="form-select" id="detalle_producto" name="id_producto" required>
@@ -372,6 +334,13 @@ if(!isset($_SESSION['admin_name'])){
                             <div class="col-md-4">
                                 <label class="form-label" for="detalle_cantidad">Cantidad de entrada</label>
                                 <input type="number" min="1" class="form-control" id="detalle_cantidad" name="cantidad_entrada" placeholder="Ej. 50" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="detalle_precio_unitario">Precio unitario</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">S/</span>
+                                    <input type="number" step="0.01" min="0" class="form-control" id="detalle_precio_unitario" name="precio_unitario" placeholder="0.00" required>
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="detalle_lote">Lote</label>
@@ -392,13 +361,6 @@ if(!isset($_SESSION['admin_name'])){
                             <div class="col-md-6">
                                 <label class="form-label" for="detalle_fecha_vencimiento">Fecha de vencimiento</label>
                                 <input type="date" class="form-control" id="detalle_fecha_vencimiento" name="fecha_vencimiento" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label" for="detalle_precio_unitario">Precio unitario por lote (costo)</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">S/</span>
-                                    <input type="number" step="0.01" min="0" class="form-control" id="detalle_precio_unitario" name="precio_unitario" placeholder="0.00" required>
-                                </div>
                             </div>
                         </form>
                     </div>
@@ -661,15 +623,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 event.preventDefault();
                 alertBox.style.display = 'none';
 
-                const payload = {
-                    id_guia_entrada: detalleForm.id_guia_entrada.value,
-                    id_producto: detalleForm.id_producto.value,
-                    id_provedor: detalleForm.id_provedor.value,
-                    cantidad_entrada: detalleForm.cantidad_entrada.value,
-                    id_lote: detalleForm.id_lote.value,
-                    fecha_vencimiento: detalleForm.fecha_vencimiento.value,
-                    precio_unitario: detalleForm.precio_unitario.value
-                };
+                    const payload = {
+                        id_guia_entrada: detalleForm.id_guia_entrada.value,
+                        id_producto: detalleForm.id_producto.value,
+                        cantidad_entrada: detalleForm.cantidad_entrada.value,
+                        id_lote: detalleForm.id_lote.value,
+                        fecha_vencimiento: detalleForm.fecha_vencimiento.value,
+                        precio_unitario: detalleForm.precio_unitario.value
+                    };
 
                 guardarBtn.disabled = true;
                 guardarBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Guardando...';
