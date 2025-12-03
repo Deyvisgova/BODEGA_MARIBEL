@@ -105,7 +105,7 @@ if (!isset($_SESSION['admin_name'])) {
     }
 
     function confirmacionM() {
-        var res = confirm("¿Desea MODIFICAR el registro?");
+        var respuesta = confirm("¿Desea MODIFICAR el registro?");
         if (respuesta == true) {
             return true;
         } else {
@@ -163,104 +163,67 @@ if (!isset($_SESSION['admin_name'])) {
             de Entrada</h3>
         <hr>
 
-        <form action="../../../controlador/controlador_tablas/controlador_tabla_guia_entrada.php" method="post">
-
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Producto</h1>
+        <form action="../../../controlador/controlador_tablas/controlador_tabla_guia_entrada.php" method="post" class="mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                    <span class="fw-bold">Guía de entrada</span>
+                    <small class="text-light">Completa la cabecera antes de agregar detalles</small>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Id Guía de Entrada</label>
+                            <input type="number" class="form-control" name="id_guia_entrada" placeholder="Autogenerado"
+                                id="id_guia_entrada" value="<?php echo $id_guia_entrada; ?>" readonly>
                         </div>
-                        <div class="modal-body">
-                            <div class="form-row">
-                                <!-- Etiquetas e dentro del formulario-->
-
-                                <div class="form-group col-md-4">
-                                    <label>Id Guia de Entrada:</label>
-                                    <input type="text" class="form-control" required name="id_guia_entrada"
-                                        placerholder="" id="id_guia_entrada" value="<?php echo $id_guia_entrada; ?>"
-                                        readonly><br>
-                                </div>
-
-                                <div class="form-group col-md-8">
-                                    <label>Fecha</label>
-                                    <input type="date" class="form-control" required name="fecha_entrada" placeholder=""
-                                        id="fecha_entrada" value="<?php echo $fecha_entrada; ?>">
-                                    <br>
-                                </div>
-
-                                <div class="form-group col-md-12">
-                                    <label for="">Descripcion:</label>
-                                    <input type="text" class="form-control" name="descripcion" placerholder=""
-                                        id="descripcion" value="<?php echo $descripcion; ?>"><br>
-                                </div>
-
-                                <div class="form-group col-md-8">
-                                    <label for="">Proveedor</label>
-                                    <select name="id_proveedor" id="id_proveedor" class="form-control" required>
-                                        <option value="">Seleccione proveedor</option>
-                                        <?php foreach ($proveedoresDisponibles as $proveedor) { ?>
-                                            <option value="<?php echo (int) $proveedor['id_provedor']; ?>" <?php echo ($id_proveedor == $proveedor['id_provedor']) ? 'selected' : ''; ?>>
-                                                <?php echo htmlspecialchars($proveedor['Nombre_de_la_empresa'], ENT_QUOTES, 'UTF-8'); ?>
-                                            </option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-
-
-
-                                <div class="form-group col-md-8">
-                                    <label for="">Activo:</label>
-                                    <select name="activo" id="activo" class="form-control">
-                                        <option value="<?php echo $activo; ?>"><?php echo $activo; ?></option>
-                                        <option value="pendiente">pendiente</option>
-                                        <option value="recibido">Recibido</option>
-                                    </select><br><br>
-                                </div>
-
-
-
-
-                            </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Fecha</label>
+                            <input type="date" class="form-control" required name="fecha_entrada" id="fecha_entrada"
+                                value="<?php echo $fecha_entrada; ?>">
                         </div>
-                        <div class="modal-footer">
-
-                            <button value="btnAgregar" <?php echo $accionAgregar; ?> class="btn btn-success"
-                                type="submit" name="accion">Agregar</button>
-
-                            <button value="btnModificar" <?php echo $accionModificar; ?> class="btn btn-warning"
-                                type="submit" name="accion" onclick='return confirmacionM()'>Modificar</button>
-
-                            <button value="btnEliminar" <?php echo $accionEliminar; ?> class="btn btn-danger"
-                                type="submit" name="accion" onclick='return confirmacion()'>Eliminar</button>
-
-                            <button value="btnCancelar" <?php echo $accionCancelar; ?> class="btn btn-primary"
-                                type="submit" name="accion">Cancelar</button>
-
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_proveedor">Proveedor</label>
+                            <select name="id_proveedor" id="id_proveedor" class="form-control" required>
+                                <option value="">Seleccione proveedor</option>
+                                <?php foreach ($proveedoresDisponibles as $proveedor) { ?>
+                                    <option value="<?php echo (int) $proveedor['id_provedor']; ?>" <?php echo ($id_proveedor == $proveedor['id_provedor']) ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($proveedor['Nombre_de_la_empresa'], ENT_QUOTES, 'UTF-8'); ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="descripcion">Descripción</label>
+                            <input type="text" class="form-control" name="descripcion" id="descripcion"
+                                value="<?php echo $descripcion; ?>" placeholder="Notas u observaciones">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="activo">Estado</label>
+                            <select name="activo" id="activo" class="form-control">
+                                <option value="<?php echo $activo; ?>"><?php echo $activo; ?></option>
+                                <option value="pendiente">Pendiente</option>
+                                <option value="recibido">Recibido</option>
+                            </select>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Button trigger modal -->
-            <div class="row">
-                <div class="col-12 col-sm-9 d-flex justify-content-sm-start mb-4">
-                    <button type="button" class="btn btn-outline-danger shadow-sm" data-bs-toggle="modal"
-                        data-bs-target="#detalleGuiaModal">
-                        <i class="fa-solid fa-file-circle-plus me-2"></i>Agregar detalle de guía
-                    </button>
-                </div>
-
-                <div class="col-12 col-sm-9 d-flex justify-content-sm-end mb-4">
-                    <a href="pdfs/pdf_guia_entrada.php" target="_blank" class="btn btn-danger btn-sm shadow-sm"
-                        style="padding: 8px 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
-                        <i class="fa-solid fa-file-pdf fa-xl"></i> <b>Generar Reporte</b>
-                    </a>
+                <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+                    <button value="btnAgregar" <?php echo $accionAgregar; ?> class="btn btn-success" type="submit" name="accion">Agregar</button>
+                    <button value="btnModificar" <?php echo $accionModificar; ?> class="btn btn-warning" type="submit" name="accion" onclick='return confirmacionM()'>Modificar</button>
+                    <button value="btnEliminar" <?php echo $accionEliminar; ?> class="btn btn-danger" type="submit" name="accion" onclick='return confirmacion()'>Eliminar</button>
+                    <button value="btnCancelar" <?php echo $accionCancelar; ?> class="btn btn-secondary" type="submit" name="accion">Cancelar</button>
                 </div>
             </div>
         </form>
+
+        <div class="row">
+            <div class="col-12 col-sm-9 d-flex justify-content-sm-end mb-4 ms-auto">
+                <a href="pdfs/pdf_guia_entrada.php" target="_blank" class="btn btn-danger btn-sm shadow-sm"
+                    style="padding: 8px 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
+                    <i class="fa-solid fa-file-pdf fa-xl"></i> <b>Generar Reporte</b>
+                </a>
+            </div>
+        </div>
 
         <div class="" style="font-size: 11px; border-radius: 10px; overflow-x: auto; max-width: 100%;">
             <!-- ESTE STYLE HACE RESPONSIVE LA TABLA -->
@@ -306,31 +269,20 @@ if (!isset($_SESSION['admin_name'])) {
                 </tbody>
             </table>
         </div>
-        <!--CÓDIGO PARA MOSTRAR EL MODAL CUANDO SE SELECCIONA EL REGISTRO (Implementar en todas las tablas)-->
-        <?php if ($mostrarModal) { ?>
-            <script>
-                $('#exampleModal').modal('show');
-            </script>
-        <?php } ?>
 
-        <!-- Modal moderno para registrar detalle de guía de entrada -->
-        <div class="modal fade" id="detalleGuiaModal" tabindex="-1" aria-labelledby="detalleGuiaModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content modal-modern">
-                    <div class="modal-header">
-                        <div>
-                            <p class="mb-1 text-uppercase small">Guía de entrada</p>
-                            <h1 class="modal-title fs-4" id="detalleGuiaModalLabel">Agregar detalle de ingreso</h1>
-                        </div>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                            aria-label="Cerrar"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="pill-badge mb-3">
-                            <i class="fa-solid fa-circle-check"></i>
-                            Completa la información para asociarla a la guía.
-                        </div>
+        <div class="accordion mt-4" id="detalleGuiaAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="detalleGuiaHeading">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#detalleGuiaCollapse" aria-expanded="true" aria-controls="detalleGuiaCollapse">
+                        Detalle de guía de entrada
+                    </button>
+                </h2>
+                <div id="detalleGuiaCollapse" class="accordion-collapse collapse show" aria-labelledby="detalleGuiaHeading"
+                    data-bs-parent="#detalleGuiaAccordion">
+                    <div class="accordion-body">
+                        <p class="text-muted mb-3">Primero guarda o selecciona una guía en la tabla superior. El ID se
+                            completa solo y no se puede escribir.</p>
 
                         <div class="alert alert-dismissible fade show" role="alert" id="detalleGuiaAlert"
                             style="display: none;"></div>
@@ -340,11 +292,12 @@ if (!isset($_SESSION['admin_name'])) {
                                 <label class="form-label" for="detalle_id_guia">ID Guía</label>
                                 <input type="number" class="form-control" id="detalle_id_guia" name="id_guia_entrada"
                                     value="<?php echo htmlspecialchars($id_guia_entrada ?? '', ENT_QUOTES, 'UTF-8'); ?>"
-                                    placeholder="Ej. 4" required>
+                                    placeholder="Selecciona una guía" readonly>
                             </div>
                             <div class="col-md-8">
-                                <label class="form-label">Proveedor</label>
-                                <p class="form-control-plaintext text-muted mb-0">Se toma de la cabecera de la guía.</p>
+                                <div class="alert alert-info mb-0" role="alert">
+                                    Asocia aquí los productos recibidos. Puedes agregar tantos como necesites.
+                                </div>
                             </div>
                             <div class="col-md-8">
                                 <label class="form-label" for="detalle_producto">Producto</label>
@@ -364,23 +317,24 @@ if (!isset($_SESSION['admin_name'])) {
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label" for="detalle_cantidad">Cantidad de entrada</label>
-                                <input type="number" min="1" class="form-control" id="detalle_cantidad"
-                                    name="cantidad_entrada" placeholder="Ej. 50" required>
+                                <label class="form-label" for="detalle_cantidad">Cantidad recibida</label>
+                                <input type="number" class="form-control" id="detalle_cantidad" name="cantidad_entrada"
+                                    min="1" required>
+                                <div class="form-text">Esta cantidad actualiza el lote y el stock del producto.</div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="detalle_lote">Lote</label>
                                 <div class="d-flex gap-2">
                                     <select class="form-select" id="detalle_lote" name="id_lote" required>
                                         <option value="" selected disabled>Selecciona un lote</option>
-                                        <?php foreach ($lotesDisponibles as $lote) { ?>
-                                            <option value="<?php echo (int) $lote['id_lote']; ?>">
-                                                Lote #<?php echo (int) $lote['id_lote']; ?> ·
-                                                <?php echo htmlspecialchars($lote['nombre_producto'], ENT_QUOTES, 'UTF-8'); ?>
-                                                (Vence:
-                                                <?php echo htmlspecialchars($lote['fecha_vencimiento'], ENT_QUOTES, 'UTF-8'); ?>)
-                                            </option>
-                                        <?php } ?>
+                                    <?php foreach ($lotesDisponibles as $lote) { ?>
+                                        <option value="<?php echo (int) $lote['id_lote']; ?>"
+                                            data-fecha="<?php echo htmlspecialchars($lote['fecha_vencimiento'], ENT_QUOTES, 'UTF-8'); ?>"
+                                            data-producto="<?php echo htmlspecialchars($lote['nombre_producto'], ENT_QUOTES, 'UTF-8'); ?>">
+                                            <?php echo htmlspecialchars($lote['nombre_producto'], ENT_QUOTES, 'UTF-8'); ?> -
+                                            <?php echo htmlspecialchars($lote['fecha_vencimiento'], ENT_QUOTES, 'UTF-8'); ?>
+                                        </option>
+                                    <?php } ?>
                                     </select>
                                     <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal"
                                         data-bs-target="#nuevoLoteModal" aria-label="Crear lote">
@@ -402,20 +356,16 @@ if (!isset($_SESSION['admin_name'])) {
                                         id="detalle_precio_unitario" name="precio_unitario" placeholder="0.00" required>
                                 </div>
                             </div>
+                            <div class="col-12 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-danger" id="detalleGuardarBtn">
+                                    <i class="fa-solid fa-floppy-disk me-2"></i>Guardar detalle
+                                </button>
+                            </div>
                         </form>
-                    </div>
-                    <div class="modal-footer d-flex justify-content-between">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">
-                            <i class="fa-solid fa-xmark me-2"></i>Cancelar
-                        </button>
-                        <button type="submit" form="detalleEntradaForm" class="btn btn-danger" id="detalleGuardarBtn">
-                            <i class="fa-solid fa-floppy-disk me-2"></i>Guardar detalle
-                        </button>
                     </div>
                 </div>
             </div>
         </div>
-
         <!-- Sub-modal: crear producto rápido -->
         <div class="modal fade" id="nuevoProductoModal" tabindex="-1" aria-labelledby="nuevoProductoModalLabel"
             aria-hidden="true">
@@ -442,8 +392,9 @@ if (!isset($_SESSION['admin_name'])) {
                                 <select class="form-select" id="producto_categoria" name="categoria" required>
                                     <option value="" selected disabled>Selecciona una categoría</option>
                                     <?php foreach ($categoriasDisponibles as $categoria) { ?>
-                                        <option value="<?php echo (int) $categoria['id_categoria']; ?>">
-                                            <?php echo htmlspecialchars($categoria['descripcion'], ENT_QUOTES, 'UTF-8'); ?>
+                                        <option value="<?php echo htmlspecialchars($categoria['nombre_categoria'], ENT_QUOTES, 'UTF-8'); ?>"
+                                            data-id="<?php echo (int) $categoria['id_categoria']; ?>">
+                                            <?php echo htmlspecialchars($categoria['nombre_categoria'], ENT_QUOTES, 'UTF-8'); ?>
                                         </option>
                                     <?php } ?>
                                 </select>
@@ -511,10 +462,12 @@ if (!isset($_SESSION['admin_name'])) {
                                     <?php } ?>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label" for="lote_cantidad">Cantidad recibida</label>
-                                <input type="number" class="form-control" id="lote_cantidad" name="cantidad_recibida"
-                                    min="1" required>
+                            <input type="hidden" name="cantidad_recibida" value="0">
+                            <div class="col-12">
+                                <div class="pill-badge">
+                                    <i class="fa-solid fa-boxes-stacked"></i>
+                                    La cantidad se registrará solo en el detalle de la guía; el lote inicia en 0.
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="lote_fecha_vencimiento">Fecha de vencimiento</label>
@@ -659,8 +612,8 @@ if (!isset($_SESSION['admin_name'])) {
             const detalleForm = document.getElementById('detalleEntradaForm');
             const alertBox = document.getElementById('detalleGuiaAlert');
             const guardarBtn = document.getElementById('detalleGuardarBtn');
-            const detalleModalEl = document.getElementById('detalleGuiaModal');
-            const detalleModal = detalleModalEl ? new bootstrap.Modal(detalleModalEl) : null;
+            const guiaCabeceraId = document.getElementById('id_guia_entrada');
+            const guiaDetalleId = document.getElementById('detalle_id_guia');
             const productoModal = new bootstrap.Modal(document.getElementById('nuevoProductoModal'));
             const loteModal = new bootstrap.Modal(document.getElementById('nuevoLoteModal'));
             const productoAlert = document.getElementById('productoAlert');
@@ -669,10 +622,38 @@ if (!isset($_SESSION['admin_name'])) {
             const loteForm = document.getElementById('nuevoLoteForm');
             const productoSelects = [document.getElementById('detalle_producto'), document.getElementById('lote_producto')].filter(Boolean);
             const loteSelect = document.getElementById('detalle_lote');
+            const fechaVencimientoInput = document.getElementById('detalle_fecha_vencimiento');
 
-            if (!detalleForm || !detalleModal) {
+            if (!detalleForm) {
                 return;
             }
+
+            const sincronizarIdDetalle = () => {
+                if (guiaDetalleId && guiaCabeceraId) {
+                    guiaDetalleId.value = guiaCabeceraId.value;
+                    guiaDetalleId.readOnly = true;
+                }
+            };
+
+            sincronizarIdDetalle();
+
+            const sincronizarFechaDesdeLote = () => {
+                if (!loteSelect || !fechaVencimientoInput) return;
+
+                const opcion = loteSelect.options[loteSelect.selectedIndex];
+                const fecha = opcion?.dataset?.fecha || '';
+
+                if (fecha) {
+                    fechaVencimientoInput.value = fecha;
+                    fechaVencimientoInput.readOnly = true;
+                } else {
+                    fechaVencimientoInput.value = '';
+                    fechaVencimientoInput.readOnly = false;
+                }
+            };
+
+            loteSelect?.addEventListener('change', sincronizarFechaDesdeLote);
+            sincronizarFechaDesdeLote();
 
             const mostrarMensaje = (mensaje, tipo) => {
                 alertBox.textContent = mensaje;
@@ -683,6 +664,11 @@ if (!isset($_SESSION['admin_name'])) {
             detalleForm.addEventListener('submit', async (event) => {
                 event.preventDefault();
                 alertBox.style.display = 'none';
+
+                if (!detalleForm.id_guia_entrada.value) {
+                    mostrarMensaje('Selecciona o crea primero una guía de entrada para asociar el detalle.', 'warning');
+                    return;
+                }
 
                 const payload = {
                     id_guia_entrada: detalleForm.id_guia_entrada.value,
@@ -714,7 +700,8 @@ if (!isset($_SESSION['admin_name'])) {
                     if (resultado.success) {
                         mostrarMensaje(resultado.message || 'Detalle guardado.', 'success');
                         detalleForm.reset();
-                        setTimeout(() => detalleModal.hide(), 400);
+                        sincronizarIdDetalle();
+                        sincronizarFechaDesdeLote();
                     } else {
                         const detalleError = resultado.error ? ` Detalle técnico: ${resultado.error}` : '';
                         mostrarMensaje((resultado.message || 'No se pudo guardar el detalle.') + detalleError, 'warning');
@@ -738,23 +725,30 @@ if (!isset($_SESSION['admin_name'])) {
                 try {
                     const response = await fetch(url, {
                         method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
                         body: formData
                     });
 
-                    if (response.ok) {
-                        alertContainer.textContent = successMessage;
-                        alertContainer.className = 'alert alert-success alert-dismissible fade show';
-                        alertContainer.style.display = 'block';
-                        form.reset();
+                    const contentType = response.headers.get('content-type') || '';
+                    const esJson = contentType.includes('application/json');
+                    const data = esJson ? await response.json() : {};
 
-                        if (onSuccess) {
-                            onSuccess();
-                        }
-                    } else {
-                        throw new Error('No se pudo completar la solicitud.');
+                    if (!response.ok) {
+                        throw new Error(data.message || 'No se pudo completar la solicitud.');
+                    }
+
+                    alertContainer.textContent = data.message || successMessage;
+                    alertContainer.className = 'alert alert-success alert-dismissible fade show';
+                    alertContainer.style.display = 'block';
+                    form.reset();
+
+                    if (onSuccess) {
+                        onSuccess(data);
                     }
                 } catch (error) {
-                    alertContainer.textContent = 'No se pudo guardar. Verifica los datos e inténtalo nuevamente.';
+                    alertContainer.textContent = error?.message || 'No se pudo guardar. Verifica los datos e inténtalo nuevamente.';
                     alertContainer.className = 'alert alert-danger alert-dismissible fade show';
                     alertContainer.style.display = 'block';
                 }
@@ -767,16 +761,18 @@ if (!isset($_SESSION['admin_name'])) {
                     '../../../controlador/controlador_tablas/controlador_tabla_producto.php',
                     productoAlert,
                     'Producto creado correctamente.',
-                    () => {
-                        const nombre = productoForm.nombre_producto.value;
-                        const nuevaOpcion = new Option(nombre, '');
-                        if (productoSelects.length) {
+                    (data = {}) => {
+                        const nuevoId = data.id_producto;
+                        const nombre = data.nombre || productoForm.nombre_producto.value;
+
+                        if (nuevoId && productoSelects.length) {
                             productoSelects.forEach((select) => {
-                                const option = nuevaOpcion.cloneNode(true);
-                                option.value = ''; // mantener vacío para forzar recarga manual
+                                const option = new Option(nombre, nuevoId);
                                 select.appendChild(option);
+                                select.value = nuevoId;
                             });
                         }
+
                         productoModal.hide();
                     }
                 );
@@ -789,12 +785,16 @@ if (!isset($_SESSION['admin_name'])) {
                     '../../../controlador/controlador_tablas/controlador_tabla_lote.php',
                     loteAlert,
                     'Lote creado correctamente.',
-                    () => {
-                        if (loteSelect) {
-                            const nuevoValor = 'pendiente';
-                            const option = new Option('Nuevo lote registrado (actualiza para ver)', nuevoValor);
+                    (data = {}) => {
+                        if (loteSelect && data.id_lote) {
+                            const texto = `${data.producto || 'Lote'} - ${data.fecha_vencimiento || ''}`.trim();
+                            const option = new Option(texto, data.id_lote);
+                            if (data.fecha_vencimiento) {
+                                option.dataset.fecha = data.fecha_vencimiento;
+                            }
                             loteSelect.appendChild(option);
-                            loteSelect.value = nuevoValor;
+                            loteSelect.value = data.id_lote;
+                            sincronizarFechaDesdeLote();
                         }
                         loteModal.hide();
                     }
