@@ -121,15 +121,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <?php endif; ?>
                 <?php endif; ?>
             </section>
-            <div class="row">
-            <div class="col-12 col-sm-9 d-flex justify-content-sm-end mb-4">
-                <!-- Agregar el ID almacenado en el campo oculto al enlace del reporte PDF -->
-                <a href="pdfs/pdf_Guia_salida_Uni.php?id=<?php echo isset($guia['id_guia_salida']) ? $guia['id_guia_salida'] : ''; ?>" target="_blank" class="btn btn-danger btn-sm shadow-sm" style="margin-top:-60px;height:40px;padding: 8px 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
-                    <i class="fa-solid fa-file-pdf" ></i> <b>Generar Reporte</b>
-                </a>
-            </div>
-        </div>
-
 <?php if ($_SERVER["REQUEST_METHOD"] == "POST") : ?>
     <?php if ($mensaje_error != "") : ?>
         <p><?php echo $mensaje_error; ?></p>

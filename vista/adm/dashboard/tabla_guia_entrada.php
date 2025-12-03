@@ -138,7 +138,7 @@ if (!isset($_SESSION['admin_name'])) {
         $lotesDisponibles = mysqli_fetch_all(
             mysqli_query(
                 $conn,
-                "SELECT l.id_lote, l.fecha_vencimiento, p.nombre_producto FROM lote l JOIN producto p ON p.id_producto = l.id_producto ORDER BY l.id_lote DESC"
+                "SELECT l.id_lote, l.fecha_vencimiento, p.nombre_producto FROM lote l JOIN producto p ON p.id_producto = l.id_producto ORDER BY l.fecha_vencimiento ASC, l.id_lote DESC"
             ),
             MYSQLI_ASSOC
         );

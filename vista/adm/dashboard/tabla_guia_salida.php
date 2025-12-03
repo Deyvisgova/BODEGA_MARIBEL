@@ -176,11 +176,6 @@ if(!isset($_SESSION['admin_name'])){
                     </button>
                 </div>
 
-                <div class="col-12 col-sm-9 d-flex justify-content-sm-end mb-4">
-                    <a href="pdfs/pdf_guia_salida.php" target="_blank" class="btn btn-danger btn-sm shadow-sm" style="padding: 8px 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
-                        <i class="fa-solid fa-file-pdf fa-xl"></i> <b>Generar Reporte</b>
-                    </a>
-                </div>
             </div>
         </form>
 
