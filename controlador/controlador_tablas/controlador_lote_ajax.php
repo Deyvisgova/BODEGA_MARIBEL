@@ -23,7 +23,7 @@ if ($idProducto <= 0 || empty($fechaVencimiento) || empty($fechaIngreso)) {
 
 // Insertar el nuevo lote con cantidad_recibida = 0
 // La cantidad real se sumará cuando se guarde el detalle de la guía de entrada
-$query = "INSERT INTO lote (id_producto, cantidad_recibida, fecha_vencimiento, fecha_ingreso) VALUES (?, 0, ?, ?)";
+$query = "INSERT INTO lote (id_producto, cantidad_recibida, cantidad_disponible, fecha_vencimiento, fecha_ingreso) VALUES (?, 0, 0, ?, ?)";
 $stmt = mysqli_prepare($conn, $query);
 
 if ($stmt) {
