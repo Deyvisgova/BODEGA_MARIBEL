@@ -148,7 +148,20 @@ CREATE TABLE `guia_de_salida` (
   `producto` varchar(200) NOT NULL,
   `destino` varchar(50) NOT NULL,
   `encargado` varchar(50) NOT NULL,
-  `activo` varchar(20) NOT NULL
+  `activo` varchar(20) NOT NULL,
+  `numero_documento` varchar(30) DEFAULT NULL,
+  `domicilio_fiscal` varchar(255) DEFAULT NULL,
+  `fecha_inicio_traslado` date DEFAULT NULL,
+  `destinatario` varchar(150) DEFAULT NULL,
+  `ruc_dni_destinatario` varchar(30) DEFAULT NULL,
+  `punto_partida` varchar(150) DEFAULT NULL,
+  `punto_llegada` varchar(150) DEFAULT NULL,
+  `motivo_traslado` varchar(60) DEFAULT NULL,
+  `modalidad_transporte` varchar(30) DEFAULT NULL,
+  `marca_placa` varchar(60) DEFAULT NULL,
+  `licencia_conducir` varchar(60) DEFAULT NULL,
+  `ruc_transporte` varchar(30) DEFAULT NULL,
+  `denominacion_conductor` varchar(150) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -201,6 +214,7 @@ CREATE TABLE `lote` (
   `id_lote` int(11) NOT NULL,
   `id_producto` int(11) NOT NULL,
   `cantidad_recibida` int(11) NOT NULL,
+  `cantidad_disponible` int(11) NOT NULL DEFAULT 0,
   `fecha_vencimiento` date NOT NULL,
   `fecha_ingreso` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -209,10 +223,27 @@ CREATE TABLE `lote` (
 -- Volcado de datos para la tabla `lote`
 --
 
-INSERT INTO `lote` (`id_lote`, `id_producto`, `cantidad_recibida`, `fecha_vencimiento`, `fecha_ingreso`) VALUES
-(1, 1, 200, '2024-08-31', '2024-07-01'),
-(2, 3, 80, '2024-09-15', '2024-07-10'),
-(3, 6, 120, '2024-10-05', '2024-07-12');
+INSERT INTO `lote` (`id_lote`, `id_producto`, `cantidad_recibida`, `cantidad_disponible`, `fecha_vencimiento`, `fecha_ingreso`) VALUES
+(1, 1, 200, 200, '2024-08-31', '2024-07-01'),
+(2, 3, 80, 80, '2024-09-15', '2024-07-10'),
+(3, 6, 120, 120, '2024-10-05', '2024-07-12');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `guia_de_salida_detalle`
+--
+
+CREATE TABLE `guia_de_salida_detalle` (
+  `id_detalle_salida` int(11) NOT NULL,
+  `id_guia_salida` int(11) NOT NULL,
+  `id_producto` int(11) NOT NULL,
+  `id_lote` int(11) NOT NULL,
+  `descripcion` varchar(255) NOT NULL,
+  `cantidad` int(11) NOT NULL,
+  `unidad_medida` varchar(50) DEFAULT NULL,
+  `peso_total` decimal(10,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -255,7 +286,8 @@ CREATE TABLE `kardex` (
   `descripcion` varchar(200) NOT NULL,
   `cantidad` int(11) NOT NULL,
   `saldo` int(11) NOT NULL,
-  `referencia` varchar(50) NOT NULL
+  `referencia` varchar(50) NOT NULL,
+  `kardex_encabezado_idkardex_encabezado` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -308,6 +340,15 @@ ALTER TABLE `guia_de_salida`
   ADD KEY `idx_guia_salida_producto` (`producto`);
 
 --
+-- Indices de la tabla `guia_de_salida_detalle`
+--
+ALTER TABLE `guia_de_salida_detalle`
+  ADD PRIMARY KEY (`id_detalle_salida`),
+  ADD KEY `idx_salida_detalle_guia` (`id_guia_salida`),
+  ADD KEY `idx_salida_detalle_producto` (`id_producto`),
+  ADD KEY `idx_salida_detalle_lote` (`id_lote`);
+
+--
 -- Indices de la tabla `kardex`
 --
 ALTER TABLE `kardex`
@@ -356,6 +397,11 @@ ALTER TABLE `guia_de_entrada_detalle`
 ALTER TABLE `guia_de_salida`
   ADD CONSTRAINT `fk_salida_producto` FOREIGN KEY (`producto`) REFERENCES `producto` (`nombre_producto`) ON UPDATE CASCADE;
 
+ALTER TABLE `guia_de_salida_detalle`
+  ADD CONSTRAINT `fk_detalle_salida_guia` FOREIGN KEY (`id_guia_salida`) REFERENCES `guia_de_salida` (`id_guia_salida`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_detalle_salida_producto` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id_producto`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_detalle_salida_lote` FOREIGN KEY (`id_lote`) REFERENCES `lote` (`id_lote`) ON UPDATE CASCADE;
+
 ALTER TABLE `kardex`
   ADD CONSTRAINT `fk_kardex_producto` FOREIGN KEY (`producto`) REFERENCES `producto` (`nombre_producto`) ON UPDATE CASCADE;
 
@@ -401,6 +447,12 @@ ALTER TABLE `guia_de_entrada_detalle`
 --
 ALTER TABLE `guia_de_salida`
   MODIFY `id_guia_salida` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `guia_de_salida_detalle`
+--
+ALTER TABLE `guia_de_salida_detalle`
+  MODIFY `id_detalle_salida` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `kardex`
