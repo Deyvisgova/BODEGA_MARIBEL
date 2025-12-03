@@ -96,7 +96,11 @@ if(!isset($_SESSION['admin_name'])){
                 <div class="row g-3 mb-3">
                     <div class="col-md-4">
                         <label class="form-label">RUC / Remitente</label>
+
                         <input type="text" class="form-control" name="numero_documento" value="20600837550" readonly required>
+
+                        <input type="text" class="form-control" name="numero_documento" placeholder="001-1238614" required>
+
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Fecha de emisión</label>
@@ -104,7 +108,11 @@ if(!isset($_SESSION['admin_name'])){
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Domicilio Fiscal</label>
+
                         <input type="text" class="form-control" name="domicilio_fiscal" value="Av. Los Próceres 145, Lima – San Juan de Lurigancho" readonly>
+
+                        <input type="text" class="form-control" name="domicilio_fiscal" placeholder="Dirección del remitente">
+
                     </div>
                 </div>
 
@@ -126,7 +134,11 @@ if(!isset($_SESSION['admin_name'])){
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Punto de partida</label>
+
                         <input type="text" class="form-control" name="punto_partida" value="Almacén Maribel– Jr. Huancavelica 234, Lima." readonly>
+
+                        <input type="text" class="form-control" name="punto_partida" placeholder="Dirección de partida">
+
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Punto de llegada</label>
@@ -245,6 +257,10 @@ if(!isset($_SESSION['admin_name'])){
         <div class="guia-card">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0">Guías de salida registradas</h5>
+
+
+                <a href="pdfs/pdf_guia_salida.php" target="_blank" class="btn btn-danger btn-sm"><i class="fa-solid fa-file-pdf"></i> Reporte general</a>
+
             </div>
             <div class="table-responsive" style="font-size: 0.9rem;">
                 <table class="table table-striped">
@@ -265,6 +281,7 @@ if(!isset($_SESSION['admin_name'])){
                         <?php foreach ($guias as $guia): ?>
                             <tr>
                                 <td><?= $guia['id_guia_salida']; ?></td>
+
                                 <td><?= $guia['fecha_salida'] ?? ''; ?></td>
                                 <td><?= htmlspecialchars($guia['numero_documento'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
                                 <td><?= htmlspecialchars($guia['destino'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
@@ -272,6 +289,15 @@ if(!isset($_SESSION['admin_name'])){
                                 <td><?= $guia['items'] ?? 0; ?></td>
                                 <td><?= $guia['total_cantidad'] ?? 0; ?></td>
                                 <td><?= $guia['activo'] ?? ''; ?></td>
+
+                                <td><?= $guia['fecha_salida']; ?></td>
+                                <td><?= htmlspecialchars($guia['numero_documento']); ?></td>
+                                <td><?= htmlspecialchars($guia['destino']); ?></td>
+                                <td><?= htmlspecialchars($guia['motivo_traslado']); ?></td>
+                                <td><?= $guia['items']; ?></td>
+                                <td><?= $guia['total_cantidad']; ?></td>
+                                <td><?= $guia['activo']; ?></td>
+
                                 <td>
                                     <a href="pdfs/pdf_Guia_salida_Uni_adm.php?id=<?= $guia['id_guia_salida']; ?>" class="btn btn-outline-danger btn-sm" target="_blank">
                                         <i class="fa-solid fa-file-pdf"></i>

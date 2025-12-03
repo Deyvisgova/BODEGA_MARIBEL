@@ -2,6 +2,7 @@
 @include '../../modelo/config.php';
 require_once __DIR__ . '/../kardex_helper.php';
 
+
 /**
  * Asegura que la tabla de kardex exista y que incluya la columna heredada
  * `kardex_encabezado_idkardex_encabezado`, que algunas instalaciones viejas
@@ -29,6 +30,7 @@ function asegurarKardex(mysqli $conn): void
         );
     }
 }
+
 
 $crearTabla = function (string $sql) use ($conn) {
     mysqli_query($conn, $sql);
@@ -89,6 +91,7 @@ function asegurarTablaDetalleGuiaSalida(mysqli $conn, callable $crearTabla): voi
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 }
 
+
 function asegurarColumnaLoteContenedor(mysqli $conn): void
 {
     $existeColumna = mysqli_query($conn, "SHOW COLUMNS FROM lote LIKE 'contenedor'");
@@ -101,6 +104,10 @@ asegurarKardex($conn);
 asegurarTablaGuiaSalida($conn, $crearTabla);
 asegurarTablaDetalleGuiaSalida($conn, $crearTabla);
 asegurarColumnaLoteContenedor($conn);
+
+asegurarTablaGuiaSalida($conn, $crearTabla);
+asegurarTablaDetalleGuiaSalida($conn, $crearTabla);
+
 
 $id_guia_salida = (isset($_POST['id_guia_salida'])) ? $_POST['id_guia_salida'] : "";
 $fecha_salida = (isset($_POST['fecha_salida'])) ? $_POST['fecha_salida'] : "";
@@ -153,6 +160,7 @@ switch ($accion) {
             exit;
         }
 
+
         if ($numero_documento === '') {
             $numero_documento = '20600837550';
         }
@@ -165,6 +173,7 @@ switch ($accion) {
         if ($fecha_salida === '') {
             $fecha_salida = date('Y-m-d');
         }
+
 
         $totalCantidad = 0;
         $primerProductoNombre = '';
