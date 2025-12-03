@@ -89,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_guia = mysqli_real_escape_string($conn, $_POST['id_guia']);
 
     // Consultar la base de datos para obtener la información de la guía de entrada
-    $query = "SELECT * FROM guia_de_entrada WHERE id_guia_entrada = '$id_guia'";
+    $query = "SELECT g.*, p.Nombre_de_la_empresa AS proveedor FROM guia_de_entrada g LEFT JOIN provedor p ON p.id_provedor = g.id_proveedor WHERE g.id_guia_entrada = '$id_guia'";
     $result = mysqli_query($conn, $query);
 
     // Verificar si se encontraron resultados
@@ -140,8 +140,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <th>ID Guía de Entrada</th>
                 <th>Fecha</th>
                 <th>Descripción</th>
-                <th>Cantidad</th>
-                <th>Producto</th>
                 <th>Proveedor</th>
                 <th>Activo</th>
             </tr>
@@ -151,9 +149,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <td><?php echo $guia['id_guia_entrada']; ?></td>
                 <td><?php echo $guia['fecha_entrada']; ?></td>
                 <td><?php echo $guia['descripcion']; ?></td>
-                <td><?php echo $guia['cantidad_entrada']; ?></td>
-                <td><?php echo $guia['producto']; ?></td>
-                <td><?php echo $guia['provedor']; ?></td>
+                <td><?php echo $guia['proveedor']; ?></td>
                 <td><?php echo $guia['activo']; ?></td>
             </tr>
         </table>

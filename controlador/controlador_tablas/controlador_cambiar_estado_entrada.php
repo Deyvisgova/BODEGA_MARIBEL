@@ -21,9 +21,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo '<script>alert("La guía ya ha sido recibida anteriormente"); 
             window.location.href="../../vista/adm/dashboard/tabla_cantidad_colab.php";</script>';
         } else {
-            // Obtener la cantidad y el producto
-            $cantidad_entrada = $guia['cantidad_entrada'];
-            $producto = $guia['producto'];
+            $descripcionGuia = $guia['descripcion'] ?? '';
+
+            $detallesGuia = mysqli_query(
+                $conn,
+                "SELECT d.cantidad_entrada, p.nombre_producto FROM guia_de_entrada_detalle d JOIN producto p ON p.id_producto = d.id_producto WHERE d.id_guia_entrada = '$id_guia'"
+            );
+
+            if (!$detallesGuia || mysqli_num_rows($detallesGuia) === 0) {
+                echo '<script>alert("No se encontraron detalles asociados a la guía.");
+                window.location.href="../../vista/adm/dashboard/tabla_cantidad_colab.php";</script>';
+                exit;
+            }
 
             // Consulta para actualizar el estado de la guía de entrada
             $query_actualizar_guia = "UPDATE `guia_de_entrada` SET `activo`='recibido' WHERE id_guia_entrada='$id_guia'";
@@ -31,15 +40,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Verificar si la consulta de actualizar guía fue exitosa
             if ($result_actualizar_guia) {
-                registrarKardex(
-                    $conn,
-                    $guia['fecha_entrada'],
-                    $producto,
-                    'entrada',
-                    (int)$cantidad_entrada,
-                    $guia['descripcion'],
-                    'GE-' . $id_guia
-                );
+                while ($detalle = mysqli_fetch_assoc($detallesGuia)) {
+                    registrarKardex(
+                        $conn,
+                        $guia['fecha_entrada'],
+                        $detalle['nombre_producto'],
+                        'entrada',
+                        (int)$detalle['cantidad_entrada'],
+                        $descripcionGuia,
+                        'GE-' . $id_guia
+                    );
+                }
 
                 // Redirigir de vuelta a la página de la guía de entrada
                 echo '<script>alert("La guía ha sido marcada como recibida y se ha actualizado el inventario.");

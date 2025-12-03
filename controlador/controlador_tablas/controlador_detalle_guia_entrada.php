@@ -12,7 +12,6 @@ if (!$payload) {
 
 $idGuiaEntrada = isset($payload['id_guia_entrada']) ? (int)$payload['id_guia_entrada'] : 0;
 $idProducto = isset($payload['id_producto']) ? (int)$payload['id_producto'] : 0;
-$idProveedor = isset($payload['id_provedor']) ? (int)$payload['id_provedor'] : 0;
 $cantidad = isset($payload['cantidad_entrada']) ? (int)$payload['cantidad_entrada'] : 0;
 $idLote = isset($payload['id_lote']) ? (int)$payload['id_lote'] : 0;
 $fechaVencimiento = isset($payload['fecha_vencimiento']) ? trim($payload['fecha_vencimiento']) : '';
@@ -21,7 +20,6 @@ $precioUnitario = isset($payload['precio_unitario']) ? (float)$payload['precio_u
 if (
     $idGuiaEntrada <= 0 ||
     $idProducto <= 0 ||
-    $idProveedor <= 0 ||
     $cantidad <= 0 ||
     $idLote <= 0 ||
     $fechaVencimiento === '' ||
@@ -34,7 +32,7 @@ if (
 
 $stmt = mysqli_prepare(
     $conn,
-    'INSERT INTO guia_de_entrada_detalle (id_guia_entrada, id_producto, id_provedor, cantidad_entrada, id_lote, fecha_vencimiento, precio_unitario) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    'INSERT INTO guia_de_entrada_detalle (id_guia_entrada, id_producto, cantidad_entrada, id_lote, fecha_vencimiento, precio_unitario) VALUES (?, ?, ?, ?, ?, ?)'
 );
 
 if (!$stmt) {
@@ -49,10 +47,9 @@ if (!$stmt) {
 
 mysqli_stmt_bind_param(
     $stmt,
-    'iiiiisd',
+    'iiiisd',
     $idGuiaEntrada,
     $idProducto,
-    $idProveedor,
     $cantidad,
     $idLote,
     $fechaVencimiento,

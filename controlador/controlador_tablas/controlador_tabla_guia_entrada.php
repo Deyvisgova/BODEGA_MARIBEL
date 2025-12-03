@@ -5,9 +5,7 @@
     $id_guia_entrada = (isset($_POST['id_guia_entrada']))?$_POST['id_guia_entrada']:"";
     $fecha_entrada = (isset($_POST['fecha_entrada']))?$_POST['fecha_entrada']:"";
     $descripcion = (isset($_POST['descripcion']))?$_POST['descripcion']:"";
-    $cantidad_entrada = (isset($_POST['cantidad_entrada']))?$_POST['cantidad_entrada']:"";
-    $producto = (isset($_POST['producto']))?$_POST['producto']:"";
-    $provedor = (isset($_POST['provedor']))?$_POST['provedor']:"";
+    $id_proveedor = (isset($_POST['id_proveedor']))?$_POST['id_proveedor']:"";
     $activo = (isset($_POST['activo']))?$_POST['activo']:"";
 
 
@@ -25,21 +23,8 @@
                     header('location: ../../vista/adm/dashboard/tabla_guia_entrada.php');
                 }else{
 
-                    $insert = "INSERT INTO guia_de_entrada(fecha_entrada,descripcion, cantidad_entrada,producto, provedor, activo) VALUES('$fecha_entrada','$descripcion', '$cantidad_entrada', '$producto', '$provedor','$activo')";
+                    $insert = "INSERT INTO guia_de_entrada(fecha_entrada, descripcion, id_proveedor, activo) VALUES('$fecha_entrada','$descripcion', '$id_proveedor', '$activo')";
                     mysqli_query($conn, $insert);
-
-                    $guiaId = mysqli_insert_id($conn);
-                    if ($activo === 'recibido') {
-                        registrarKardex(
-                            $conn,
-                            $fecha_entrada,
-                            $producto,
-                            'entrada',
-                            (int)$cantidad_entrada,
-                            $descripcion,
-                            'GE-' . $guiaId
-                        );
-                    }
 
                     header('location: ../../vista/adm/dashboard/tabla_guia_entrada.php');
                 }
@@ -47,7 +32,7 @@
             case "btnModificar":
                 //falta implementar más...
 
-                $update = "UPDATE guia_de_entrada SET fecha_entrada='$fecha_entrada',descripcion='$descripcion',cantidad_entrada='$cantidad_entrada', producto='$producto', provedor='$provedor',activo='$activo' WHERE id_guia_entrada='$id_guia_entrada'";
+                $update = "UPDATE guia_de_entrada SET fecha_entrada='$fecha_entrada', descripcion='$descripcion', id_proveedor='$id_proveedor', activo='$activo' WHERE id_guia_entrada='$id_guia_entrada'";
                 mysqli_query($conn, $update);
 
                 header('location: ../../vista/adm/dashboard/tabla_guia_entrada.php');

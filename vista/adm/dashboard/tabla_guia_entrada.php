@@ -122,7 +122,7 @@ if(!isset($_SESSION['admin_name'])){
     <div class="container">
         <?php
         @include '../../../controlador/controlador_tablas/controlador_tabla_guia_entrada.php';
-        $select = "SELECT * FROM guia_de_entrada";
+        $select = "SELECT g.id_guia_entrada, g.fecha_entrada, g.descripcion, g.id_proveedor, g.activo, p.Nombre_de_la_empresa AS proveedor FROM guia_de_entrada g LEFT JOIN provedor p ON p.id_provedor = g.id_proveedor";
         $tabla = mysqli_query($conn, $select);
 
         $productosDisponibles = mysqli_fetch_all(
@@ -152,7 +152,7 @@ if(!isset($_SESSION['admin_name'])){
         $categoriasDisponibles = mysqli_fetch_all(
             mysqli_query(
                 $conn,
-                "SELECT id_categoria, descripcion FROM categoria ORDER BY descripcion ASC"
+                "SELECT id_categoria, nombre_categoria FROM categoria ORDER BY nombre_categoria ASC"
             ),
             MYSQLI_ASSOC
         );
@@ -186,37 +186,19 @@ if(!isset($_SESSION['admin_name'])){
 
                                 <div class="form-group col-md-12">
                                     <label for="">Descripcion:</label>
-                                    <input type="text" class="form-control" required name="descripcion" placerholder="" id="descripcion" value="<?php echo $descripcion; ?>"><br>
-                                </div>
-
-                                <div class="form-group col-md-4">
-                                    <label for="">Cantidad:</label>
-                                    <input type="number" class="form-control" required name="cantidad_entrada" placerholder="" id="cantidad_entrada" value="<?php echo $cantidad_entrada; ?>"><br>
+                                    <input type="text" class="form-control" name="descripcion" placerholder="" id="descripcion" value="<?php echo $descripcion; ?>"><br>
                                 </div>
 
                                 <div class="form-group col-md-8">
-                                    <label for="">Producto:</label>
-                                    <input type="text" class="form-control" required name="producto" placerholder="" id="producto" value="<?php echo $producto; ?>"><br>
-                                </div>
-
-
-                                <div class="form-group col-md-8">
-                                    <label for="">Provedor:
-                                    <select name="provedor" id="provedor" class="form-control">
-                                        <?php 
-                                        include 'config.php';
-                                        $consulta="SELECT * from provedor";
-                                        $ejecutar=mysqli_query($conn,$consulta);
-                                        ?>
-                                     <?php 
-                                        foreach ($ejecutar as $opciones):
-                                        ?>
-                                    <option value="<?php echo $opciones['Nombre_de_la_empresa']?>"><?php echo $opciones['Nombre_de_la_empresa']?></option>
-						      	
-                                    <?php 
-                                        endforeach
-                                        ?>
-                                 </select></label>
+                                    <label for="">Proveedor</label>
+                                    <select name="id_proveedor" id="id_proveedor" class="form-control" required>
+                                        <option value="">Seleccione proveedor</option>
+                                        <?php foreach ($proveedoresDisponibles as $proveedor) { ?>
+                                            <option value="<?php echo (int)$proveedor['id_provedor']; ?>" <?php echo ($id_proveedor == $proveedor['id_provedor']) ? 'selected' : ''; ?>>
+                                                <?php echo htmlspecialchars($proveedor['Nombre_de_la_empresa'], ENT_QUOTES, 'UTF-8'); ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
                                 </div>
 
                                 
@@ -273,9 +255,7 @@ if(!isset($_SESSION['admin_name'])){
                         <th>Id Guia de Entrada:</th>
                         <th>Fecha:</th>
                         <th>Descripcion</th>
-                        <th>Cantidad:</th>
-                        <th>Producto:</th>
-                        <th>provedor:</th>
+                        <th>Proveedor:</th>
                         <th>Activo:</th>
                         <th>Acciones:</th>
                     </tr>
@@ -288,9 +268,7 @@ if(!isset($_SESSION['admin_name'])){
                             <td><?php echo $row['id_guia_entrada']; ?></td>
                             <td><?php echo $row['fecha_entrada']; ?></td>
                             <td><?php echo $row['descripcion']; ?></td>
-                            <td><?php echo $row['cantidad_entrada']; ?></td>
-                            <td><?php echo $row['producto']; ?></td>
-                            <td><?php echo $row['provedor']; ?></td>
+                            <td><?php echo $row['proveedor']; ?></td>
                             <td><?php echo $row['activo']; ?></td>
 
 
@@ -300,9 +278,7 @@ if(!isset($_SESSION['admin_name'])){
                                 <input type="hidden" value="<?php echo $row['id_guia_entrada']; ?>" name="id_guia_entrada">
                                 <input type="hidden" value="<?php echo $row['fecha_entrada']; ?>" name="fecha_entrada">
                                 <input type="hidden" value="<?php echo $row['descripcion']; ?>" name="descripcion">
-                                <input type="hidden" value="<?php echo $row['cantidad_entrada']; ?>" name="cantidad_entrada">
-                                <input type="hidden" value="<?php echo $row['producto']; ?>" name="producto">
-                                <input type="hidden" value="<?php echo $row['provedor']; ?>" name="provedor">
+                                <input type="hidden" value="<?php echo $row['id_proveedor']; ?>" name="id_proveedor">
                                 <input type="hidden" value="<?php echo $row['activo']; ?>" name="activo">
 
 
@@ -347,13 +323,8 @@ if(!isset($_SESSION['admin_name'])){
                                 <input type="number" class="form-control" id="detalle_id_guia" name="id_guia_entrada" value="<?php echo htmlspecialchars($id_guia_entrada ?? '', ENT_QUOTES, 'UTF-8'); ?>" placeholder="Ej. 4" required>
                             </div>
                             <div class="col-md-8">
-                                <label class="form-label" for="detalle_proveedor">Proveedor</label>
-                                <select class="form-select" id="detalle_proveedor" name="id_provedor" required>
-                                    <option value="" selected disabled>Selecciona un proveedor</option>
-                                    <?php foreach ($proveedoresDisponibles as $proveedor) { ?>
-                                        <option value="<?php echo (int)$proveedor['id_provedor']; ?>"><?php echo htmlspecialchars($proveedor['Nombre_de_la_empresa'], ENT_QUOTES, 'UTF-8'); ?></option>
-                                    <?php } ?>
-                                </select>
+                                <label class="form-label">Proveedor</label>
+                                <p class="form-control-plaintext text-muted mb-0">Se toma de la cabecera de la guía.</p>
                             </div>
                             <div class="col-md-8">
                                 <label class="form-label" for="detalle_producto">Producto</label>
@@ -433,14 +404,14 @@ if(!isset($_SESSION['admin_name'])){
                                 <input type="text" class="form-control" id="producto_nombre" name="nombre_producto" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label" for="producto_categoria">Categoría</label>
-                                <select class="form-select" id="producto_categoria" name="categoria" required>
-                                    <option value="" selected disabled>Selecciona una categoría</option>
-                                    <?php foreach ($categoriasDisponibles as $categoria) { ?>
-                                        <option value="<?php echo (int)$categoria['id_categoria']; ?>"><?php echo htmlspecialchars($categoria['descripcion'], ENT_QUOTES, 'UTF-8'); ?></option>
-                                    <?php } ?>
-                                </select>
-                            </div>
+                                  <label class="form-label" for="producto_categoria">Categoría</label>
+                                  <select class="form-select" id="producto_categoria" name="categoria" required>
+                                      <option value="" selected disabled>Selecciona una categoría</option>
+                                      <?php foreach ($categoriasDisponibles as $categoria) { ?>
+                                          <option value="<?php echo (int)$categoria['id_categoria']; ?>"><?php echo htmlspecialchars($categoria['nombre_categoria'], ENT_QUOTES, 'UTF-8'); ?></option>
+                                      <?php } ?>
+                                  </select>
+                              </div>
                             <div class="col-12">
                                 <label class="form-label" for="producto_descripcion">Descripción</label>
                                 <textarea class="form-control" id="producto_descripcion" name="descripcion" rows="2" placeholder="Notas internas"></textarea>
@@ -539,7 +510,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_guia = mysqli_real_escape_string($conn, $_POST['id_guia']);
 
     // Consultar la base de datos para obtener la información de la guía de entrada
-    $query = "SELECT * FROM guia_de_entrada WHERE id_guia_entrada = '$id_guia'";
+    $query = "SELECT g.*, p.Nombre_de_la_empresa AS proveedor FROM guia_de_entrada g LEFT JOIN provedor p ON p.id_provedor = g.id_proveedor WHERE g.id_guia_entrada = '$id_guia'";
     $result = mysqli_query($conn, $query);
 
     // Verificar si se encontraron resultados
@@ -590,8 +561,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <th>ID Guía de Entrada</th>
                 <th>Fecha</th>
                 <th>Descripción</th>
-                <th>Cantidad</th>
-                <th>Producto</th>
                 <th>Proveedor</th>
                 <th>Activo</th>
             </tr>
@@ -601,9 +570,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <td><?php echo $guia['id_guia_entrada']; ?></td>
                 <td><?php echo $guia['fecha_entrada']; ?></td>
                 <td><?php echo $guia['descripcion']; ?></td>
-                <td><?php echo $guia['cantidad_entrada']; ?></td>
-                <td><?php echo $guia['producto']; ?></td>
-                <td><?php echo $guia['provedor']; ?></td>
+                <td><?php echo $guia['proveedor']; ?></td>
                 <td><?php echo $guia['activo']; ?></td>
             </tr>
         </table>
@@ -664,7 +631,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 const payload = {
                     id_guia_entrada: detalleForm.id_guia_entrada.value,
                     id_producto: detalleForm.id_producto.value,
-                    id_provedor: detalleForm.id_provedor.value,
                     cantidad_entrada: detalleForm.cantidad_entrada.value,
                     id_lote: detalleForm.id_lote.value,
                     fecha_vencimiento: detalleForm.fecha_vencimiento.value,
